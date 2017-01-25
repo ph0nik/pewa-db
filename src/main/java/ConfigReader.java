@@ -30,9 +30,8 @@ public class ConfigReader {
 
     private ConfigReader() {
     }
-    public static Boolean load() {
+    public static void load() {
         File configFile = new File("pewa-config.ini");
-        Boolean status = false;
         try {
             HierarchicalINIConfiguration config = new HierarchicalINIConfiguration(configFile);
             omdbUrl = config.getProperty("item.omdbLink").toString();
@@ -55,14 +54,9 @@ public class ConfigReader {
             dbName = config.getProperty("sql.dbName").toString();
             dbLogin = config.getProperty("sql.dbLogin").toString();
             dbPass = config.getProperty("sql.dbPass").toString();
-            status = true;
 
         } catch (ConfigurationException e) {
-            status = false;
             System.out.println("Nie można znaleźć pliku: " + e);
-
-        } finally {
-            return status;
         }
 
     }

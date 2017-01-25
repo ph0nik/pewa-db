@@ -68,8 +68,12 @@ public class TvShowSearch {
                 String firstAiredTemp = tvmazeSum.asObject().getString("premiered","0000-00-00");
                 DateFormat firstAiredDF = new SimpleDateFormat("yyyy-d-MM", Locale.ENGLISH);
                 tvshowItem.setPremiered(firstAiredDF.parse(firstAiredTemp));
+                if(tvmazeSum.asObject().get("rating").asObject().get("average").isNull()) {
+                    tvshowItem.setRatingAvg(0.0);
+                } else {
+                    tvshowItem.setRatingAvg(tvmazeSum.asObject().get("rating").asObject().getDouble("average",0.0));
+                }
 
-                tvshowItem.setRatingAvg(tvmazeSum.asObject().get("rating").asObject().getDouble("average",0.0));
                 if(tvmazeSum.asObject().get("network").isNull()) {
                     tvshowItem.setNetwork(tvmazeSum.asObject().get("webChannel").asObject().getString("name",""));
                     tvshowItem.setCountry(tvmazeSum.asObject().get("webChannel").asObject().get("country").asObject().getString("name",""));

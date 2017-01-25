@@ -6,6 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import javax.xml.crypto.Data;
+
 /**
  * Created by phonik on 2017-01-20.
  */
@@ -13,7 +15,7 @@ public class DbTest {
 
     @BeforeClass
     public static void setUp() {
-        assertTrue("ini file error", ConfigReader.load());
+        ConfigReader.load();
     }
 
     @Test
@@ -21,10 +23,23 @@ public class DbTest {
         DatabaseInit.createDb();
     }
 
-    @Test
-    public void loginWithWrongUserId() throws Exception {
-        DatabaseInit.createTable();
+//    @Test
+    public void grantPrivileges() throws Exception {
+        DatabaseInit.grantPrivs();
     }
 
+    @Test
+    public void createGenreTable() throws Exception {
+        DatabaseInit.createGenreTable();
+    }
 
+    @Test
+    public void createPersonTable() throws Exception {
+        DatabaseInit.createPersonTable();
+    }
+
+    @Test
+    public void createCountryTable() throws Exception {
+        DatabaseInit.createCountryTable();
+    }
 }
