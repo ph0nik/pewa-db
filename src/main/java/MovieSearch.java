@@ -67,7 +67,8 @@ public class MovieSearch {
                 movieItem.setMetascore(omdbValues.asObject().getString("Metascore",""));
                 movieItem.setImdbRating(omdbValues.asObject().getString("imdbRating",""));
                 movieItem.setImdbVotes(omdbValues.asObject().getString("imdbVotes",""));
-                movieItem.setImdbID(omdbValues.asObject().getString("imdbID",""));
+//                movieItem.setImdbID(omdbValues.asObject().getString("imdbID",""));
+                movieItem.setImdbID(foundMovieTitle.get(element).get(0));
             }
             return movieItem;
 

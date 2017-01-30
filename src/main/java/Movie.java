@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by phonik on 2017-01-12.
@@ -10,6 +13,7 @@ public class Movie {
     private String relDate;
     private String runtime;
     private String[] genre;
+    private List<List<String>> crew;
     private String[] director;
     private String[] writer;
     private String[] actors;
@@ -22,6 +26,51 @@ public class Movie {
     private String imdbRating;
     private String imdbVotes;
     private String imdbID;
+
+    public void peopleAsList() {
+        List<List<String>> output = new ArrayList();
+        for(String single : this.director) {
+            List temp = Arrays.asList(single, "director");
+            output.addAll(temp);
+        }
+        for(String single : this.actors) {
+            List temp = Arrays.asList(single, "actor");
+            output.addAll(temp);
+        }
+        for(String single : this.actors) {
+            List temp = Arrays.asList(single, "writer");
+            output.addAll(temp);
+        }
+        this.crew = output;
+    }
+
+  /*  public void sample(String title,
+                       int year,
+                       String ageRating,
+                       String relDate,
+                       String runtime,
+                       String[] genre,
+                       List people,
+                       String plot,
+                       String[] language,
+                       String[] country,
+                       String awards,
+                       String poster,
+                       String metascore,
+                       String imdbRating,
+                       String imdbVotes,
+                       int imdbID) {
+        this.title = title;
+        this.year = year;
+        this.ageRating = ageRating;
+        this.relDate = relDate;
+        this.runtime = runtime;
+        this.genre = genre;
+    }*/
+
+    public List<List<String>> getCrew() {
+        return crew;
+    }
 
     public String getTitle() {
         return title;

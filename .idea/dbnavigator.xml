@@ -25,14 +25,23 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26">
+        <schema name="mysql" object-types="table, view" />
         <schema name="pewadb" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26">
-      <console name="mysql-root" type="STANDARD"><![CDATA[CREATE TABLE genre (genreId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genreName VARCHAR(20));]]></console>
+      <console name="mysql-root" type="STANDARD"><![CDATA[CREATE TABLE genre (genreId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genreName VARCHAR(20));
+
+
+show tables from test;
+use test;
+select * from movies;]]></console>
     </connection>
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.country" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

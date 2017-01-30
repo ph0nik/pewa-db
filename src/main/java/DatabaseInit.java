@@ -1,138 +1,133 @@
-import java.security.Key;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Created by phonik on 2017-01-17.
- *
- *- zapytaj o haslo
- * - polacz z baza danych
- * - sprawdz czy istnieje baza o okreslonej nazwie, jesli nie utworz nowa jesli tak wejdz
- *
- */
 class DatabaseInit {
 
-    private static Connection rootConnection() {
-        String urlRoot = ConfigReader.dbUrlRoot;
-        String passRoot = ConfigReader.rootPass;
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(urlRoot, "root", passRoot);
+    private static void userConnection(String dataBaseUrl, String login, String pass, List<String> queries) {
+        try (
+            Connection conn = DriverManager.getConnection(dataBaseUrl, login, pass);
+            Statement st = conn.createStatement();) {
+            for(String query : queries) {
+                st.executeUpdate(query);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            return conn;
         }
-
     }
-    static void createDb() throws Exception {
-        Connection conn = rootConnection();
+
+    static void dbInit() {
+        String urlRoot = ConfigReader.dbUrlRoot;
+        String passRoot = ConfigReader.rootPass;
+        String loginRoot = ConfigReader.dbLogin;
+        List<String> queries = new ArrayList();
         String createDb = new StringBuilder("CREATE DATABASE IF NOT EXISTS ")
                 .append(ConfigReader.dbName)
                 .toString();
-        Statement st = conn.createStatement();
-        st.executeUpdate(createDb);
-        st.close();
-        conn.close();
-        if (conn != null) conn.close();
-    }
-
-    static void createUser() throws Exception {
-        Connection conn = rootConnection();
         String createUser = new StringBuilder("CREATE USER IF NOT EXISTS '")
                 .append(ConfigReader.userName)
                 .append("'@'localhost' identified by '")
                 .append(ConfigReader.userPass)
                 .append("'")
                 .toString();
-        Statement st = conn.createStatement();
-        st.executeUpdate(createUser);
-        st.close();
-        if (conn != null) conn.close();
-    }
-
-    static void grantPrivs() throws Exception {
-        Connection conn = rootConnection();
         String grantPriv = new StringBuffer("GRANT ALL ON ")
                 .append(ConfigReader.dbName)
                 .append(".* TO '")
                 .append(ConfigReader.userName)
                 .append("'@'localhost'")
                 .toString();
-        Statement st = conn.createStatement();
-        st.executeUpdate(grantPriv);
-        st.close();
-        if (conn != null) conn.close();
+        queries.addAll(Arrays.asList(createDb, createUser, grantPriv));
+        userConnection(urlRoot, loginRoot, passRoot, queries);
     }
 
-    private static Connection userConnection() {
+    static void createTables() {
         String dbName = ConfigReader.dbName;
         String login = ConfigReader.userName;
         String pass = ConfigReader.userPass;
         String dataBaseUrl = ConfigReader.dbUrlUser.concat(dbName);
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dataBaseUrl, login, pass);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            return conn;
-        }
+        List<String> queries = new ArrayList();
+        String createGenre = "CREATE TABLE IF NOT EXISTS movie_genre(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(20) UNIQUE)";
+        String createPerson = "CREATE TABLE IF NOT EXISTS movie_person(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60) UNIQUE)";
+        String createCountry = "CREATE TABLE IF NOT EXISTS movie_country(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) UNIQUE)";
+        String createLanguage = "CREATE TABLE IF NOT EXISTS movie_language(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, language VARCHAR(30) UNIQUE)";
+        String createMovie = new StringBuilder("CREATE TABLE IF NOT EXISTS movie(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, ")
+                                                .append("title VARCHAR(30), ")
+                                                .append("year INT NOT NULL, ")
+                                                .append("rating VARCHAR(10), ")
+                                                .append("release_date VARCHAR(20), ")
+                                                .append("runtime VARCHAR(10), ")
+                                                .append("plot VARCHAR(500), ")
+                                                .append("awards VARCHAR(100), ")
+                                                .append("poster VARCHAR(200), ")
+                                                .append("metascore VARCHAR(10), ")
+                                                .append("imdb_rating VARCHAR(5), ")
+                                                .append("imdb_votes VARCHAR(10), ")
+                                                .append("imdb_id VARCHAR(10) UNIQUE)")
+                                                .toString();
+        String createWatched = new StringBuilder("CREATE TABLE IF NOT EXISTS watched(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, ")
+                                                .append("movie_id INT NOT NULL, ")
+                                                .append("date DATE, ")
+                                                .append("source VARCHAR(30), ")
+                                                .append("type INT NOT NULL, ")
+                                                .append("rating INT NOT NULL, ")
+                                                .append("FOREIGN KEY(movie_id) REFERENCES movie(id)")
+                                                .append(")")
+                                                .toString();
+        String createMoviePerson = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_person_combine(")
+                                                .append("person_id INT NOT NULL, ")
+                                                .append("movie_id INT NOT NULL, ")
+                                                .append("job VARCHAR(20), ")
+                                                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                                                .append("FOREIGN KEY(person_id) REFERENCES movie_person(id) ON DELETE CASCADE, ")
+                                                .append("CONSTRAINT uc_movie_person_combine UNIQUE (person_id, movie_id, job))")
+                                                .toString();
+        String createMovieGenre = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_genre_combine(")
+                                                .append("genre_id INT NOT NULL, ")
+                                                .append("movie_id INT NOT NULL, ")
+                                                .append("FOREIGN KEY(genre_id) REFERENCES movie_genre(id) ON DELETE CASCADE, ")
+                                                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                                                .append("CONSTRAINT uc_movie_genre_combine UNIQUE (genre_id, movie_id))")
+                                                .toString();
+        String createMovieLanguage = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_language_combined(")
+                                                .append("language_id INT NOT NULL, ")
+                                                .append("movie_id INT NOT NULL, ")
+                                                .append("FOREIGN KEY(language_id) REFERENCES movie_language(id) ON DELETE CASCADE, ")
+                                                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                                                .append("CONSTRAINT uc_movie_language_combined UNIQUE (language_id, movie_id))")
+                                                .toString();
+        String createMovieCountry = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_country_combined(")
+                                                .append("country_id INT NOT NULL, ")
+                                                .append("movie_id INT NOT NULL, ")
+                                                .append("FOREIGN KEY(country_id) REFERENCES movie_country(id) ON DELETE CASCADE, ")
+                                                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                                                .append("CONSTRAINT uc_movie_country_combined UNIQUE (country_id, movie_id))")
+                                                .toString();
+
+        queries.addAll(Arrays.asList(
+                                    createGenre,
+                                    createPerson,
+                                    createCountry,
+                                    createLanguage,
+                                    createMovie,
+                                    createMoviePerson,
+                                    createMovieGenre,
+                                    createMovieLanguage,
+                                    createMovieCountry,
+                                    createWatched
+                                    ));
+        userConnection(dataBaseUrl, login, pass, queries);
     }
-    static void createGenreTable() throws Exception {
-        Connection conn = userConnection();
-        String createGenre = "CREATE TABLE IF NOT EXISTS genre(genreId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genreName VARCHAR(20))";
-        Statement st = conn.createStatement();
-        st.executeUpdate(createGenre);
-        st.close();
-        if (conn != null) conn.close();
-
+    static void addMovie() {
+    /*
+    * 1. sprawdz czy film o podanym imdb id jest juz w bazie
+    * 2. jesli go nie ma dodaj pozycje filmu
+    * 3. sprawdz osobe czy jest juz w bazie, jesli nie dodaj pozycje osoby i polacz z filmem
+    * 4. to samo dla kraju
+    * 5. to samo dla gatunku
+    * 7. to samo dla kraju
+    * */
     }
 
-    static void createPersonTable() throws SQLException {
-        Connection conn = userConnection();
-        String createPerson = "CREATE TABLE IF NOT EXISTS person(personId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, firstName VARCHAR(20), lastName VARCHAR(30))";
-        Statement st = conn.createStatement();
-        st.executeUpdate(createPerson);
-        st.close();
-        if (conn != null) conn.close();
-    }
 
-    static void createCountryTable() throws SQLException {
-        Connection conn = userConnection();
-        String createCountry = "CREATE TABLE IF NOT EXISTS country(countryId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30))";
-        Statement st = conn.createStatement();
-        st.executeUpdate(createCountry);
-        st.close();
-        if (conn != null) conn.close();
-    }
-    /*static void createMovieTable() throws Exception {
-
-            Connection conn = userConnection();
-
-            String createTables = new StringBuilder()
-                    "CREATE TABLE movies (
-                            1, "movieDbId INT NOT NULL AUTO_INCREMENT"
-                            2, "title VARCHAR(30)"
-                            3, "year INT NOT NULL"
-                            4, "ageRating VARCHAR(10)"
-                            5, "relDate VARCHAR(20)"
-            6, "runtime VARCHAR(10)"
-            private String[] genre;
-            private String[] director;
-            private String[] writer;
-            private String[] actors;
-            private String plot;
-            private String[] language;
-            private String[] country;
-            private String awards;
-            private String poster;
-            private String metascore;
-            private String imdbRating;
-            private String imdbVotes;
-            private String imdbID;
-                            ")"
-
-            if (conn != null) conn.close();
-
-    }*/
 }
