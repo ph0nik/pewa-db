@@ -1,11 +1,8 @@
-import java.util.ArrayList;
+package com.pewa.movie;
+
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Created by phonik on 2017-01-12.
- */
 public class Movie {
     private String title;
     private int year;
@@ -13,10 +10,9 @@ public class Movie {
     private String relDate;
     private String runtime;
     private String[] genre;
-    private List<List<String>> crew;
-    private String[] director;
-    private String[] writer;
-    private String[] actors;
+    private List<String> director;
+    private List<String> writer;
+    private List<String> actors;
     private String plot;
     private String[] language;
     private String[] country;
@@ -26,51 +22,6 @@ public class Movie {
     private String imdbRating;
     private String imdbVotes;
     private String imdbID;
-
-    public void peopleAsList() {
-        List<List<String>> output = new ArrayList();
-        for(String single : this.director) {
-            List temp = Arrays.asList(single, "director");
-            output.addAll(temp);
-        }
-        for(String single : this.actors) {
-            List temp = Arrays.asList(single, "actor");
-            output.addAll(temp);
-        }
-        for(String single : this.actors) {
-            List temp = Arrays.asList(single, "writer");
-            output.addAll(temp);
-        }
-        this.crew = output;
-    }
-
-  /*  public void sample(String title,
-                       int year,
-                       String ageRating,
-                       String relDate,
-                       String runtime,
-                       String[] genre,
-                       List people,
-                       String plot,
-                       String[] language,
-                       String[] country,
-                       String awards,
-                       String poster,
-                       String metascore,
-                       String imdbRating,
-                       String imdbVotes,
-                       int imdbID) {
-        this.title = title;
-        this.year = year;
-        this.ageRating = ageRating;
-        this.relDate = relDate;
-        this.runtime = runtime;
-        this.genre = genre;
-    }*/
-
-    public List<List<String>> getCrew() {
-        return crew;
-    }
 
     public String getTitle() {
         return title;
@@ -120,27 +71,27 @@ public class Movie {
         this.genre = genre;
     }
 
-    public String[] getDirector() {
+    public List<String> getDirector() {
         return director;
     }
 
-    public void setDirector(String[] director) {
+    public void setDirector(List<String> director) {
         this.director = director;
     }
 
-    public String[] getWriter() {
+    public List<String> getWriter() {
         return writer;
     }
 
-    public void setWriter(String[] writer) {
+    public void setWriter(List<String> writer) {
         this.writer = writer;
     }
 
-    public String[] getActors() {
+    public List<String> getActors() {
         return actors;
     }
 
-    public void setActors(String[] actors) {
+    public void setActors(List<String> actors) {
         this.actors = actors;
     }
 
@@ -218,16 +169,16 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
-                "title='" + title + '\'' +
+        return "com.pewa.movie.Movie{" +
+                "title='" + title + '\n' +
                 ", year=" + year +
                 ", ageRating='" + ageRating + '\'' +
                 ", relDate='" + relDate + '\'' +
                 ", runtime='" + runtime + '\'' +
                 ", genre=" + Arrays.toString(genre) +
-                ", director=" + Arrays.toString(director) +
-                ", writer=" + Arrays.toString(writer) +
-                ", actors=" + Arrays.toString(actors) +
+                ", director=" + director +
+                ", writer=" + writer +
+                ", actors=" + actors +
                 ", plot='" + plot + '\'' +
                 ", language=" + Arrays.toString(language) +
                 ", country=" + Arrays.toString(country) +

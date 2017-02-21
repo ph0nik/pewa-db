@@ -1,27 +1,34 @@
+package com.pewa;
+
+import com.pewa.config.ConfigReader;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class DatabaseInit {
+public class DatabaseInit {
 
     private static void userConnection(String dataBaseUrl, String login, String pass, List<String> queries) {
         try (
             Connection conn = DriverManager.getConnection(dataBaseUrl, login, pass);
-            Statement st = conn.createStatement();) {
+            Statement st = conn.createStatement()) {
+            conn.setAutoCommit(true);
             for(String query : queries) {
                 st.executeUpdate(query);
             }
+//            conn.commit();
+            conn.setAutoCommit(false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    static void dbInit() {
+    public static void dbInit() {
         String urlRoot = ConfigReader.dbUrlRoot;
         String passRoot = ConfigReader.rootPass;
         String loginRoot = ConfigReader.dbLogin;
-        List<String> queries = new ArrayList();
+        List<String> queries = new ArrayList<>();
         String createDb = new StringBuilder("CREATE DATABASE IF NOT EXISTS ")
                 .append(ConfigReader.dbName)
                 .toString();
@@ -41,15 +48,15 @@ class DatabaseInit {
         userConnection(urlRoot, loginRoot, passRoot, queries);
     }
 
-    static void createTables() {
+    public static void createTables() {
         String dbName = ConfigReader.dbName;
         String login = ConfigReader.userName;
         String pass = ConfigReader.userPass;
         String dataBaseUrl = ConfigReader.dbUrlUser.concat(dbName);
         List<String> queries = new ArrayList();
-        String createGenre = "CREATE TABLE IF NOT EXISTS movie_genre(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(20) UNIQUE)";
+        String createGenre = "CREATE TABLE IF NOT EXISTS movie_genre(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genre VARCHAR(20) UNIQUE)";
         String createPerson = "CREATE TABLE IF NOT EXISTS movie_person(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60) UNIQUE)";
-        String createCountry = "CREATE TABLE IF NOT EXISTS movie_country(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30) UNIQUE)";
+        String createCountry = "CREATE TABLE IF NOT EXISTS movie_country(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, country VARCHAR(30) UNIQUE)";
         String createLanguage = "CREATE TABLE IF NOT EXISTS movie_language(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, language VARCHAR(30) UNIQUE)";
         String createMovie = new StringBuilder("CREATE TABLE IF NOT EXISTS movie(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, ")
                                                 .append("title VARCHAR(30), ")
@@ -118,16 +125,4 @@ class DatabaseInit {
                                     ));
         userConnection(dataBaseUrl, login, pass, queries);
     }
-    static void addMovie() {
-    /*
-    * 1. sprawdz czy film o podanym imdb id jest juz w bazie
-    * 2. jesli go nie ma dodaj pozycje filmu
-    * 3. sprawdz osobe czy jest juz w bazie, jesli nie dodaj pozycje osoby i polacz z filmem
-    * 4. to samo dla kraju
-    * 5. to samo dla gatunku
-    * 7. to samo dla kraju
-    * */
-    }
-
-
 }

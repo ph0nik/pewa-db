@@ -1,50 +1,34 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
+import com.pewa.DatabaseInit;
+import com.pewa.DatabaseMovie;
+import com.pewa.config.ConfigReader;
+import com.pewa.movie.Movie;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.crypto.Data;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Created by phonik on 2017-01-20.
- */
 public class DbTest {
+    private static Movie sample = new Movie();
 
     @BeforeClass
     public static void setUp() {
         ConfigReader.load();
-
     }
 
-
-    @Test
-    public void modifyDbIfNeeded() throws Exception {
-        DatabaseInit.dbInit();
-    }
-
-
-    @Test
-    public void createGenreTable() throws Exception {
-        DatabaseInit.createTables();
-    }
-    @Test
-    public void insertElementsToDb() throws Exception {
-        String[] actors = "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving".split(", ");
-        String[] dir = "Lana Wachowski, Lilly Wachowski".split(", ");
-        String[] wri = "Lilly Wachowski, Lana Wachowski".split(", ");
+    @BeforeClass
+    public static void objectInit() {
+        List<String> actors = Arrays.asList(("Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving").split(", "));
+        List<String> dir = Arrays.asList("Lana Wachowski, Lilly Wachowski".split(", "));
+        List<String> wri = Arrays.asList("Lilly Wachowski, Lana Wachowski".split(", "));
         String[] genre = "Action, Sci-Fi".split(", ");
         String[] country = "USA".split(", ");
         String[] language = "English".split(", ");
-        Movie sample = new Movie();
         sample.setTitle("Matrix");
         sample.setYear(1999);
         sample.setActors(actors);
         sample.setDirector(dir);
         sample.setWriter(wri);
-        sample.peopleAsList();
         sample.setAgeRating("R");
         sample.setAwards("Won 4 Oscars. Another 33 wins & 43 nominations.");
         sample.setRelDate("31 Mar 1999");
@@ -58,6 +42,20 @@ public class DbTest {
         sample.setMetascore("73");
         sample.setPoster("https://images-na.ssl-images-amazon.com/images/M/MV5BMDMyMmQ5YzgtYWMxOC00OTU0LWIwZjEtZWUwYTY5MjVkZjhhXkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_SX300.jpg");
         sample.setPlot("A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.");
+    }
+
+
+    @Test
+    public void modifyDbIfNeeded() throws Exception {
+        DatabaseInit.dbInit();
+    }
+
+    @Test
+    public void createGenreTable() throws Exception {
+        DatabaseInit.createTables();
+    }
+    @Test
+    public void insertElementsToDb() throws Exception {
         DatabaseMovie.userConnection(sample);
 
     }

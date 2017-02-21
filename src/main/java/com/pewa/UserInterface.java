@@ -1,12 +1,11 @@
+package com.pewa;
+
 import org.apache.commons.lang.math.NumberUtils;
 
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-/**
- * Created by phonik on 2017-01-18.
- */
 class UserInterface {
     private static Scanner userInput = new Scanner(System.in);
     private static String userInputString ="";
@@ -15,7 +14,7 @@ class UserInterface {
     private UserInterface() {
     }
 
-    static int pickElement(Map foundElements) {
+    private static int pickElement(Map foundElements) {
         String elementString;
         int elementInt = -1;
 
@@ -42,7 +41,7 @@ class UserInterface {
     }
 
     static void search() {
-        Map<Integer, String> mainOptions = new TreeMap<Integer, String>();
+        Map<Integer, String> mainOptions = new TreeMap();
         mainOptions.put(1, "Szukaj książki.");
         mainOptions.put(2, "Szukaj filmu.");
         mainOptions.put(3, "Szukaj serialu.");
@@ -55,14 +54,14 @@ class UserInterface {
             userInputString = userInput.next();
         }
 
-
+/*
         if(option == 1) {
-            BookSearch.bSearch(userInputString);
+//            com.pewa.book.BookSearch.bSearch(userInputString);
         } else if(option == 2) {
-            MovieSearch.mSearch(userInputString);
+//            com.pewa.movie.MovieParseToObject.mSearch(userInputString);
         } else if(option == 3) {
-            TvShowSearch.sTvShow(userInputString);
-        }
+//            com.pewa.tv.TvShowParseToObject.sTvShow(userInputString);
+        }*/
 
 
 

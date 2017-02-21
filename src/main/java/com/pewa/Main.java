@@ -1,10 +1,7 @@
-import com.sun.org.apache.xpath.internal.SourceTree;
+package com.pewa;
 
-import javax.jws.soap.SOAPBinding;
+import com.pewa.config.ConfigReader;
 
-/**
- * Created by phonik on 2017-01-19.
- */
 public class Main {
     public static void main(String[] args) {
         ConfigReader.load();

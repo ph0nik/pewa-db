@@ -23,25 +23,27 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26">
-        <schema name="mysql" object-types="table, view" />
-        <schema name="pewadb" object-types="column, constraint, function, index, procedure, table, dataset trigger, view" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26">
-      <console name="mysql-root" type="STANDARD"><![CDATA[CREATE TABLE genre (genreId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genreName VARCHAR(20));
+      <console name="mysql-root" type="STANDARD"><![CDATA[use pewadb;
 
-
-show tables from test;
-use test;
-select * from movies;]]></console>
+select * from movie;
+select * from movie_country;
+select * from movie_country_combined;
+select * from movie_genre;
+select * from movie_genre_combine;
+select * from movie_language;
+select * from movie_language_combined;
+select * from movie_person;
+select * from movie_person_combine;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.country" active-filter-id="" />
+    <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie" active-filter-id="" />
+    <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie_language_combined" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -86,7 +88,7 @@ select * from movies;]]></console>
           <password value="cG9wMWVyZG9sb25l" />
         </database>
         <properties>
-          <auto-commit value="false" />
+          <auto-commit value="true" />
         </properties>
         <ssh-settings>
           <active value="false" />
@@ -102,12 +104,13 @@ select * from movies;]]></console>
           <charset value="UTF-8" />
           <ddl-file-binding value="true" />
           <database-logging value="true" />
+          <connect-automatically value="true" />
+          <restore-workspace value="true" />
           <environment-type value="default" />
           <idle-time-to-disconnect value="30" />
           <password-expiry-time value="10" />
           <max-connection-pool-size value="7" />
           <alternative-statement-delimiter value="" />
-          <connect-automatically value="true" />
         </details>
         <object-filters hide-empty-schemas="false">
           <object-type-filter use-master-settings="true">

@@ -1,9 +1,7 @@
-import java.text.DateFormat;
+package com.pewa.tv;
+
 import java.util.Date;
 
-/**
- * Created by phonik on 2017-01-13.
- */
 public class TvShowEpisode {
     private int tvMazeId;
     private String tvMazeUrl;
@@ -13,7 +11,7 @@ public class TvShowEpisode {
     private Date firstAired;
     private String summary;
 
-    public TvShowEpisode(int tvMazeId, String tvMazeUrl, String epTitle, int season, int episode, Date firstAired, String summary) {
+    TvShowEpisode(int tvMazeId, String tvMazeUrl, String epTitle, int season, int episode, Date firstAired, String summary) {
         this.tvMazeId = tvMazeId;
         this.tvMazeUrl = tvMazeUrl;
         this.epTitle = epTitle;
@@ -53,7 +51,7 @@ public class TvShowEpisode {
 
     @Override
     public String toString() {
-        return "TvShowEpisode{" +
+        return "com.pewa.tv.TvShowEpisode{" +
                 "tvMazeId=" + tvMazeId +
                 ", tvMazeUrl='" + tvMazeUrl + '\'' +
                 ", epTitle='" + epTitle + '\'' +
