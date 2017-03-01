@@ -2,6 +2,7 @@ package com.pewa.movie;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Movie {
     private String title;
@@ -9,13 +10,13 @@ public class Movie {
     private String ageRating;
     private String relDate;
     private String runtime;
-    private String[] genre;
-    private List<String> director;
-    private List<String> writer;
-    private List<String> actors;
+    private Set<String> genre;
+    private Set<String> director;
+    private Set<String> writer;
+    private Set<String> actors;
     private String plot;
-    private String[] language;
-    private String[] country;
+    private Set<String> language;
+    private Set<String> country;
     private String awards;
     private String poster;
     private String metascore;
@@ -63,35 +64,35 @@ public class Movie {
         this.runtime = runtime;
     }
 
-    public String[] getGenre() {
+    public Set<String> getGenre() {
         return genre;
     }
 
-    public void setGenre(String[] genre) {
+    public void setGenre(Set<String> genre) {
         this.genre = genre;
     }
 
-    public List<String> getDirector() {
+    public Set<String> getDirector() {
         return director;
     }
 
-    public void setDirector(List<String> director) {
+    public void setDirector(Set<String> director) {
         this.director = director;
     }
 
-    public List<String> getWriter() {
+    public Set<String> getWriter() {
         return writer;
     }
 
-    public void setWriter(List<String> writer) {
+    public void setWriter(Set<String> writer) {
         this.writer = writer;
     }
 
-    public List<String> getActors() {
+    public Set<String> getActors() {
         return actors;
     }
 
-    public void setActors(List<String> actors) {
+    public void setActors(Set<String> actors) {
         this.actors = actors;
     }
 
@@ -103,19 +104,19 @@ public class Movie {
         this.plot = plot;
     }
 
-    public String[] getLanguage() {
+    public Set<String> getLanguage() {
         return language;
     }
 
-    public void setLanguage(String[] language) {
+    public void setLanguage(Set<String> language) {
         this.language = language;
     }
 
-    public String[] getCountry() {
+    public Set<String> getCountry() {
         return country;
     }
 
-    public void setCountry(String[] country) {
+    public void setCountry(Set<String> country) {
         this.country = country;
     }
 
@@ -169,19 +170,19 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "com.pewa.movie.Movie{" +
-                "title='" + title + '\n' +
+        return "Movie{" +
+                "title='" + title + '\'' +
                 ", year=" + year +
                 ", ageRating='" + ageRating + '\'' +
                 ", relDate='" + relDate + '\'' +
                 ", runtime='" + runtime + '\'' +
-                ", genre=" + Arrays.toString(genre) +
+                ", genre=" + genre +
                 ", director=" + director +
                 ", writer=" + writer +
                 ", actors=" + actors +
                 ", plot='" + plot + '\'' +
-                ", language=" + Arrays.toString(language) +
-                ", country=" + Arrays.toString(country) +
+                ", language=" + language +
+                ", country=" + country +
                 ", awards='" + awards + '\'' +
                 ", poster='" + poster + '\'' +
                 ", metascore='" + metascore + '\'' +

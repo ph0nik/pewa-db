@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class DatabaseMovie {
 
-    public static void userConnection(Movie movieInfo) {
+    public static void addMovie(Movie movieInfo) {
         String dbName = ConfigReader.dbName;
         String login = ConfigReader.userName;
         String pass = ConfigReader.userPass;
@@ -21,7 +21,7 @@ public class DatabaseMovie {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = checkIfPresent(conn, movieInfo);
                  ResultSet rs = ps.executeQuery()) {
-                if(rs.next()) {
+                if (rs.next()) {
                     recordsFound = rs.getRow();
                 }
             }
@@ -69,12 +69,14 @@ public class DatabaseMovie {
             e.printStackTrace();
         }
     }
+
     private static PreparedStatement checkIfPresent(Connection conn, Movie movieInfo) throws SQLException {
         String query = "SELECT * FROM movie WHERE imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setString(1, movieInfo.getImdbID());
         return ps;
     }
+
     private static PreparedStatement addMovie(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie (title, year, rating, release_date, runtime, plot, awards, poster, metascore, imdb_rating, imdb_votes, imdb_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(query);
@@ -92,6 +94,7 @@ public class DatabaseMovie {
         ps.setString(12, movieInfo.getImdbID());
         return ps;
     }
+
     private static PreparedStatement addPerson(Connection conn, Movie movieInfo) throws SQLException {
         List<String> tempListOfPeople = new ArrayList(movieInfo.getDirector());
         tempListOfPeople.addAll(movieInfo.getWriter());
@@ -99,97 +102,106 @@ public class DatabaseMovie {
         tempListOfPeople = tempListOfPeople.stream().distinct().collect(Collectors.toList());
         String query = "INSERT INTO movie_person (name) SELECT ? WHERE NOT EXISTS(SELECT * FROM movie_person WHERE name=?)";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String person : tempListOfPeople) {
+        for (String person : tempListOfPeople) {
             ps.setString(1, person);
             ps.setString(2, person);
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieDirector(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_person_combine (person_id, movie_id, job) SELECT movie_person.id, movie.id, 'director' FROM  movie_person, movie WHERE name=? AND imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String person : movieInfo.getDirector()) {
+        for (String person : movieInfo.getDirector()) {
             ps.setString(1, person);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieWriter(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_person_combine (person_id, movie_id, job) SELECT movie_person.id, movie.id, 'writer' FROM  movie_person, movie WHERE name=? AND imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String person : movieInfo.getWriter()) {
+        for (String person : movieInfo.getWriter()) {
             ps.setString(1, person);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieActors(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_person_combine (person_id, movie_id, job) SELECT movie_person.id, movie.id, 'actor' FROM  movie_person, movie WHERE name=? AND imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String person : movieInfo.getActors()) {
+        for (String person : movieInfo.getActors()) {
             ps.setString(1, person);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addLanguage(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_language (language) SELECT ? WHERE NOT EXISTS(SELECT * FROM movie_language WHERE language=?)";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String language : movieInfo.getLanguage()) {
+        for (String language : movieInfo.getLanguage()) {
             ps.setString(1, language);
             ps.setString(2, language);
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieLanguage(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_language_combined (language_id, movie_id) SELECT movie_language.id, movie.id FROM  movie_language, movie WHERE language=? AND imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String language : movieInfo.getLanguage()) {
+        for (String language : movieInfo.getLanguage()) {
             ps.setString(1, language);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addCountry(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_country (country) SELECT ? WHERE NOT EXISTS(SELECT * FROM movie_country WHERE country=?)";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String country : movieInfo.getCountry()) {
+        for (String country : movieInfo.getCountry()) {
             ps.setString(1, country);
             ps.setString(2, country);
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieCountry(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_country_combined (country_id, movie_id) SELECT movie_country.id, movie.id FROM  movie_country, movie WHERE country=? AND imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String country : movieInfo.getCountry()) {
+        for (String country : movieInfo.getCountry()) {
             ps.setString(1, country);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addGenre(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_genre (genre) SELECT ? WHERE NOT EXISTS(SELECT * FROM movie_genre WHERE genre=?)";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String genre : movieInfo.getGenre()) {
+        for (String genre : movieInfo.getGenre()) {
             ps.setString(1, genre);
             ps.setString(2, genre);
             ps.addBatch();
         }
         return ps;
     }
+
     private static PreparedStatement addMovieGenre(Connection conn, Movie movieInfo) throws SQLException {
         String query = "INSERT INTO movie_genre_combine (genre_id, movie_id) SELECT movie_genre.id, movie.id FROM  movie_genre, movie  where movie_genre.genre=? and movie.imdb_id=?";
         PreparedStatement ps = conn.prepareStatement(query);
-        for(String genre : movieInfo.getGenre()) {
+        for (String genre : movieInfo.getGenre()) {
             ps.setString(1, genre);
             ps.setString(2, movieInfo.getImdbID());
             ps.addBatch();

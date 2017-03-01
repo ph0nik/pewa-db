@@ -24,10 +24,11 @@ public class BookSearch {
 
     private BookSearch() {
     }
+
     public static Set<SingleSearchResult> bookSearchResultSet(String userInput) {
         String url;
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-        url = ConfigReader.searchBookAlt.concat(userInput.replaceAll(" ","+"));
+        url = ConfigReader.searchBookAlt.concat(userInput.replaceAll(" ", "+"));
         try {
             final Document searchResults = Jsoup.connect(url)
                     .userAgent(ConfigReader.userAgent)

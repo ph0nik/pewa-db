@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class MovieParseToObject {
 
@@ -39,21 +41,25 @@ public class MovieParseToObject {
                 movieItem.setAgeRating(omdbValues.asObject().getString("Rated", ""));
                 movieItem.setRelDate(omdbValues.asObject().getString("Released", ""));
                 movieItem.setRuntime(omdbValues.asObject().getString("Runtime", ""));
-                movieItem.setGenre(omdbValues.asObject().getString("Genre", "").split(", "));
-                movieItem.setDirector(Arrays.asList(omdbValues.asObject().getString("Director", "").split(", ")));
-                movieItem.setWriter(Arrays.asList(omdbValues.asObject().getString("Writer", "").split(", ")));
-                movieItem.setActors(Arrays.asList(omdbValues.asObject().getString("Actors", "").split(", ")));
+                Set<String> genres = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Genre", "").split(", ")));
+                movieItem.setGenre(genres);
+                Set<String> dir = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Director", "").split(", ")));
+                movieItem.setDirector(dir);
+                Set<String> writer = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Writer", "").split(", ")));
+                movieItem.setWriter(writer);
+                Set<String> actors = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Actors", "").split(", ")));
+                movieItem.setActors(actors);
                 movieItem.setPlot(omdbValues.asObject().getString("Plot", ""));
-                movieItem.setLanguage(omdbValues.asObject().getString("Language", "").split(", "));
-                movieItem.setCountry(omdbValues.asObject().getString("Country", "").split(", "));
+                Set<String> language = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Language", "").split(", ")));
+                movieItem.setLanguage(language);
+                Set<String> country = new TreeSet<>(Arrays.asList(omdbValues.asObject().getString("Country", "").split(", ")));
+                movieItem.setCountry(country);
                 movieItem.setAwards(omdbValues.asObject().getString("Awards", ""));
                 movieItem.setPoster(omdbValues.asObject().getString("Poster", ""));
                 movieItem.setMetascore(omdbValues.asObject().getString("Metascore", ""));
                 movieItem.setImdbRating(omdbValues.asObject().getString("imdbRating", ""));
                 movieItem.setImdbVotes(omdbValues.asObject().getString("imdbVotes", ""));
-//                movieItem.setImdbID(omdbValues.asObject().getString("imdbID",""));
                 movieItem.setImdbID(imdbUrl);
-//                return movieItem;
             }
 
         } catch (

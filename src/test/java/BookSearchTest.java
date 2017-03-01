@@ -5,7 +5,9 @@ import com.pewa.book.BookSearch;
 import com.pewa.config.ConfigReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 
 public class BookSearchTest {
@@ -20,7 +22,7 @@ public class BookSearchTest {
         Set<SingleSearchResult> wynik = BookSearch.bookSearchResultSet("widowisko");
         wynik.stream().limit(5).forEach(System.out::println);
         int iloscWynikow = wynik.size();
-        assertEquals(wynik.size(),iloscWynikow);
+        assertEquals(wynik.size(), iloscWynikow);
         System.out.println("ilosc wynikow: " + wynik.size());
     }
 
@@ -28,7 +30,7 @@ public class BookSearchTest {
     public void tryWithEmptyResults() {
         Set<SingleSearchResult> wynik = BookSearch.bookSearchResultSet("asdasd");
         int emptyTreeSetSize = 0;
-        assertEquals(wynik.size(),emptyTreeSetSize);
+        assertEquals(wynik.size(), emptyTreeSetSize);
     }
 
     // SingleSearchResult{url='book.aspx?id=335096', desc='Car Maksymilian: Widowisko ludowe na Rusi (Gołąbek Józef)'}

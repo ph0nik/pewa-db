@@ -12,15 +12,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.pewa.config.ConfigReader.*;
+
 public class GetImdbId {
-    private static String idImdb = "";
     private static StringBuilder url;
-    private static String movieTitle = "";
-    private static String titleDescription = "";
-    private static String director = "";
-    private static String year = "";
     private static StringBuilder basicInfo = new StringBuilder();
-    private static String[] desc;
 
     private GetImdbId() {
         /*
@@ -31,15 +27,15 @@ public class GetImdbId {
     public static Set<SingleSearchResult> mapOfItems(String query, String type, Set<SingleSearchResult> searchResultSet) {
         try {
             if (type.equals("movie")) {
-                url = new StringBuilder(ConfigReader.searchUrl).append(query.replaceAll(" ", "+"))
-                        .append(ConfigReader.searchMovie);
+                url = new StringBuilder(searchUrl).append(query.replaceAll(" ", "+"))
+                        .append(searchMovie);
             }
             if (type.equals("tv")) {
-                url = new StringBuilder(ConfigReader.searchUrl).append(query.replaceAll(" ", "+"))
-                        .append(ConfigReader.searchTv);
+                url = new StringBuilder(searchUrl).append(query.replaceAll(" ", "+"))
+                        .append(searchTv);
             }
             String imdbSearch = Jsoup.connect(url.toString())
-                    .userAgent(ConfigReader.userAgent)
+                    .userAgent(userAgent)
                     .timeout(5 * 1000)
                     .get()
                     .text();
@@ -58,11 +54,12 @@ public class GetImdbId {
         for (JsonObject.Member valueObject : imdbObject) {
             JsonArray imdbValues = valueObject.getValue().asArray();
             for (JsonValue value : imdbValues) {
-                idImdb = value.asObject().getString("id", "");
-                movieTitle = value.asObject().getString("title", "");
-                titleDescription = value.asObject().getString("title_description", "");
-                desc = titleDescription.split(", ");
-                year = (desc[0]);
+                String idImdb = value.asObject().getString("id", "");
+                String movieTitle = value.asObject().getString("title", "");
+                String titleDescription = value.asObject().getString("title_description", "");
+                String[] desc = titleDescription.split(", ");
+                String year = (desc[0]);
+                String director = "";
                 if (desc.length > 1) {
                     director = desc[1];
                 } else director = "";

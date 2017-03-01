@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static com.pewa.config.ConfigReader.*;
 
 public class TvShowParseToObject {
 
@@ -24,9 +28,9 @@ public class TvShowParseToObject {
         TvShowSummary tvShowSummaryItem = new TvShowSummary();
 
         try {
-            urlSummary = ConfigReader.tvMaze.concat(ConfigReader.tvMazeByImdbId).concat(imdbUrl);
+            urlSummary = tvMaze.concat(tvMazeByImdbId).concat(imdbUrl);
             String getSummaryByImdbId = Jsoup.connect(urlSummary)
-                    .userAgent(ConfigReader.userAgent)
+                    .userAgent(userAgent)
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()
@@ -40,7 +44,7 @@ public class TvShowParseToObject {
             /*
             * odczyta tablicy gatunków z wykorzystaniem tablicy tymczasowej
             * */
-            List<String> tempGenresList = new ArrayList<>();
+            Set<String> tempGenresList = new TreeSet<>();
             JsonArray jsonGenresArray = tvmazeSum.asObject().get("genres").asArray();
             for (JsonValue item : jsonGenresArray) {
                 tempGenresList.add(item.asString());
@@ -49,9 +53,11 @@ public class TvShowParseToObject {
             tvShowSummaryItem.setStatus(tvmazeSum.asObject().getString("status", ""));
             tvShowSummaryItem.setRuntime(tvmazeSum.asObject().getInt("runtime", 0));
 
-            String firstAiredTemp = tvmazeSum.asObject().getString("premiered", "0000-00-00");
-            DateFormat firstAiredDF = new SimpleDateFormat("yyyy-d-MM", Locale.ENGLISH);
-            tvShowSummaryItem.setPremiered(firstAiredDF.parse(firstAiredTemp));
+            String firstAiredTemp = tvmazeSum.asObject().getString("premiered", "0000-01-01");
+            LocalDate firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            tvShowSummaryItem.setPremiered(firstAired);
+
+
             if (tvmazeSum.asObject().get("rating").asObject().get("average").isNull()) {
                 tvShowSummaryItem.setRatingAvg(0.0);
             } else {
@@ -83,9 +89,12 @@ public class TvShowParseToObject {
             tvShowSummaryItem.setPosterOrg(tvmazePosters.getString("original", ""));
             tvShowSummaryItem.setSummary(tvmazeSum.asObject().getString("summary", ""));
 
-            urlEpisodeList.append(ConfigReader.tvMaze).append(ConfigReader.tvMazeSummary).append(tvShowSummaryItem.getTvMazeId()).append(ConfigReader.tvMazeEpisodeList);
+            urlEpisodeList.append(tvMaze)
+                    .append(tvMazeSummary)
+                    .append(tvShowSummaryItem.getTvMazeId())
+                    .append(tvMazeEpisodeList);
             String getEpisodes = Jsoup.connect(urlEpisodeList.toString())
-                    .userAgent(ConfigReader.userAgent)
+                    .userAgent(userAgent)
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()
@@ -97,16 +106,13 @@ public class TvShowParseToObject {
                 String epTitle = ep.asObject().getString("name", "");
                 int season = ep.asObject().getInt("season", 0);
                 int episode = ep.asObject().getInt("number", 0);
-                firstAiredTemp = ep.asObject().getString("airdate", "0000-00-00");
-                firstAiredDF = new SimpleDateFormat("yyyy-d-MM", Locale.ENGLISH);
-                Date firstAired = firstAiredDF.parse(firstAiredTemp);
+                firstAiredTemp = ep.asObject().getString("airdate", "0000-01-01");
+                firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String summary = ep.asObject().getString("summary", "");
                 tvShowSummaryItem.setEpisodes(new TvShowEpisode(tvMazeId, tvMazeUrl, epTitle, season, episode, firstAired, summary));
             }
         } catch (IOException e) {
             System.out.println("Nie można nawiązać połączenia z: " + urlSummary);
-        } catch (ParseException e) {
-            System.out.println("Błędny format daty (Locale) " + e);
         }
         return tvShowSummaryItem;
     }

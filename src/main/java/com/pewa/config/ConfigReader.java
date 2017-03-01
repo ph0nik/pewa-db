@@ -27,43 +27,68 @@ public class ConfigReader {
             dbLogin,
             dbPass,
             userAgent,
-            searchBookAlt;
+            userAgentMusicBrainz,
+            musicSearch,
+            searchBookAlt,
+            nameSpaceMusicBrainz,
+            musicBrainzItem,
+            aniListApiEndpoint,
+            aniListClientId,
+            aniListClientSecret,
+            aniListPostTokenReq,
+            aniListSearchAnime,
+            aniListSearchManga,
+            aniListAnimeItem,
+            aniListMangaItem;
+
 
     private ConfigReader() {
     }
+
     public static void load() {
         File configFile = new File("src/main/resources/pewa-config.ini");
         try {
             HierarchicalINIConfiguration config = new HierarchicalINIConfiguration(configFile);
-            omdbUrl = config.getProperty("item.omdbLink").toString();
-            searchUrl = config.getProperty("search.imdbgetid").toString();
-            searchMovie = config.getProperty("search.imdbmovies").toString();
-            searchTv = config.getProperty("search.imdbtvshows").toString();
-            searchBook = config.getProperty("search.bookSearchUrl").toString();
-            searchBookAlt = config.getProperty("search.bookSearchUrlAlt").toString();
-            tvMaze = config.getProperty("item.tvmaze").toString();
-            tvMazeByImdbId = config.getProperty("item.tvmazeLookupImdb").toString();
-            tvMazeSummary = config.getProperty("item.tvmazeShows").toString();
-            tvMazeEpisodeList = config.getProperty("item.tvmazeEpisodes").toString();
-            titlePlId = config.getProperty("search.bookTitlePlId").toString();
-            titleOrgId = config.getProperty("search.bookTitleOrgId").toString();
-            bookItemUrl = config.getProperty("item.bookItemUrl").toString();
-            rootPass = config.getProperty("sql.dbPass").toString();
-            userName = config.getProperty("sql.userName").toString();
-            userPass = config.getProperty("sql.userPass").toString();
-            dbUrlUser = config.getProperty("sql.dbUrlUser").toString();
-            dbUrlRoot = config.getProperty("sql.dbUrlRoot").toString();
-            dbName = config.getProperty("sql.dbName").toString();
-            dbLogin = config.getProperty("sql.dbLogin").toString();
-            dbPass = config.getProperty("sql.dbPass").toString();
-            userAgent = config.getProperty("search.userAgent").toString();
+            omdbUrl = config.getString("item.omdbLink");
+            searchUrl = config.getString("search.imdbgetid");
+            searchMovie = config.getString("search.imdbmovies");
+            searchTv = config.getString("search.imdbtvshows");
+            searchBook = config.getString("search.bookSearchUrl");
+            searchBookAlt = config.getString("search.bookSearchUrlAlt");
+            tvMaze = config.getString("item.tvmaze");
+            tvMazeByImdbId = config.getString("item.tvmazeLookupImdb");
+            tvMazeSummary = config.getString("item.tvmazeShows");
+            tvMazeEpisodeList = config.getString("item.tvmazeEpisodes");
+            titlePlId = config.getString("search.bookTitlePlId");
+            titleOrgId = config.getString("search.bookTitleOrgId");
+            bookItemUrl = config.getString("item.bookItemUrl");
+            rootPass = config.getString("sql.dbPass");
+            userName = config.getString("sql.userName");
+            userPass = config.getString("sql.userPass");
+            dbUrlUser = config.getString("sql.dbUrlUser");
+            dbUrlRoot = config.getString("sql.dbUrlRoot");
+            dbName = config.getString("sql.dbName");
+            dbLogin = config.getString("sql.dbLogin");
+            dbPass = config.getString("sql.dbPass");
+            userAgent = config.getString("search.userAgent");
+            userAgentMusicBrainz = config.getString("search.userAgentMB");
+            musicSearch = config.getString("search.musicSearch");
+            nameSpaceMusicBrainz = config.getString("search.nameSpaceMusicBrainz");
+            musicBrainzItem = config.getString("item.musicBrainzItem");
+            aniListApiEndpoint = config.getString("search.aniListApiEndpoint");
+            aniListClientId = config.getString("search.aniListClientId");
+            aniListClientSecret = config.getString("search.aniListClientSecret");
+            aniListPostTokenReq = config.getString("search.aniListPostTokenReq");
+            aniListSearchAnime = config.getString("search.aniListSearchAnime");
+            aniListSearchManga = config.getString("search.aniListSearchManga");
+            aniListAnimeItem = config.getString("item.aniListAnimeItem");
+            aniListMangaItem = config.getString("item.aniListMangaItem");
 
         } catch (ConfigurationException e) {
             System.out.println("Nie można znaleźć pliku: " + e);
         }
 
     }
-
 
 
 }

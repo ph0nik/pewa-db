@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 class UserInterface {
     private static Scanner userInput = new Scanner(System.in);
-    private static String userInputString ="";
+    private static String userInputString = "";
     private static int option;
 
     private UserInterface() {
@@ -21,17 +21,15 @@ class UserInterface {
         do {
             System.out.print("Wybierz pozycję: ");
             elementString = userInput.next();
-            if(!NumberUtils.isNumber(elementString)) {
+            if (!NumberUtils.isNumber(elementString)) {
                 System.out.println("To nie jest liczba.");
-            }
-            else {
+            } else {
                 if (elementString.contains(".")) {
                     elementInt = (int) Double.parseDouble(elementString);
-                }
-                else {
+                } else {
                     elementInt = Integer.parseInt(elementString);
                 }
-                if(!foundElements.containsKey(elementInt)) {
+                if (!foundElements.containsKey(elementInt)) {
                     System.out.println("Nie ma pozycji o takim numerze, wybierz ponownie");
                 }
             }
@@ -45,7 +43,7 @@ class UserInterface {
         mainOptions.put(1, "Szukaj książki.");
         mainOptions.put(2, "Szukaj filmu.");
         mainOptions.put(3, "Szukaj serialu.");
-        mainOptions.forEach((x,y) -> System.out.println(x + ". " + y));
+        mainOptions.forEach((x, y) -> System.out.println(x + ". " + y));
 
         option = pickElement(mainOptions);
 
@@ -62,7 +60,6 @@ class UserInterface {
         } else if(option == 3) {
 //            com.pewa.tv.TvShowParseToObject.sTvShow(userInputString);
         }*/
-
 
 
     }

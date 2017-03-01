@@ -3,6 +3,24 @@ package com.pewa;
 public class SingleSearchResult implements Comparable<SingleSearchResult> {
     private String url;
     private String desc;
+    private int idInt;
+    private String poster;
+
+    public int getIdInt() {
+        return idInt;
+    }
+
+    public void setIdInt(int idInt) {
+        this.idInt = idInt;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
 
     public String getUrl() {
         return url;
@@ -25,6 +43,8 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
         return "SingleSearchResult{" +
                 "url='" + url + '\'' +
                 ", desc='" + desc + '\'' +
+                ", idInt=" + idInt +
+                ", poster='" + poster + '\'' +
                 '}';
     }
 

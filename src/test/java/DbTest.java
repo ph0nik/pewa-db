@@ -5,8 +5,7 @@ import com.pewa.movie.Movie;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class DbTest {
     private static Movie sample = new Movie();
@@ -18,12 +17,12 @@ public class DbTest {
 
     @BeforeClass
     public static void objectInit() {
-        List<String> actors = Arrays.asList(("Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving").split(", "));
-        List<String> dir = Arrays.asList("Lana Wachowski, Lilly Wachowski".split(", "));
-        List<String> wri = Arrays.asList("Lilly Wachowski, Lana Wachowski".split(", "));
-        String[] genre = "Action, Sci-Fi".split(", ");
-        String[] country = "USA".split(", ");
-        String[] language = "English".split(", ");
+        Set<String> actors = new TreeSet<>(Arrays.asList(("Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving").split(", ")));
+        Set<String> dir = new TreeSet<>(Arrays.asList("Lana Wachowski, Lilly Wachowski".split(", ")));
+        Set<String> wri = new TreeSet<>(Arrays.asList("Lilly Wachowski, Lana Wachowski".split(", ")));
+        Set<String> genre = new TreeSet<>(Arrays.asList("Action, Sci-Fi".split(", ")));
+        Set<String> country = new TreeSet<>(Arrays.asList("USA"));
+        Set<String> language = new TreeSet<>(Arrays.asList("English"));
         sample.setTitle("Matrix");
         sample.setYear(1999);
         sample.setActors(actors);
@@ -54,9 +53,10 @@ public class DbTest {
     public void createGenreTable() throws Exception {
         DatabaseInit.createTables();
     }
+
     @Test
     public void insertElementsToDb() throws Exception {
-        DatabaseMovie.userConnection(sample);
+        DatabaseMovie.addMovie(sample);
 
     }
 }

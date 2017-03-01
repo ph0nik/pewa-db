@@ -1,5 +1,6 @@
 package com.pewa.tv;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TvShowEpisode {
@@ -8,10 +9,10 @@ public class TvShowEpisode {
     private String epTitle;
     private int season;
     private int episode;
-    private Date firstAired;
+    private LocalDate firstAired;
     private String summary;
 
-    TvShowEpisode(int tvMazeId, String tvMazeUrl, String epTitle, int season, int episode, Date firstAired, String summary) {
+    TvShowEpisode(int tvMazeId, String tvMazeUrl, String epTitle, int season, int episode, LocalDate firstAired, String summary) {
         this.tvMazeId = tvMazeId;
         this.tvMazeUrl = tvMazeUrl;
         this.epTitle = epTitle;
@@ -41,7 +42,7 @@ public class TvShowEpisode {
         return episode;
     }
 
-    public Date getFirstAired() {
+    public LocalDate getFirstAired() {
         return firstAired;
     }
 

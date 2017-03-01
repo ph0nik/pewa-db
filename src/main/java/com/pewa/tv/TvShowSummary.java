@@ -1,5 +1,6 @@
 package com.pewa.tv;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -11,10 +12,10 @@ public class TvShowSummary {
     private String title;
     private String type;
     private String language;
-    private List<String> genres;
+    private Set<String> genres;
     private String status;
     private int runtime;
-    private Date premiered;
+    private LocalDate premiered;
     private Double ratingAvg;
     private String network;
     private String country;
@@ -79,11 +80,11 @@ public class TvShowSummary {
         this.language = language;
     }
 
-    public List getGenres() {
+    public Set getGenres() {
         return genres;
     }
 
-    void setGenres(List<String> genres) {
+    void setGenres(Set<String> genres) {
         this.genres = genres;
     }
 
@@ -103,11 +104,11 @@ public class TvShowSummary {
         this.runtime = runtime;
     }
 
-    public Date getPremiered() {
+    public LocalDate getPremiered() {
         return premiered;
     }
 
-    void setPremiered(Date premiered) {
+    void setPremiered(LocalDate premiered) {
         this.premiered = premiered;
     }
 

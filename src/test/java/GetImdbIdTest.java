@@ -22,8 +22,9 @@ public class GetImdbIdTest {
     public void tryMapOfItemsMovie() {
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
         Set<SingleSearchResult> result;
-        result = GetImdbId.mapOfItems("buffy", "movie", searchResultSet);
+        result = GetImdbId.mapOfItems("versus", "movie", searchResultSet);
         assertNotNull(result);
+        result.forEach(System.out::println);
     }
 
     @Test
