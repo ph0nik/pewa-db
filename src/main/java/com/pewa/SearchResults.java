@@ -1,33 +1,34 @@
-package com.pewa.book;
+package com.pewa;
 
 import com.pewa.config.ConfigReader;
-import com.pewa.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.AbstractCollection;
+import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
-
 /**
- * Created by phonik on 2017-01-10.
- * <p>
- * opcja wyszukiwania książek w bazie oraz wskazanie właściwego tytułu
- * zwracanie parametrów wybranej książki
- * </p>
+ * Created by phonik on 2017-03-13.
  */
-public class BookSearch {
+//TODO zamienić metody statyczne na metody tej klasy (?)
+public class SearchResults {
+    private Set<SingleSearchResult> searchResultSet;
 
-    private BookSearch() {
+    SearchResults() {
+        searchResultSet = new TreeSet<>();
     }
 
-    public static Set<SingleSearchResult> bookSearchResultSet(String userInput) {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+    public Set<SingleSearchResult> getResults() {
+        return searchResultSet;
+    }
+
+    public Set<SingleSearchResult> bookSearchResultSet(String userInput, Set<SingleSearchResult> searchResultSet) {
+        //searchResultSet = new TreeSet<>();
         String url = ConfigReader.searchBookAlt.concat(userInput.replaceAll(" ", "+"));
         try {
             final Document searchResults = Jsoup.connect(url)

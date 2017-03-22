@@ -44,6 +44,7 @@ select * from movie_person_combine;]]></console>
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.country" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie_language_combined" active-filter-id="" />
+    <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.watched" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

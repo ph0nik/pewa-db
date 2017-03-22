@@ -36,8 +36,19 @@ public class BookSearchTest {
     // SingleSearchResult{url='book.aspx?id=335096', desc='Car Maksymilian: Widowisko ludowe na Rusi (Gołąbek Józef)'}
     @Test
     public void scrapeFoundItem() {
-        Book carMaksymilian = BookScraper.scrapedIt("book.aspx?id=335096");
+        BookScraper bookScraper = new BookScraper();
+        Book carMaksymilian = bookScraper.scrapedIt("book.aspx?id=335096");
         String tytul = "Car Maksymilian: Widowisko ludowe na Rusi";
         assertEquals(carMaksymilian.getOriginalTitle(), tytul);
+        System.out.println(carMaksymilian);
+
+    }
+
+    @Test
+    public void scrapeFoundItem2() {
+        BookScraper bookScraper = new BookScraper();
+        Book carMaksymilian = bookScraper.scrapedIt("book.aspx?id=78");
+        System.out.println(carMaksymilian);
+
     }
 }

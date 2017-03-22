@@ -1,5 +1,6 @@
 import com.pewa.DatabaseInit;
-import com.pewa.DatabaseMovie;
+import com.pewa.movie.MovieDAO;
+import com.pewa.movie.MovieDAOImpl;
 import com.pewa.config.ConfigReader;
 import com.pewa.movie.Movie;
 import org.junit.BeforeClass;
@@ -51,12 +52,16 @@ public class DbTest {
 
     @Test
     public void createGenreTable() throws Exception {
-        DatabaseInit.createTables();
+        DatabaseInit.createTablesMovie();
     }
 
     @Test
     public void insertElementsToDb() throws Exception {
-        DatabaseMovie.addMovie(sample);
-
+        MovieDAO dbm = new MovieDAOImpl();
+        dbm.addMovie(sample);
     }
+
+
+
+
 }

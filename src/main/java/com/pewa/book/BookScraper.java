@@ -1,11 +1,21 @@
 package com.pewa.book;
 
+import com.pewa.Form;
+import com.pewa.Genre;
+import com.pewa.Person;
 import com.pewa.config.ConfigReader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.java2d.loops.GeneralRenderer;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Created by phonik on 2017-01-02.
@@ -13,19 +23,29 @@ import java.io.IOException;
  */
 public class BookScraper {
     private String url;
+    private Book bookItem = null;
 
-    private BookScraper() {
+    //TODO - poprawić konstruktor ???
+    public BookScraper() {
+        if (this.bookItem == null) {
+            this.bookItem = new Book();
+        }
     }
 
-    public static Book scrapedIt(String id) {
-        Book bookItem = new Book();
+    public Book scrapedIt(String id) {
+        //Book bookItem = new Book();
         try {
-            String url = ConfigReader.bookItemUrl.concat(id);
-            final Document document = Jsoup.connect(url).get();
+            url = ConfigReader.bookItemUrl.concat(id);
+            final Document document = Jsoup.connect(url)
+                    .timeout(5 * 1000)
+                    .get();
             Elements basicInfo = document.getElementsByClass("taksiazka").get(0).children();
             String itemTitle = document.getElementsByClass("fn").text();
-            String[] autor = extractStringList(basicInfo.select("li:contains(Autor)").text());
-            bookItem.setAuthor(autor);
+            Set<String> autor = extractStringList(basicInfo.select("li:contains(Autor)").text());
+            Set<Person> people = new TreeSet<>();
+            for(String a : autor) {
+                bookItem.setPeople(new Person(a,"","author"));
+            }
             String tytulOrg = extractString(basicInfo.select("li:contains(tuł oryg)").text());
             if (tytulOrg.isEmpty()) {
                 bookItem.setOriginalTitle(itemTitle);
@@ -35,19 +55,31 @@ public class BookScraper {
             bookItem.setPolishTitle(itemTitle);
             String jezykOrg = extractString(basicInfo.select("li:contains(zyk oryg)").text());
             bookItem.setOriginalLanguage(jezykOrg);
-            String[] tlumacz = extractStringList(basicInfo.select("li:contains(umacz:)").text());
-            bookItem.setTranslator(tlumacz);
+            Set<String> tlumacz = extractStringList(basicInfo.select("li:contains(umacz:)").text());
+            for(String t : tlumacz) {
+                bookItem.setPeople(new Person(t,"","translator"));
+            }
             String kategoria = extractString(basicInfo.select("li:contains(ategoria:)").text());
             bookItem.setCategory(kategoria);
-            String[] gatunek = extractStringList(basicInfo.select("li:contains(atunek:)").text());
-            bookItem.setGenre(gatunek);
-            String[] forma = extractStringList(basicInfo.select("li:contains(Forma:)").text());
-            bookItem.setForm(forma);
+            Set<String> gatunek = extractStringList(basicInfo.select("li:contains(atunek:)").text());
+            for(String g : gatunek) {
+                bookItem.setGenre(new Genre(g));
+            }
+            Set<String> forma = extractStringList(basicInfo.select("li:contains(Forma:)").text());
+            for(String f : forma) {
+                bookItem.setForm(new Form(f));
+            }
             int rokWydPierwsze = extractInt(basicInfo.select("li:contains(ego wydania:)").text());
             bookItem.setFirstPubDate(rokWydPierwsze);
             int rokWydPl = extractInt(basicInfo.select("li:contains(ego wydania pol)").text());
             bookItem.setPlPubDate(rokWydPl);
-            String alternVer = extractString(basicInfo.select("li:contains(Inne wersje ksi)").text());
+            //TODO odczyt kolejnego elementu po wskazanym (ul)
+            /*Elements elem = basicInfo.select("ul.taksiazka");
+            Iterator<Element> iter = elem.iterator();
+            while(iter.hasNext()) {
+                System.out.println(iter.next());
+            }*/
+            String alternVer = extractString(basicInfo.select("li:contains(Inne wersje książki) + li").text());
             bookItem.setAltVersion(alternVer);
 
             Elements rating = document.getElementsByClass("average");
@@ -58,9 +90,9 @@ public class BookScraper {
 
             Elements other = document.getElementsByClass("taksiazka").select("li:contains(agi i dodatkow)");
 
-            String[] info = extractStringList(Jsoup.parse(other.html().replaceAll("<br>", "br2n")).text());
+            String info = Jsoup.parse(other.html().replaceAll("<br>", "br2n")).text().replaceAll("br2n","<br>");
             bookItem.setAdditionalInfo(info);
-            bookItem.setId(id);
+            bookItem.setIdBiblion(id);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,33 +108,47 @@ public class BookScraper {
         } else return "";
     }
 
-    private static String[] extractStringList(String el) {
+    private static Set<String> extractStringList(String el) {
         String[] out = new String[1];
+        Set<String> output = new TreeSet<>();
         if (el.contains(":")) {
             int n = el.indexOf(":");
             if (el.contains(",")) {
-                return el.substring(n).replaceFirst(":", "").replaceFirst("\\s", "").split(",");
-            }
-            if (el.contains("/")) {
-                return el.substring(n).replaceFirst(":", "").replaceFirst("\\s", "").split("/");
-            }
-            if (el.contains("br2n")) {
-                out = el.split("br2n");
-                return out;
+                out = el.substring(n)
+                        .replaceFirst(":", "")
+                        .replaceFirst("\\s", "")
+                        .trim()
+                        .split(",");
+            } else if (el.contains("/")) {
+                out = el.substring(n)
+                        .replaceFirst(":", "")
+                        .replaceFirst("\\s", "")
+                        .trim()
+                        .split("/");
+            } else if (el.contains("br2n")) {
+                out = el.trim().split("br2n");
             } else {
-                out[0] = el.substring(n).replaceFirst(":", "").replaceFirst("\\s", "");
-                return out;
+                out[0] = el.substring(n)
+                        .replaceFirst(":", "")
+                        .replaceFirst("\\s", "")
+                        .trim();
             }
-        } else {
-            out[0] = "";
-            return out;
+            output = new TreeSet<>(Arrays.asList(out));
+            output = output.stream()
+                    .map(x -> x.trim())
+                    .collect(Collectors.toSet());
         }
+        return output;
     }
 
     private static int extractInt(String el) {
+        String temp;
         if (el.contains(":")) {
             int n = el.indexOf(":");
-            return Integer.decode(el.substring(n).replaceFirst(":", "").replaceFirst("\\s", ""));
+            temp = el.substring(n)
+                    .replaceFirst(":", "")
+                    .replaceFirst("\\s", "");
+            return Integer.decode(temp);
         } else return 0;
     }
 }

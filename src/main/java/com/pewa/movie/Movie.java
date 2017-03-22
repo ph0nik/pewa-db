@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class Movie {
+public class Movie implements Comparable<Movie> {
     private String title;
     private int year;
     private String ageRating;
@@ -23,6 +23,7 @@ public class Movie {
     private String imdbRating;
     private String imdbVotes;
     private String imdbID;
+
 
     public String getTitle() {
         return title;
@@ -190,5 +191,60 @@ public class Movie {
                 ", imdbVotes='" + imdbVotes + '\'' +
                 ", imdbID='" + imdbID + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Movie movie = (Movie) o;
+
+        if (year != movie.year) return false;
+        if (title != null ? !title.equals(movie.title) : movie.title != null) return false;
+        if (ageRating != null ? !ageRating.equals(movie.ageRating) : movie.ageRating != null) return false;
+        if (relDate != null ? !relDate.equals(movie.relDate) : movie.relDate != null) return false;
+        if (runtime != null ? !runtime.equals(movie.runtime) : movie.runtime != null) return false;
+        if (genre != null ? !genre.equals(movie.genre) : movie.genre != null) return false;
+        if (director != null ? !director.equals(movie.director) : movie.director != null) return false;
+        if (writer != null ? !writer.equals(movie.writer) : movie.writer != null) return false;
+        if (actors != null ? !actors.equals(movie.actors) : movie.actors != null) return false;
+        if (plot != null ? !plot.equals(movie.plot) : movie.plot != null) return false;
+        if (language != null ? !language.equals(movie.language) : movie.language != null) return false;
+        if (country != null ? !country.equals(movie.country) : movie.country != null) return false;
+        if (awards != null ? !awards.equals(movie.awards) : movie.awards != null) return false;
+        if (poster != null ? !poster.equals(movie.poster) : movie.poster != null) return false;
+        if (metascore != null ? !metascore.equals(movie.metascore) : movie.metascore != null) return false;
+        if (imdbRating != null ? !imdbRating.equals(movie.imdbRating) : movie.imdbRating != null) return false;
+        if (imdbVotes != null ? !imdbVotes.equals(movie.imdbVotes) : movie.imdbVotes != null) return false;
+        return imdbID != null ? imdbID.equals(movie.imdbID) : movie.imdbID == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title != null ? title.hashCode() : 0;
+        result = 31 * result + year;
+        result = 31 * result + (ageRating != null ? ageRating.hashCode() : 0);
+        result = 31 * result + (relDate != null ? relDate.hashCode() : 0);
+        result = 31 * result + (runtime != null ? runtime.hashCode() : 0);
+        result = 31 * result + (genre != null ? genre.hashCode() : 0);
+        result = 31 * result + (director != null ? director.hashCode() : 0);
+        result = 31 * result + (writer != null ? writer.hashCode() : 0);
+        result = 31 * result + (actors != null ? actors.hashCode() : 0);
+        result = 31 * result + (plot != null ? plot.hashCode() : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
+        result = 31 * result + (awards != null ? awards.hashCode() : 0);
+        result = 31 * result + (poster != null ? poster.hashCode() : 0);
+        result = 31 * result + (metascore != null ? metascore.hashCode() : 0);
+        result = 31 * result + (imdbRating != null ? imdbRating.hashCode() : 0);
+        result = 31 * result + (imdbVotes != null ? imdbVotes.hashCode() : 0);
+        result = 31 * result + (imdbID != null ? imdbID.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public int compareTo(Movie o) {
+        return this.getTitle().compareTo(o.getTitle());
     }
 }

@@ -1,20 +1,39 @@
 package com.pewa.anime;
 
+import com.pewa.Genre;
+import com.pewa.Person;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Anime {
-    private int id;
     private String titleRom;
     private String titleEng;
     private String type;
-    private LocalDate startDate;
-    private LocalDate endDate;
     private String description;
     private String poster;
-    private Set<String> genres;
+    private String airingStatus;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Set<Genre> genres;
+    private Set<Person> staff;
+    private int id;
     private int eps;
     private int duration;
+    private int idAnilist;
+    private LocalDateTime dbDatetime;
+    //TODO dodac mape osob wg elementu Person
+
+
+    public LocalDateTime getDbDatetime() {
+        return dbDatetime;
+    }
+
+    public void setDbDatetime(LocalDateTime dbDatetime) {
+        this.dbDatetime = dbDatetime;
+    }
 
     public int getId() {
         return id;
@@ -24,6 +43,18 @@ public class Anime {
         this.id = id;
     }
 
+    public int getIdAnilist() {
+        return idAnilist;
+    }
+
+    public void setIdAnilist(int idAnilist) {
+        this.idAnilist = idAnilist;
+    }
+
+    public Anime() {
+        this.genres = new TreeSet<>();
+        this.staff = new TreeSet<>();
+    }
     public String getTitleRom() {
         return titleRom;
     }
@@ -80,14 +111,17 @@ public class Anime {
         this.poster = poster;
     }
 
-    public Set<String> getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<String> genres) {
+    public void setGenres(Set<Genre> genres) {
         this.genres = genres;
     }
 
+    public void setGenres(Genre genre) {
+        this.genres.add(genre);
+    }
     public int getEps() {
         return eps;
     }
@@ -104,20 +138,45 @@ public class Anime {
         this.duration = duration;
     }
 
+    public Set<Person> getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Set<Person> staff) {
+        this.staff = staff;
+    }
+
+    public void setStaff(Person peron) {
+        this.staff.add(peron);
+    }
+
+
+    public void setAiringStatus(String airingStatus) {
+        this.airingStatus = airingStatus;
+    }
+
+    public String getAiringStatus() {
+        return airingStatus;
+    }
+
     @Override
     public String toString() {
         return "Anime{" +
-                "id=" + id +
-                ", titleRom='" + titleRom + '\'' +
+                "titleRom='" + titleRom + '\'' +
                 ", titleEng='" + titleEng + '\'' +
                 ", type='" + type + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
                 ", description='" + description + '\'' +
                 ", poster='" + poster + '\'' +
+                ", airingStatus='" + airingStatus + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 ", genres=" + genres +
+                ", staff=" + staff +
+                ", id=" + id +
                 ", eps=" + eps +
                 ", duration=" + duration +
+                ", idAnilist=" + idAnilist +
+                ", dbDatetime=" + dbDatetime +
                 '}';
     }
 }

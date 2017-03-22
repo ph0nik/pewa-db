@@ -9,6 +9,11 @@ import java.util.List;
 
 public class DatabaseInit {
 
+    private static String dbName = ConfigReader.dbName;
+    private static String login = ConfigReader.userName;
+    private static String pass = ConfigReader.userPass;
+    private static String dataBaseUrl = ConfigReader.dbUrlUser.concat(dbName);
+
     private static void userConnection(String dataBaseUrl, String login, String pass, List<String> queries) {
         try (
                 Connection conn = DriverManager.getConnection(dataBaseUrl, login, pass);
@@ -48,11 +53,7 @@ public class DatabaseInit {
         userConnection(urlRoot, loginRoot, passRoot, queries);
     }
 
-    public static void createTables() {
-        String dbName = ConfigReader.dbName;
-        String login = ConfigReader.userName;
-        String pass = ConfigReader.userPass;
-        String dataBaseUrl = ConfigReader.dbUrlUser.concat(dbName);
+    public static void createTablesMovie() {
         List<String> queries = new ArrayList();
         String createGenre = "CREATE TABLE IF NOT EXISTS movie_genre(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genre VARCHAR(20) UNIQUE)";
         String createPerson = "CREATE TABLE IF NOT EXISTS movie_person(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60) UNIQUE)";
@@ -122,6 +123,57 @@ public class DatabaseInit {
                 createMovieLanguage,
                 createMovieCountry,
                 createWatched
+        ));
+        userConnection(dataBaseUrl, login, pass, queries);
+    }
+    public static void createTablesBook() {
+        List<String> queries = new ArrayList();
+        String createGenre = "CREATE TABLE IF NOT EXISTS movie_genre(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, genre VARCHAR(20) UNIQUE)";
+        String createPerson = "CREATE TABLE IF NOT EXISTS movie_person(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(60) UNIQUE)";
+        String createCountry = "CREATE TABLE IF NOT EXISTS movie_country(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, country VARCHAR(30) UNIQUE)";
+        String createLanguage = "CREATE TABLE IF NOT EXISTS movie_language(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, language VARCHAR(30) UNIQUE)";
+        String createBook = "create table if not exists book(id int not null auto_increment primary key, org_title varchar(40), pol_title varchar(40), org_lang varchar(20), category varchar(80), alt_ver varchar(80), biblio_id varchar(20) unique, rating double(4,2), votes int not null, first_pub_date int(4) not null, pl_pub_date int(4) not null)";
+        String createWatched = new StringBuilder("CREATE TABLE IF NOT EXISTS watched(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, ")
+                .append("movie_id INT NOT NULL, ")
+                .append("date DATE, ")
+                .append("source VARCHAR(30), ")
+                .append("type INT NOT NULL, ")
+                .append("rating INT NOT NULL, ")
+                .append("FOREIGN KEY(movie_id) REFERENCES movie(id)")
+                .append(")")
+                .toString();
+        String createMoviePerson = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_person_combine(")
+                .append("person_id INT NOT NULL, ")
+                .append("movie_id INT NOT NULL, ")
+                .append("job VARCHAR(20), ")
+                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                .append("FOREIGN KEY(person_id) REFERENCES movie_person(id) ON DELETE CASCADE, ")
+                .append("CONSTRAINT uc_movie_person_combine UNIQUE (person_id, movie_id, job))")
+                .toString();
+        String createMovieGenre = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_genre_combine(")
+                .append("genre_id INT NOT NULL, ")
+                .append("movie_id INT NOT NULL, ")
+                .append("FOREIGN KEY(genre_id) REFERENCES movie_genre(id) ON DELETE CASCADE, ")
+                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                .append("CONSTRAINT uc_movie_genre_combine UNIQUE (genre_id, movie_id))")
+                .toString();
+        String createMovieLanguage = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_language_combined(")
+                .append("language_id INT NOT NULL, ")
+                .append("movie_id INT NOT NULL, ")
+                .append("FOREIGN KEY(language_id) REFERENCES movie_language(id) ON DELETE CASCADE, ")
+                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                .append("CONSTRAINT uc_movie_language_combined UNIQUE (language_id, movie_id))")
+                .toString();
+        String createMovieCountry = new StringBuilder("CREATE TABLE IF NOT EXISTS movie_country_combined(")
+                .append("country_id INT NOT NULL, ")
+                .append("movie_id INT NOT NULL, ")
+                .append("FOREIGN KEY(country_id) REFERENCES movie_country(id) ON DELETE CASCADE, ")
+                .append("FOREIGN KEY(movie_id) REFERENCES movie(id) ON DELETE CASCADE, ")
+                .append("CONSTRAINT uc_movie_country_combined UNIQUE (country_id, movie_id))")
+                .toString();
+
+        queries.addAll(Arrays.asList(
+
         ));
         userConnection(dataBaseUrl, login, pass, queries);
     }

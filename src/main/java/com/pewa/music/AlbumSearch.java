@@ -1,8 +1,11 @@
 package com.pewa.music;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import com.pewa.SingleSearchResult;
 import com.pewa.config.ConfigReader;
 import org.jdom2.JDOMException;
+import org.jsoup.Connection;
 import org.xml.sax.InputSource;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -17,9 +20,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.pewa.config.ConfigReader.coverByMusicBrainzId;
+import static com.pewa.config.ConfigReader.userAgent;
+
 
 public class AlbumSearch {
 //    String url = "";
+    private static org.jsoup.nodes.Document.OutputSettings prettyPrintOff = new org.jsoup.nodes.Document.OutputSettings().prettyPrint(false);
 
 
     public static Set<SingleSearchResult> searchMusicAlbum(String query) {
@@ -33,9 +40,8 @@ public class AlbumSearch {
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()
-                    .outputSettings(new org.jsoup.nodes.Document.OutputSettings().prettyPrint(false))
+                    .outputSettings(prettyPrintOff)
                     .toString();
-
             InputSource musicBrainzXml = new InputSource(new StringReader(musicBrainzDocument));
             Document musicBrainzJdom = builder.build(musicBrainzXml);
             Element rootNode = musicBrainzJdom.getRootElement();
@@ -63,8 +69,6 @@ public class AlbumSearch {
                 singleSearchResult.setUrl(albumId);
                 searchResultSet.add(singleSearchResult);
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JDOMException e) {
@@ -73,5 +77,4 @@ public class AlbumSearch {
         searchResultSet.forEach(System.out::println);
         return searchResultSet;
     }
-
 }

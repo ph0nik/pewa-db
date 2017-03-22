@@ -32,6 +32,7 @@ public class AlbumParseToObject {
 
             InputSource musicBrainzXml = new InputSource(new StringReader(musicBrainzDocument));
             org.jdom2.Document musicBrainzJdom = builder.build(musicBrainzXml);
+            System.out.println(musicBrainzJdom.getContent());
             Element rootNode = musicBrainzJdom.getRootElement();
             Namespace namespace = rootNode.getNamespace();
             String albumTitle = rootNode.getChild("release", namespace).getChildText("title", namespace);

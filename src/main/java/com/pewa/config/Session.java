@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static com.pewa.anime.AnimeAniList.aniListAuth;
+import static com.pewa.anime.AnimeMangaSearch.aniListAuth;
 
 public class Session {
     private static String accessToken;

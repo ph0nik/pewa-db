@@ -15,7 +15,9 @@ public class MovieParseToObject {
     private MovieParseToObject() {
 
     }
+    private static void costam() {
 
+    }
     public static Movie parseSelected(String imdbUrl) {
         String url = "";
         Movie movieItem = new Movie();
@@ -35,7 +37,6 @@ public class MovieParseToObject {
             if (error.equals("False")) {
                 System.out.println("Wrong imdb id");
             } else {
-
                 movieItem.setTitle(omdbValues.asObject().getString("Title", ""));
                 movieItem.setYear(Integer.parseInt(omdbValues.asObject().getString("Year", "")));
                 movieItem.setAgeRating(omdbValues.asObject().getString("Rated", ""));

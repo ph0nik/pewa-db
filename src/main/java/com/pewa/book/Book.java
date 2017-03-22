@@ -1,50 +1,74 @@
 package com.pewa.book;
 
-import java.util.Arrays;
+import com.pewa.Form;
+import com.pewa.Genre;
+import com.pewa.Person;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Book {
-    private String[] author;
+    private int id;
+    private Set<Person> people;
+    private Set<Genre> genre;
+    private Set<Form> form;
+    private String additionalInfo;
     private String originalTitle;
     private String polishTitle;
     private String originalLanguage;
-    private String[] translator;
     private String category;
-    private String[] genre;
-    private String[] form;
-    private int firstPubDate;
-    private int plPubDate;
     private String altVersion;
-    private String[] additionalInfo;
+    private String idBiblion;
     private Double rating;
     private int votes;
-    private String id;
+    private int firstPubDate;
+    private int plPubDate;
 
+    public Book() {
+        this.people = new TreeSet<>();
+        this.genre = new TreeSet<>();
+        this.form = new TreeSet<>();
+    }
     @Override
     public String toString() {
-        return "com.pewa.book.Book{" +
-                "author=" + Arrays.toString(author) +
+        return "Book{" +
+                "id=" + id +
+                ", people=" + people +
+                ", genre=" + genre +
+                ", form=" + form +
+                ", additionalInfo='" + additionalInfo + '\'' +
                 ", originalTitle='" + originalTitle + '\'' +
                 ", polishTitle='" + polishTitle + '\'' +
                 ", originalLanguage='" + originalLanguage + '\'' +
-                ", translator=" + Arrays.toString(translator) +
                 ", category='" + category + '\'' +
-                ", genre=" + Arrays.toString(genre) +
-                ", form=" + Arrays.toString(form) +
-                ", firstPubDate=" + firstPubDate +
-                ", plPubDate=" + plPubDate +
                 ", altVersion='" + altVersion + '\'' +
-                ", additionalInfo=" + Arrays.toString(additionalInfo) +
+                ", idBiblion='" + idBiblion + '\'' +
                 ", rating=" + rating +
                 ", votes=" + votes +
+                ", firstPubDate=" + firstPubDate +
+                ", plPubDate=" + plPubDate +
                 '}';
     }
 
-    public String getId() {
-        return id;
+    public Set<Person> getPeople() {
+        return people;
     }
 
-    void setId(String id) {
-        this.id = id;
+    public void setPeople(Person person) {
+        this.people.add(person);
+    }
+    public void setPeople(Set<Person> people) {
+        this.people = people;
+    }
+
+    public String getIdBiblion() {
+        return idBiblion;
+    }
+
+    void setIdBiblion(String idBiblion) {
+        this.idBiblion = idBiblion;
     }
 
     public String getPolishTitle() {
@@ -53,14 +77,6 @@ public class Book {
 
     void setPolishTitle(String polishTitle) {
         this.polishTitle = polishTitle;
-    }
-
-    public String[] getAuthor() {
-        return author;
-    }
-
-    void setAuthor(String[] author) {
-        this.author = author;
     }
 
     public String getOriginalTitle() {
@@ -79,14 +95,6 @@ public class Book {
         this.originalLanguage = originalLanguage;
     }
 
-    public String[] getTranslator() {
-        return translator;
-    }
-
-    void setTranslator(String[] translator) {
-        this.translator = translator;
-    }
-
     public String getCategory() {
         return category;
     }
@@ -95,20 +103,20 @@ public class Book {
         this.category = category;
     }
 
-    public String[] getGenre() {
+    public Set<Genre> getGenre() {
         return genre;
     }
 
-    void setGenre(String[] genre) {
-        this.genre = genre;
+    void setGenre(Genre genre) {
+        this.genre.add(genre);
     }
 
-    public String[] getForm() {
+    public Set<Form> getForm() {
         return form;
     }
 
-    void setForm(String[] form) {
-        this.form = form;
+    void setForm(Form form) {
+        this.form.add(form);
     }
 
     public int getFirstPubDate() {
@@ -135,11 +143,11 @@ public class Book {
         this.altVersion = altVersion;
     }
 
-    public String[] getAdditionalInfo() {
+    public String getAdditionalInfo() {
         return additionalInfo;
     }
 
-    void setAdditionalInfo(String[] additionalInfo) {
+    void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 
@@ -158,4 +166,13 @@ public class Book {
     void setVotes(int votes) {
         this.votes = votes;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

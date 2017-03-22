@@ -23,8 +23,15 @@ public class GetImdbId {
         prywatny konstruktor uniemożliwia utworzenie obiektu
         */
     }
-
-    public static Set<SingleSearchResult> mapOfItems(String query, String type, Set<SingleSearchResult> searchResultSet) {
+/*
+* Method takes parameters:
+* - query - searched phrase
+* - type - "movie" or "tv" String which determines searching scope
+* - searchResultSet - empty Set of elements of SingleSearchResult type.
+* Method sends GET request to given url, and passes returned String element
+* to createReturnSetFromSearch method.
+* */
+    public static Set<SingleSearchResult> externalMovieSearch(String query, String type, Set<SingleSearchResult> searchResultSet) {
         try {
             if (type.equals("movie")) {
                 url = new StringBuilder(searchUrl).append(query.replaceAll(" ", "+"))
@@ -46,7 +53,11 @@ public class GetImdbId {
             return searchResultSet;
         }
     }
-
+/*
+* Method takes server response object in json format. It parses through it and combines its parameters into
+* SingleSearchResult object. Then every element is added into Set collection, which is being returned.
+*
+* */
     private static Set<SingleSearchResult> createReturnSetFromSearch(String imdbSearch) {
         JsonObject imdbObject = Json.parse(imdbSearch).asObject();
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();

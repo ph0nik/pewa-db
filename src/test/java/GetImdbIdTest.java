@@ -4,7 +4,6 @@ import com.pewa.imdb.GetImdbId;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,7 +21,7 @@ public class GetImdbIdTest {
     public void tryMapOfItemsMovie() {
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
         Set<SingleSearchResult> result;
-        result = GetImdbId.mapOfItems("versus", "movie", searchResultSet);
+        result = GetImdbId.externalMovieSearch("versus", "movie", searchResultSet);
         assertNotNull(result);
         result.forEach(System.out::println);
     }
@@ -31,7 +30,7 @@ public class GetImdbIdTest {
     public void tryMapOfItemsTv() {
         Set<SingleSearchResult> searchResultSet2 = new TreeSet<>();
         Set<SingleSearchResult> result;
-        result = GetImdbId.mapOfItems("buffy", "tv", searchResultSet2);
+        result = GetImdbId.externalMovieSearch("buffy", "tv", searchResultSet2);
         assertNotNull(result);
     }
 }

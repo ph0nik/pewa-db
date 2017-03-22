@@ -4,6 +4,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ConfigReader {
     public static String searchUrl,
@@ -39,7 +41,9 @@ public class ConfigReader {
             aniListSearchAnime,
             aniListSearchManga,
             aniListAnimeItem,
-            aniListMangaItem;
+            aniListMangaItem,
+            aniListCharacters,
+            coverByMusicBrainzId;
 
 
     private ConfigReader() {
@@ -49,6 +53,7 @@ public class ConfigReader {
         File configFile = new File("src/main/resources/pewa-config.ini");
         try {
             HierarchicalINIConfiguration config = new HierarchicalINIConfiguration(configFile);
+            config.setThrowExceptionOnMissing(true);
             omdbUrl = config.getString("item.omdbLink");
             searchUrl = config.getString("search.imdbgetid");
             searchMovie = config.getString("search.imdbmovies");
@@ -83,9 +88,14 @@ public class ConfigReader {
             aniListSearchManga = config.getString("search.aniListSearchManga");
             aniListAnimeItem = config.getString("item.aniListAnimeItem");
             aniListMangaItem = config.getString("item.aniListMangaItem");
+            aniListCharacters = config.getString("item.aniListCharacters");
+            coverByMusicBrainzId = config.getString("search.coverByMusicBrainzId");
+
 
         } catch (ConfigurationException e) {
             System.out.println("Nie można znaleźć pliku: " + e);
+        } catch (NoSuchElementException e) {
+            System.out.println("[ERROR] " + e);
         }
 
     }
