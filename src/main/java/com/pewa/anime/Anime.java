@@ -9,23 +9,26 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Anime {
-    private String titleRom;
-    private String titleEng;
-    private String type;
-    private String description;
-    private String poster;
-    private String airingStatus;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String titleRom, titleEng, type, description, poster, intPoster, airingStatus;
+    private LocalDate startDate, endDate;
     private Set<Genre> genres;
     private Set<Person> staff;
-    private int id;
-    private int eps;
-    private int duration;
-    private int idAnilist;
+    private Integer id, eps, duration, idAnilist;
     private LocalDateTime dbDatetime;
     //TODO dodac mape osob wg elementu Person
 
+    public Anime() {
+        this.genres = new TreeSet<>();
+        this.staff = new TreeSet<>();
+    }
+
+    public String getIntPoster() {
+        return intPoster;
+    }
+
+    public void setIntPoster(String intPoster) {
+        this.intPoster = intPoster;
+    }
 
     public LocalDateTime getDbDatetime() {
         return dbDatetime;
@@ -35,26 +38,22 @@ public class Anime {
         this.dbDatetime = dbDatetime;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getIdAnilist() {
+    public Integer getIdAnilist() {
         return idAnilist;
     }
 
-    public void setIdAnilist(int idAnilist) {
+    public void setIdAnilist(Integer idAnilist) {
         this.idAnilist = idAnilist;
     }
 
-    public Anime() {
-        this.genres = new TreeSet<>();
-        this.staff = new TreeSet<>();
-    }
     public String getTitleRom() {
         return titleRom;
     }
@@ -122,19 +121,20 @@ public class Anime {
     public void setGenres(Genre genre) {
         this.genres.add(genre);
     }
-    public int getEps() {
+
+    public Integer getEps() {
         return eps;
     }
 
-    public void setEps(int eps) {
+    public void setEps(Integer eps) {
         this.eps = eps;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -149,7 +149,6 @@ public class Anime {
     public void setStaff(Person peron) {
         this.staff.add(peron);
     }
-
 
     public void setAiringStatus(String airingStatus) {
         this.airingStatus = airingStatus;

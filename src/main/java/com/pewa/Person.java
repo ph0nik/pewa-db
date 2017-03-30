@@ -1,13 +1,13 @@
 package com.pewa;
 
-public class Person implements Comparable<Person> {
-    private int id;
+import java.io.Serializable;
+
+public class Person implements Comparable<Person>, Serializable {
+    private Integer id;
     private String firstName;
     private String lastName;
     private String name;
     private String job;
-
-    public Person() {}
 
     public Person(String firstName, String lastName, String job) {
         this.firstName = firstName;
@@ -28,11 +28,11 @@ public class Person implements Comparable<Person> {
         this.name = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

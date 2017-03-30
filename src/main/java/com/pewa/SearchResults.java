@@ -12,9 +12,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Created by phonik on 2017-03-13.
- */
 //TODO zamienić metody statyczne na metody tej klasy (?)
 public class SearchResults {
     private Set<SingleSearchResult> searchResultSet;

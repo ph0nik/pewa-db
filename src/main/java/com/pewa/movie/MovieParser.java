@@ -2,7 +2,11 @@ package com.pewa.movie;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import com.pewa.MediaParse;
 import com.pewa.config.ConfigReader;
+import com.pewa.util.SaveImage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -10,16 +14,12 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class MovieParseToObject {
+public class MovieParser implements MediaParse<Movie, String> {
 
-    private MovieParseToObject() {
+    private static final Logger log = LogManager.getLogger(MovieParser.class);
 
-    }
-    private static void costam() {
-
-    }
-    public static Movie parseSelected(String imdbUrl) {
-        String url = "";
+    public Movie getItem(String imdbUrl) {
+        String url;
         Movie movieItem = new Movie();
 
         try {
@@ -57,15 +57,14 @@ public class MovieParseToObject {
                 movieItem.setCountry(country);
                 movieItem.setAwards(omdbValues.asObject().getString("Awards", ""));
                 movieItem.setPoster(omdbValues.asObject().getString("Poster", ""));
+                movieItem.setIntPoster(SaveImage.getImage(movieItem));
                 movieItem.setMetascore(omdbValues.asObject().getString("Metascore", ""));
                 movieItem.setImdbRating(omdbValues.asObject().getString("imdbRating", ""));
                 movieItem.setImdbVotes(omdbValues.asObject().getString("imdbVotes", ""));
                 movieItem.setImdbID(imdbUrl);
             }
-
-        } catch (
-                IOException e) {
-            System.out.println("Nie można nawiązać połączenia z: " + url);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
         return movieItem;
     }

@@ -1,7 +1,9 @@
 package com.pewa;
 
-public class Form implements Comparable<Form> {
-    private int id;
+import java.io.Serializable;
+
+public class Form implements Comparable<Form>, Serializable {
+    private Integer id;
     private String form;
 
     public Form() {}
@@ -10,11 +12,11 @@ public class Form implements Comparable<Form> {
         this.form = form;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

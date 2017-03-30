@@ -7,8 +7,7 @@ public class AnimeAccessToken implements Serializable {
     private String tokenType;
     private Long expireTime;
 
-    public AnimeAccessToken() {
-    }
+    static final long serialVersionUID = 1L;
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;

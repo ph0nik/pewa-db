@@ -23,7 +23,15 @@ public class Movie implements Comparable<Movie> {
     private String imdbRating;
     private String imdbVotes;
     private String imdbID;
+    private String intPoster;
 
+    public String getIntPoster() {
+        return intPoster;
+    }
+
+    public void setIntPoster(String intPoster) {
+        this.intPoster = intPoster;
+    }
 
     public String getTitle() {
         return title;
@@ -190,6 +198,7 @@ public class Movie implements Comparable<Movie> {
                 ", imdbRating='" + imdbRating + '\'' +
                 ", imdbVotes='" + imdbVotes + '\'' +
                 ", imdbID='" + imdbID + '\'' +
+                ", intPoster='" + intPoster + '\'' +
                 '}';
     }
 

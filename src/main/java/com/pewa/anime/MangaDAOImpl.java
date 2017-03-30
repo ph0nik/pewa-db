@@ -10,68 +10,74 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AnimeDAOImpl implements AnimeDAO {
-    private List<Anime> output = new ArrayList<>();
+public class MangaDAOImpl implements MangaDAO {
+    private List<Manga> output = new ArrayList<>();
 
-    public void addAnime(Anime anime) {
+    @Override
+    public void addManga(Manga manga) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            session.insert("insertAnime", anime);
-            session.insert("insertPeopleAni", anime);
-            session.insert("insertPeopleBridgeAni", anime);
-            if (!anime.getGenres().isEmpty()) {
-                session.insert("insertGenreAni", anime);
-                session.insert("insertGenreBridgeAni", anime);
+            session.insert("insertManga", manga);
+            session.insert("insertPeopleMan", manga);
+            session.insert("insertPeopleBridgeMan", manga);
+            if (!manga.getGenres().isEmpty()) {
+                session.insert("insertGenreMan", manga);
+                session.insert("insertGenreBridgeMan", manga);
             }
             session.commit();
         }
     }
 
-    public List<Anime> getAnime(String query) {
+
+    @Override
+    public List<Manga> getManga(String query) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             query = new StringBuilder("%")
                     .append(query)
                     .append("%")
                     .toString();
-            output = session.selectList("byTitleAni", query);
+            output = session.selectList("byTitleMan", query);
             session.commit();
         }
         return output;
     }
 
-    //TODO przerobić obiekt powrotny na Anime
-    public List<Anime> getAnimeById(int id) {
+    @Override
+    public List<Manga> getMangaById(int id) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("ByIdAni", id);
+            output = session.selectList("ByIdMan", id);
             session.commit();
         }
         return output;
     }
 
-    public List<Anime> getAnimeByPerson(String person) {
+    @Override
+    public List<Manga> getMangaByPerson(String person) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             person = new StringBuilder("%")
                     .append(person)
                     .append("%")
                     .toString();
-            output = session.selectList("byPersonAni", person);
+            output = session.selectList("byPersonMan", person);
             session.commit();
         }
         return output;
     }
 
-    public List<Anime> getAnimeByGenre(String genre) {
+    @Override
+    public List<Manga> getMangaByGenre(String genre) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             genre = new StringBuilder("%")
                     .append(genre)
                     .append("%")
                     .toString();
-            output = session.selectList("byGenreAni", genre);
+            output = session.selectList("byGenreMan", genre);
             session.commit();
         }
         return output;
     }
 
-    public List<Anime> getAnimeByYear(String x, String y) {
+    @Override
+    public List<Manga> getMangaByYear(String x, String y) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
             LocalDate start, end;
@@ -93,7 +99,7 @@ public class AnimeDAOImpl implements AnimeDAO {
                 map.put("start", start);
                 map.put("end", end);
             }
-            output = session.selectList("byYearAni", map);
+            output = session.selectList("byYearMan", map);
             session.commit();
         }
         return output;

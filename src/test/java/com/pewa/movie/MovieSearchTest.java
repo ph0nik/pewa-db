@@ -1,8 +1,7 @@
+package com.pewa.movie;
+
+import com.pewa.MediaParse;
 import com.pewa.config.ConfigReader;
-import com.pewa.movie.Movie;
-import com.pewa.movie.MovieDAO;
-import com.pewa.movie.MovieDAOImpl;
-import com.pewa.movie.MovieParseToObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,7 +17,8 @@ public class MovieSearchTest {
 
     @Test
     public void parseSelectedPositionMovie() {
-        Movie americanBuffalo = MovieParseToObject.parseSelected("tt0115530");
+        MediaParse<Movie, String> movieParser = new MovieParser();
+        Movie americanBuffalo = movieParser.getItem("tt0115530");
         System.out.println(americanBuffalo.toString());
         MovieDAO dbm = new MovieDAOImpl();
         dbm.addMovie(americanBuffalo);
@@ -50,7 +50,8 @@ public class MovieSearchTest {
 
     @Test
     public void parseErrorCheck() {
-        Movie americanBuffalo = MovieParseToObject.parseSelected("asdasda");
+        MediaParse<Movie, String> movieParser = new MovieParser();
+        Movie americanBuffalo = movieParser.getItem("asdasda");
         System.out.println(americanBuffalo.toString());
     }
 }

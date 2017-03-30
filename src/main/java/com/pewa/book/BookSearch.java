@@ -2,6 +2,8 @@ package com.pewa.book;
 
 import com.pewa.config.ConfigReader;
 import com.pewa.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,12 +24,13 @@ import java.util.TreeSet;
  * </p>
  */
 public class BookSearch {
+    private Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+    private static final Logger log = LogManager.getLogger(BookSearch.class);
 
-    private BookSearch() {
+    public BookSearch() {
     }
 
-    public static Set<SingleSearchResult> bookSearchResultSet(String userInput) {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+    public Set<SingleSearchResult> bookSearchResultSet(String userInput) {
         String url = ConfigReader.searchBookAlt.concat(userInput.replaceAll(" ", "+"));
         try {
             final Document searchResults = Jsoup.connect(url)
@@ -39,14 +42,18 @@ public class BookSearch {
 
             for (Element x : titlePL) {
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
-                String biblionetkaId = x.getElementsByTag("a").attr("href");
-                singleSearchResult.setUrl(biblionetkaId);
+                String biblionetkaIdString = x.getElementsByTag("a")
+                                        .attr("href");
+                int biblionetkaId = Integer.parseInt(
+                        biblionetkaIdString.substring(biblionetkaIdString.lastIndexOf("=") + 1)
+                );
+                singleSearchResult.setType(PewaType.BOOK);
+                singleSearchResult.setIdInt(biblionetkaId);
                 singleSearchResult.setDesc(x.text());
                 searchResultSet.add(singleSearchResult);
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return searchResultSet;
     }

@@ -27,23 +27,14 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26">
-      <console name="mysql-root" type="STANDARD"><![CDATA[use pewadb;
-
-select * from movie;
-select * from movie_country;
-select * from movie_country_combined;
-select * from movie_genre;
-select * from movie_genre_combine;
-select * from movie_language;
-select * from movie_language_combined;
-select * from movie_person;
-select * from movie_person_combine;]]></console>
+      <console name="mysql-root" type="STANDARD"><![CDATA[drop tables genre_book, genre_anime, genre_manga, book_form, genre, person_anime, person_book, person_manga, person, book;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.country" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie_language_combined" active-filter-id="" />
+    <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.anime" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.watched" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">

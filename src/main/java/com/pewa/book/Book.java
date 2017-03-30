@@ -10,21 +10,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Book {
-    private int id;
+    private Integer id, votes, firstPubDate, plPubDate, idBiblion;
+    private Double rating;
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
-    private String additionalInfo;
-    private String originalTitle;
-    private String polishTitle;
-    private String originalLanguage;
-    private String category;
-    private String altVersion;
-    private String idBiblion;
-    private Double rating;
-    private int votes;
-    private int firstPubDate;
-    private int plPubDate;
+    private String additionalInfo, originalTitle, polishTitle, originalLanguage, category, altVersion;
+
+ List a = new ArrayList();
 
     public Book() {
         this.people = new TreeSet<>();
@@ -63,11 +56,11 @@ public class Book {
         this.people = people;
     }
 
-    public String getIdBiblion() {
+    public Integer getIdBiblion() {
         return idBiblion;
     }
 
-    void setIdBiblion(String idBiblion) {
+    void setIdBiblion(Integer idBiblion) {
         this.idBiblion = idBiblion;
     }
 
@@ -119,19 +112,19 @@ public class Book {
         this.form.add(form);
     }
 
-    public int getFirstPubDate() {
+    public Integer getFirstPubDate() {
         return firstPubDate;
     }
 
-    void setFirstPubDate(int firstPubDate) {
+    void setFirstPubDate(Integer firstPubDate) {
         this.firstPubDate = firstPubDate;
     }
 
-    public int getPlPubDate() {
+    public Integer getPlPubDate() {
         return plPubDate;
     }
 
-    void setPlPubDate(int plPubDate) {
+    void setPlPubDate(Integer plPubDate) {
         this.plPubDate = plPubDate;
     }
 
@@ -159,19 +152,19 @@ public class Book {
         this.rating = rating;
     }
 
-    public int getVotes() {
+    public Integer getVotes() {
         return votes;
     }
 
-    void setVotes(int votes) {
+    void setVotes(Integer votes) {
         this.votes = votes;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

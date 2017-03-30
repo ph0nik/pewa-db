@@ -4,7 +4,10 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.pewa.PewaType;
 import com.pewa.SingleSearchResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -18,41 +21,18 @@ import static com.pewa.config.Session.updateSession;
 
 public class AnimeMangaSearch {
 
-    public static AnimeAccessToken aniListAuth() {
-        AnimeAccessToken animeAccessToken = new AnimeAccessToken();
-        String clientId = aniListClientId;
-        String clientSecret = aniListClientSecret;
-        String url = aniListApiEndpoint + aniListPostTokenReq;
+    private final static Logger log = LogManager.getLogger(AnimeMangaSearch.class);
 
-        try {
-            final String getToken = Jsoup.connect(url)
-                    .data("grant_type", "client_credentials", "client_id", clientId, "client_secret", clientSecret)
-                    .userAgent(userAgent)
-                    .timeout(5 * 1000)
-                    .ignoreContentType(true)
-                    .post()
-                    .text();
-            JsonObject auth = Json.parse(getToken).asObject();
-            animeAccessToken.setAccessToken(auth.get("access_token").asString());
-            animeAccessToken.setTokenType(auth.get("token_type").asString());
-            animeAccessToken.setExpireTime(auth.get("expires").asLong());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return animeAccessToken;
-    }
-
-    public static Set<SingleSearchResult> aniListSearchAnime(String query, String searchType) {
-        AnimeAccessToken animeAccessToken = updateSession();
+    public Set<SingleSearchResult> aniListSearch(String query, String searchType) {
         Set<SingleSearchResult> output = new TreeSet<>();
         String url;
-        if(searchType.equals("anime")) {
+        AnimeAccessToken animeAccessToken = updateSession();
+
+        if (searchType.equals("anime")) {
             url = aniListApiEndpoint + aniListSearchAnime + query;
         } else {
             url = aniListApiEndpoint + aniListSearchManga + query;
         }
-
-
         try {
             final String getResults = Jsoup.connect(url)
                     .data("access_token", animeAccessToken.getAccessToken())
@@ -61,7 +41,6 @@ public class AnimeMangaSearch {
                     .ignoreContentType(true)
                     .get()
                     .text();
-
             JsonArray searchResults = Json.parse(getResults).asArray();
             for (JsonValue member : searchResults) {
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
@@ -72,14 +51,15 @@ public class AnimeMangaSearch {
                 int id = singleElement.get("id").asInt();
                 String poster = singleElement.get("image_url_lge").asString();
                 String fuzzyDateStart = "19700101";
-                String fuzzyDateEnd = "19700101";
-                if(!singleElement.get("start_date_fuzzy").isNull()) {
+                String fuzzyDateEnd;
+                if (!singleElement.get("start_date_fuzzy").isNull()) {
                     fuzzyDateStart = singleElement.get("start_date_fuzzy").toString(); // YYYYDDMM
                 }
-                if(!singleElement.get("end_date_fuzzy").isNull()) {
+                if (!singleElement.get("end_date_fuzzy").isNull()) {
                     fuzzyDateEnd = singleElement.get("end_date_fuzzy").toString();
+                } else {
+                    fuzzyDateEnd = fuzzyDateStart;
                 }
-
                 String year;
                 if (fuzzyDateStart.length() == 4) {
                     fuzzyDateStart = fuzzyDateStart + "0101";
@@ -87,7 +67,6 @@ public class AnimeMangaSearch {
                 if (fuzzyDateEnd.length() == 4) {
                     fuzzyDateEnd = fuzzyDateEnd + "0101";
                 }
-
                 if (fuzzyDateStart.equals(fuzzyDateEnd)) {
                     LocalDate zdt = LocalDate.parse(fuzzyDateStart, DateTimeFormatter.ofPattern("yyyyMMdd"));
                     year = Integer.toString(zdt.getYear());
@@ -97,10 +76,10 @@ public class AnimeMangaSearch {
                     year = "[" + zdtStart.getYear() + " - " + zdtEnd.getYear() + "]";
                 }
                 String addInfo;
-                if(searchType.equals("anime")) {
-                    int eps = singleElement.getInt("total_episodes",0);
+                if (searchType.equals("anime")) {
+                    int eps = singleElement.getInt("total_episodes", 0);
                     int duration = 0;
-                    if(!singleElement.get("duration").isNull()) {
+                    if (!singleElement.get("duration").isNull()) {
                         duration = singleElement.get("duration").asInt();
                     }
                     addInfo = new StringBuilder(" / eps.")
@@ -109,15 +88,17 @@ public class AnimeMangaSearch {
                             .append(duration)
                             .append("min.")
                             .toString();
+                    singleSearchResult.setType(PewaType.ANIME);
                 } else {
-                    int chapters = member.asObject().getInt("total_chapters",0);
-                    int volumes = member.asObject().getInt("total_volumes",0);
+                    int chapters = member.asObject().getInt("total_chapters", 0);
+                    int volumes = member.asObject().getInt("total_volumes", 0);
                     addInfo = new StringBuilder(" / ")
                             .append(chapters)
                             .append(" chapters / ")
                             .append(volumes)
                             .append(" volumes")
                             .toString();
+                    singleSearchResult.setType(PewaType.MANGA);
                 }
                 String desc = new StringBuilder(titleRom)
                         .append(" <")
@@ -134,7 +115,7 @@ public class AnimeMangaSearch {
                 output.add(singleSearchResult);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return output;
     }

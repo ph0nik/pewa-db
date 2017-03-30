@@ -56,9 +56,9 @@ class UserInterface {
         if(option == 1) {
 //            com.pewa.book.BookSearch.bSearch(userInputString);
         } else if(option == 2) {
-//            com.pewa.movie.MovieParseToObject.mSearch(userInputString);
+//            com.pewa.movie.MovieParser.mSearch(userInputString);
         } else if(option == 3) {
-//            com.pewa.tv.TvShowParseToObject.sTvShow(userInputString);
+//            com.pewa.tv.TvShowParser.sTvShow(userInputString);
         }*/
 
 

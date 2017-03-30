@@ -1,10 +1,7 @@
-package com.pewa.dao;
+package com.pewa.music;
 
 import com.pewa.music.AlbumDAO;
 
-/**
- * Created by phonik on 2017-03-13.
- */
 public class AlbumDAOImpl implements AlbumDAO {
     @Override
     public void listByTitle() {

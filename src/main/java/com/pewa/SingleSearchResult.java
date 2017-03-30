@@ -3,14 +3,23 @@ package com.pewa;
 public class SingleSearchResult implements Comparable<SingleSearchResult> {
     private String url;
     private String desc;
-    private int idInt;
+    private Integer idInt;
     private String poster;
+    private PewaType type;
 
-    public int getIdInt() {
+    public PewaType getType() {
+        return type;
+    }
+
+    public void setType(PewaType type) {
+        this.type = type;
+    }
+
+    public Integer getIdInt() {
         return idInt;
     }
 
-    public void setIdInt(int idInt) {
+    public void setIdInt(Integer idInt) {
         this.idInt = idInt;
     }
 
@@ -45,6 +54,7 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
                 ", desc='" + desc + '\'' +
                 ", idInt=" + idInt +
                 ", poster='" + poster + '\'' +
+                ", type=" + type +
                 '}';
     }
 

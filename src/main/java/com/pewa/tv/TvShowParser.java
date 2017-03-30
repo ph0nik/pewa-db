@@ -4,7 +4,12 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.pewa.Genre;
+import com.pewa.MediaParse;
 import com.pewa.config.ConfigReader;
+import com.pewa.util.SaveImage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -17,13 +22,12 @@ import java.util.*;
 
 import static com.pewa.config.ConfigReader.*;
 
-public class TvShowParseToObject {
+public class TvShowParser implements MediaParse<TvShowSummary, String> {
 
-    private TvShowParseToObject() {
-    }
+    private static final Logger log = LogManager.getLogger(TvShowParser.class);
 
-    public static TvShowSummary parseSelectedSummaryTv(String imdbUrl) {
-        String urlSummary = "";
+    public TvShowSummary getItem(String imdbUrl) {
+        String urlSummary;
         StringBuilder urlEpisodeList = new StringBuilder();
         TvShowSummary tvShowSummaryItem = new TvShowSummary();
 
@@ -41,22 +45,16 @@ public class TvShowParseToObject {
             tvShowSummaryItem.setTitle(tvmazeSum.asObject().getString("name", ""));
             tvShowSummaryItem.setType(tvmazeSum.asObject().getString("type", ""));
             tvShowSummaryItem.setLanguage(tvmazeSum.asObject().getString("language", ""));
-            /*
-            * odczyta tablicy gatunków z wykorzystaniem tablicy tymczasowej
-            * */
-            Set<String> tempGenresList = new TreeSet<>();
             JsonArray jsonGenresArray = tvmazeSum.asObject().get("genres").asArray();
             for (JsonValue item : jsonGenresArray) {
-                tempGenresList.add(item.asString());
+                tvShowSummaryItem.setGenres(new Genre(item.asString()));
             }
-            tvShowSummaryItem.setGenres(tempGenresList);
             tvShowSummaryItem.setStatus(tvmazeSum.asObject().getString("status", ""));
             tvShowSummaryItem.setRuntime(tvmazeSum.asObject().getInt("runtime", 0));
 
             String firstAiredTemp = tvmazeSum.asObject().getString("premiered", "0000-01-01");
             LocalDate firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             tvShowSummaryItem.setPremiered(firstAired);
-
 
             if (tvmazeSum.asObject().get("rating").asObject().get("average").isNull()) {
                 tvShowSummaryItem.setRatingAvg(0.0);
@@ -86,7 +84,9 @@ public class TvShowParseToObject {
             }
             JsonObject tvmazePosters = tvmazeSum.asObject().get("image").asObject();
             tvShowSummaryItem.setPosterMed(tvmazePosters.getString("medium", ""));
+            tvShowSummaryItem.setIntPosterMed(SaveImage.getImageMed(tvShowSummaryItem));
             tvShowSummaryItem.setPosterOrg(tvmazePosters.getString("original", ""));
+            tvShowSummaryItem.setIntPosterOrg(SaveImage.getImageOrg(tvShowSummaryItem));
             tvShowSummaryItem.setSummary(tvmazeSum.asObject().getString("summary", ""));
 
             urlEpisodeList.append(tvMaze)
@@ -109,10 +109,18 @@ public class TvShowParseToObject {
                 firstAiredTemp = ep.asObject().getString("airdate", "0000-01-01");
                 firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String summary = ep.asObject().getString("summary", "");
-                tvShowSummaryItem.setEpisodes(new TvShowEpisode(tvMazeId, tvMazeUrl, epTitle, season, episode, firstAired, summary));
+                TvShowEpisode tvShowEpisode = new TvShowEpisode();
+                tvShowEpisode.setEpTitle(epTitle);
+                tvShowEpisode.setFirstAired(firstAired);
+                tvShowEpisode.setSeason(season);
+                tvShowEpisode.setEpisode(episode);
+                tvShowEpisode.setSummary(summary);
+                tvShowEpisode.setTvMazeId(tvMazeId);
+                tvShowEpisode.setTvMazeUrl(tvMazeUrl);
+                tvShowSummaryItem.setEpisodes(tvShowEpisode);
             }
         } catch (IOException e) {
-            System.out.println("Nie można nawiązać połączenia z: " + urlSummary);
+            log.error(e.getMessage(), e);
         }
         return tvShowSummaryItem;
     }

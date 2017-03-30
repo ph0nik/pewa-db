@@ -1,11 +1,11 @@
-import com.pewa.book.Book;
-import com.pewa.book.BookDAO;
-import com.pewa.book.BookDAOImpl;
-import com.pewa.book.BookScraper;
+package com.pewa.book;
+
+import com.pewa.MediaParse;
 import com.pewa.config.ConfigReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -32,8 +32,8 @@ public class BookDAOImplTest {
     @Test
     public void insertBook() {
         BookDAO nowaKsiazka = new BookDAOImpl();
-        BookScraper bookScraper = new BookScraper();
-        Book ksiazka = bookScraper.scrapedIt("book.aspx?id=301");
+        MediaParse<Book, Integer> bookScraper = new BookParser();
+        Book ksiazka = bookScraper.getItem(78);
         nowaKsiazka.addBook(ksiazka);
     }
     @Test
@@ -47,7 +47,7 @@ public class BookDAOImplTest {
     @Test
     public void checkBookById(){
         BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.getBookById("book.aspx?id=78");
+        List<Book> test = nowaKsiazka.getBookById(78);
         test.forEach(System.out::println);
     }
     @Test

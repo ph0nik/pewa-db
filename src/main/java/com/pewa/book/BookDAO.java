@@ -1,6 +1,9 @@
 package com.pewa.book;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +12,7 @@ import java.util.Set;
  */
 public interface BookDAO {
 
+    public static final Logger log = LogManager.getLogger(BookDAO.class);
 
     void initBook();
 /*
@@ -23,7 +27,7 @@ public interface BookDAO {
     /*
     * Returns List of object Book based on String id parameter (biblionetka id).
     * */
-    List<Book> getBookById(String id);
+    List<Book> getBookById(int id);
     /*
     * Returns List of Book objects based on String query, search through people parameter
     * */

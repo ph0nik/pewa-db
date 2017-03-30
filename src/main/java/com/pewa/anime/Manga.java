@@ -1,35 +1,52 @@
 package com.pewa.anime;
 
+import com.pewa.Genre;
 import com.pewa.Person;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * Created by phonik on 2017-03-02.
- */
 public class Manga {
-    private int id;
-    private String titleRom;
-    private String titleEng;
-    private String type;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String description;
-    private String poster;
-    private String publishingStatus;
-    private Set<String> genres;
-    private int totalChapters;
-    private int totalVolumes;
+    private Set<Genre> genres;
     private Set<Person> staff;
+    private String titleRom, titleEng, type, description, poster, publishingStatus, intPoster;
+    private LocalDate startDate, endDate;
+    private Integer id, totalChapters, totalVolumes, idAnilist;
+    private LocalDateTime dbDatetime;
 
-    public int getId() {
+    public String getIntPoster() {
+        return intPoster;
+    }
+
+    public void setIntPoster(String intPoster) {
+        this.intPoster = intPoster;
+    }
+
+    public Integer getIdAnilist() {
+        return idAnilist;
+    }
+
+    public void setIdAnilist(Integer idAnilist) {
+        this.idAnilist = idAnilist;
+    }
+
+    public LocalDateTime getDbDatetime() {
+        return dbDatetime;
+    }
+
+    public void setDbDatetime(LocalDateTime dbDatetime) {
+        this.dbDatetime = dbDatetime;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -97,32 +114,45 @@ public class Manga {
         this.publishingStatus = publishingStatus;
     }
 
-    public Set<String> getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<String> genres) {
+    public void setGenres(Genre genre) {
+        if(this.genres==null) {
+            this.genres = new TreeSet<>();
+        }
+        this.genres.add(genre);
+    }
+    public void setGenres(Set<Genre> genres) {
         this.genres = genres;
     }
 
-    public int getTotalChapters() {
+    public Integer getTotalChapters() {
         return totalChapters;
     }
 
-    public void setTotalChapters(int totalChapters) {
+    public void setTotalChapters(Integer totalChapters) {
         this.totalChapters = totalChapters;
     }
 
-    public int getTotalVolumes() {
+    public Integer getTotalVolumes() {
         return totalVolumes;
     }
 
-    public void setTotalVolumes(int totalVolumes) {
+    public void setTotalVolumes(Integer totalVolumes) {
         this.totalVolumes = totalVolumes;
     }
 
     public Set<Person> getStaff() {
         return staff;
+    }
+
+    public void setStaff(Person person) {
+        if(this.staff==null) {
+            this.staff = new TreeSet<>();
+        }
+        this.staff.add(person);
     }
 
     public void setStaff(Set<Person> staff) {
@@ -132,19 +162,21 @@ public class Manga {
     @Override
     public String toString() {
         return "Manga{" +
-                "id=" + id +
+                "genres=" + genres +
+                ", staff=" + staff +
                 ", titleRom='" + titleRom + '\'' +
                 ", titleEng='" + titleEng + '\'' +
                 ", type='" + type + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
                 ", description='" + description + '\'' +
                 ", poster='" + poster + '\'' +
                 ", publishingStatus='" + publishingStatus + '\'' +
-                ", genres=" + genres +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", id=" + id +
                 ", totalChapters=" + totalChapters +
                 ", totalVolumes=" + totalVolumes +
-                ", staff=" + staff +
+                ", idAnilist=" + idAnilist +
+                ", dbDatetime=" + dbDatetime +
                 '}';
     }
 }

@@ -1,58 +1,83 @@
 package com.pewa.tv;
 
+import com.pewa.Genre;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
-/**
- * Created by phonik on 2017-01-12.
- */
-public class TvShowSummary {
-    private int tvMazeId;
+public class TvShowSummary implements Serializable {
+
     private String tvMazeUrl;
     private String title;
     private String type;
     private String language;
-    private Set<String> genres;
     private String status;
-    private int runtime;
-    private LocalDate premiered;
-    private Double ratingAvg;
     private String network;
     private String country;
     private String imdbLink;
-    private int thetvdbLink;
-    private int tvrageLink;
     private String posterMed;
     private String posterOrg;
+    private String intPosterMed;
+    private String intPosterOrg;
     private String summary;
+    private Integer tvMazeId;
+    private Integer runtime;
+    private Integer thetvdbLink;
+    private Integer tvrageLink;
+    private Set<Genre> genres;
+    private LocalDate premiered;
+    private Double ratingAvg;
     private List<TvShowEpisode> episodes;
 
+    static final long serialVersionUID = 1L;
 
     TvShowSummary() {
-        this.episodes = new ArrayList();
+        this.episodes = new ArrayList<>();
+        this.genres = new TreeSet<>();
+    }
+
+    public String getIntPosterMed() {
+        return intPosterMed;
+    }
+
+    public void setIntPosterMed(String intPosterMed) {
+        this.intPosterMed = intPosterMed;
+    }
+
+    public String getIntPosterOrg() {
+        return intPosterOrg;
+    }
+
+    public void setIntPosterOrg(String intPosterOrg) {
+        this.intPosterOrg = intPosterOrg;
     }
 
     public List<TvShowEpisode> getEpisodes() {
         return episodes;
     }
 
-    void setEpisodes(TvShowEpisode episodes) {
+    public void setEpisodes(TvShowEpisode episodes) {
         this.episodes.add(episodes);
     }
 
-    int getTvMazeId() {
+    public void setEpisodes(List<TvShowEpisode> episodes) {
+        this.episodes = episodes;
+    }
+
+    public Integer getTvMazeId() {
         return tvMazeId;
     }
 
-    void setTvMazeId(int tvMazeId) {
+    public void setTvMazeId(Integer tvMazeId) {
         this.tvMazeId = tvMazeId;
     }
 
-    String getTvMazeUrl() {
+    public String getTvMazeUrl() {
         return tvMazeUrl;
     }
 
-    void setTvMazeUrl(String tvMazeUrl) {
+    public void setTvMazeUrl(String tvMazeUrl) {
         this.tvMazeUrl = tvMazeUrl;
     }
 
@@ -60,7 +85,7 @@ public class TvShowSummary {
         return title;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -68,7 +93,7 @@ public class TvShowSummary {
         return type;
     }
 
-    void setType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -76,31 +101,35 @@ public class TvShowSummary {
         return language;
     }
 
-    void setLanguage(String language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
-    public Set getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
     }
 
-    void setGenres(Set<String> genres) {
+    public void setGenres(Set<Genre> genres) {
         this.genres = genres;
+    }
+
+    public void setGenres(Genre genre) {
+        this.genres.add(genre);
     }
 
     public String getStatus() {
         return status;
     }
 
-    void setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getRuntime() {
+    public Integer getRuntime() {
         return runtime;
     }
 
-    void setRuntime(int runtime) {
+    public void setRuntime(Integer runtime) {
         this.runtime = runtime;
     }
 
@@ -108,7 +137,7 @@ public class TvShowSummary {
         return premiered;
     }
 
-    void setPremiered(LocalDate premiered) {
+    public void setPremiered(LocalDate premiered) {
         this.premiered = premiered;
     }
 
@@ -116,7 +145,7 @@ public class TvShowSummary {
         return ratingAvg;
     }
 
-    void setRatingAvg(Double ratingAvg) {
+    public void setRatingAvg(Double ratingAvg) {
         this.ratingAvg = ratingAvg;
     }
 
@@ -124,7 +153,7 @@ public class TvShowSummary {
         return network;
     }
 
-    void setNetwork(String network) {
+    public void setNetwork(String network) {
         this.network = network;
     }
 
@@ -132,7 +161,7 @@ public class TvShowSummary {
         return country;
     }
 
-    void setCountry(String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
@@ -140,23 +169,23 @@ public class TvShowSummary {
         return imdbLink;
     }
 
-    void setImdbLink(String imdbLink) {
+    public void setImdbLink(String imdbLink) {
         this.imdbLink = imdbLink;
     }
 
-    public int getThetvdbLink() {
+    public Integer getThetvdbLink() {
         return thetvdbLink;
     }
 
-    void setThetvdbLink(int thetvdbLink) {
+    public void setThetvdbLink(Integer thetvdbLink) {
         this.thetvdbLink = thetvdbLink;
     }
 
-    public int getTvrageLink() {
+    public Integer getTvrageLink() {
         return tvrageLink;
     }
 
-    void setTvrageLink(int tvrageLink) {
+    public void setTvrageLink(Integer tvrageLink) {
         this.tvrageLink = tvrageLink;
     }
 
@@ -164,7 +193,7 @@ public class TvShowSummary {
         return posterMed;
     }
 
-    void setPosterMed(String posterMed) {
+    public void setPosterMed(String posterMed) {
         this.posterMed = posterMed;
     }
 
@@ -172,7 +201,7 @@ public class TvShowSummary {
         return posterOrg;
     }
 
-    void setPosterOrg(String posterOrg) {
+    public void setPosterOrg(String posterOrg) {
         this.posterOrg = posterOrg;
     }
 
@@ -180,7 +209,7 @@ public class TvShowSummary {
         return summary;
     }
 
-    void setSummary(String summary) {
+    public void setSummary(String summary) {
         this.summary = summary;
     }
 

@@ -2,8 +2,11 @@ package com.pewa.book;
 
 import com.pewa.Form;
 import com.pewa.Genre;
+import com.pewa.MediaParse;
 import com.pewa.Person;
 import com.pewa.config.ConfigReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,34 +20,28 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static com.pewa.config.ConfigReader.*;
+
 /**
  * Created by phonik on 2017-01-02.
  * test book id: 14853
  */
-public class BookScraper {
-    private String url;
-    private Book bookItem = null;
+public class BookParser implements MediaParse<Book, Integer> {
 
-    //TODO - poprawić konstruktor ???
-    public BookScraper() {
-        if (this.bookItem == null) {
-            this.bookItem = new Book();
-        }
-    }
+    private static final Logger log = LogManager.getLogger(BookParser.class);
 
-    public Book scrapedIt(String id) {
-        //Book bookItem = new Book();
+    public Book getItem(Integer id) {
+        Book bookItem = new Book();
         try {
-            url = ConfigReader.bookItemUrl.concat(id);
+            String url = bookItemUrl.replaceAll("query", String.valueOf(id));
             final Document document = Jsoup.connect(url)
                     .timeout(5 * 1000)
                     .get();
             Elements basicInfo = document.getElementsByClass("taksiazka").get(0).children();
             String itemTitle = document.getElementsByClass("fn").text();
             Set<String> autor = extractStringList(basicInfo.select("li:contains(Autor)").text());
-            Set<Person> people = new TreeSet<>();
-            for(String a : autor) {
-                bookItem.setPeople(new Person(a,"","author"));
+            for (String a : autor) {
+                bookItem.setPeople(new Person(a, "", "author"));
             }
             String tytulOrg = extractString(basicInfo.select("li:contains(tuł oryg)").text());
             if (tytulOrg.isEmpty()) {
@@ -56,17 +53,17 @@ public class BookScraper {
             String jezykOrg = extractString(basicInfo.select("li:contains(zyk oryg)").text());
             bookItem.setOriginalLanguage(jezykOrg);
             Set<String> tlumacz = extractStringList(basicInfo.select("li:contains(umacz:)").text());
-            for(String t : tlumacz) {
-                bookItem.setPeople(new Person(t,"","translator"));
+            for (String t : tlumacz) {
+                bookItem.setPeople(new Person(t, "", "translator"));
             }
             String kategoria = extractString(basicInfo.select("li:contains(ategoria:)").text());
             bookItem.setCategory(kategoria);
             Set<String> gatunek = extractStringList(basicInfo.select("li:contains(atunek:)").text());
-            for(String g : gatunek) {
+            for (String g : gatunek) {
                 bookItem.setGenre(new Genre(g));
             }
             Set<String> forma = extractStringList(basicInfo.select("li:contains(Forma:)").text());
-            for(String f : forma) {
+            for (String f : forma) {
                 bookItem.setForm(new Form(f));
             }
             int rokWydPierwsze = extractInt(basicInfo.select("li:contains(ego wydania:)").text());
@@ -90,15 +87,13 @@ public class BookScraper {
 
             Elements other = document.getElementsByClass("taksiazka").select("li:contains(agi i dodatkow)");
 
-            String info = Jsoup.parse(other.html().replaceAll("<br>", "br2n")).text().replaceAll("br2n","<br>");
+            String info = Jsoup.parse(other.html().replaceAll("<br>", "br2n")).text().replaceAll("br2n", "<br>");
             bookItem.setAdditionalInfo(info);
             bookItem.setIdBiblion(id);
-
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            return bookItem;
+            log.error(e.getMessage(), e);
         }
+        return bookItem;
     }
 
     private static String extractString(String el) {

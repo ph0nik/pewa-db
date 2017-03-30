@@ -2,6 +2,7 @@ package com.pewa.music;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.pewa.PewaType;
 import com.pewa.SingleSearchResult;
 import com.pewa.config.ConfigReader;
 import org.jdom2.JDOMException;
@@ -65,6 +66,7 @@ public class AlbumSearch {
                         .append(albumDate)
                         .append(")")
                         .toString();
+                singleSearchResult.setType(PewaType.MUSIC);
                 singleSearchResult.setDesc(desc);
                 singleSearchResult.setUrl(albumId);
                 searchResultSet.add(singleSearchResult);

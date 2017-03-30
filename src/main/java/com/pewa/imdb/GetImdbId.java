@@ -4,8 +4,11 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.pewa.PewaType;
 import com.pewa.SingleSearchResult;
 import com.pewa.config.ConfigReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
@@ -15,14 +18,10 @@ import java.util.TreeSet;
 import static com.pewa.config.ConfigReader.*;
 
 public class GetImdbId {
-    private static StringBuilder url;
-    private static StringBuilder basicInfo = new StringBuilder();
+    private PewaType type;
 
-    private GetImdbId() {
-        /*
-        prywatny konstruktor uniemożliwia utworzenie obiektu
-        */
-    }
+    private static final Logger log = LogManager.getLogger(GetImdbId.class);
+
 /*
 * Method takes parameters:
 * - query - searched phrase
@@ -31,13 +30,15 @@ public class GetImdbId {
 * Method sends GET request to given url, and passes returned String element
 * to createReturnSetFromSearch method.
 * */
-    public static Set<SingleSearchResult> externalMovieSearch(String query, String type, Set<SingleSearchResult> searchResultSet) {
+    public Set<SingleSearchResult> externalMovieSearch(String query, PewaType type) {
+        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        this.type = type;
         try {
-            if (type.equals("movie")) {
+            StringBuilder url;
+            if (type.equals(PewaType.MOVIE)) {
                 url = new StringBuilder(searchUrl).append(query.replaceAll(" ", "+"))
                         .append(searchMovie);
-            }
-            if (type.equals("tv")) {
+            } else {
                 url = new StringBuilder(searchUrl).append(query.replaceAll(" ", "+"))
                         .append(searchTv);
             }
@@ -48,17 +49,16 @@ public class GetImdbId {
                     .text();
             searchResultSet = createReturnSetFromSearch(imdbSearch);
         } catch (IOException e) {
-            System.out.printf("Nie znaleziono adresu: " + e);
-        } finally {
-            return searchResultSet;
+            log.error(e.getMessage(), e);
         }
+        return  searchResultSet;
     }
 /*
 * Method takes server response object in json format. It parses through it and combines its parameters into
 * SingleSearchResult object. Then every element is added into Set collection, which is being returned.
 *
 * */
-    private static Set<SingleSearchResult> createReturnSetFromSearch(String imdbSearch) {
+    private Set<SingleSearchResult> createReturnSetFromSearch(String imdbSearch) {
         JsonObject imdbObject = Json.parse(imdbSearch).asObject();
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
 
@@ -74,14 +74,19 @@ public class GetImdbId {
                 if (desc.length > 1) {
                     director = desc[1];
                 } else director = "";
-                basicInfo.append(movieTitle)
-                        .append(" (")
-                        .append(year)
-                        .append(") reż. ")
-                        .append(director);
+                StringBuilder basicInfo = new StringBuilder(movieTitle)
+                                                        .append(" (")
+                                                        .append(year)
+                                                        .append(") reż. ")
+                                                        .append(director);
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
                 singleSearchResult.setUrl(idImdb);
                 singleSearchResult.setDesc(basicInfo.toString());
+                if (type.equals("movie")) {
+                    singleSearchResult.setType(PewaType.MOVIE);
+                } else {
+                    singleSearchResult.setType(PewaType.TVSERIES);
+                }
                 searchResultSet.add(singleSearchResult);
                 basicInfo.setLength(0);
             }

@@ -1,20 +1,20 @@
 package com.pewa;
 
-public class Genre implements Comparable<Genre> {
-    private int id;
-    private String genre;
+import java.io.Serializable;
 
-    public Genre() {}
+public class Genre implements Comparable<Genre>, Serializable {
+    private Integer id;
+    private String genre;
 
     public Genre(String name) {
         this.genre = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

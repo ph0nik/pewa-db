@@ -3,9 +3,6 @@ import com.pewa.config.ConfigReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Created by phonik on 2017-03-22.
- */
 public class InitAllTablesTest {
 
     @BeforeClass
@@ -19,5 +16,11 @@ public class InitAllTablesTest {
         InitAllTables tables = new InitAllTables();
         tables.initTables();
 
+    }
+
+    @Test
+    public void dropAll() {
+        InitAllTables tables = new InitAllTables();
+        tables.dropTables();
     }
 }

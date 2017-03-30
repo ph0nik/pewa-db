@@ -1,3 +1,6 @@
+package com.pewa.movie;
+
+import com.pewa.PewaType;
 import com.pewa.SingleSearchResult;
 import com.pewa.config.ConfigReader;
 import com.pewa.imdb.GetImdbId;
@@ -19,18 +22,17 @@ public class GetImdbIdTest {
 
     @Test
     public void tryMapOfItemsMovie() {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-        Set<SingleSearchResult> result;
-        result = GetImdbId.externalMovieSearch("versus", "movie", searchResultSet);
+        GetImdbId searchMovie = new GetImdbId();
+        Set<SingleSearchResult> result = searchMovie.externalMovieSearch("versus", PewaType.MOVIE);
         assertNotNull(result);
         result.forEach(System.out::println);
     }
 
     @Test
     public void tryMapOfItemsTv() {
-        Set<SingleSearchResult> searchResultSet2 = new TreeSet<>();
-        Set<SingleSearchResult> result;
-        result = GetImdbId.externalMovieSearch("buffy", "tv", searchResultSet2);
+        GetImdbId searchTv = new GetImdbId();
+        Set<SingleSearchResult> result = searchTv.externalMovieSearch("buffy", PewaType.TVSERIES);
+        result.forEach(System.out::println);
         assertNotNull(result);
     }
 }

@@ -1,12 +1,13 @@
 package com.pewa.music;
 
-/**
- * Created by phonik on 2017-02-22.
- */
 public class Album {
+    private int id;
     private String albumArtist;
     private String albumTitle;
     private String albumDate;
+    private String cover;
+    private String intCover;
+    private int idDiscogs;
 
     @Override
     public boolean equals(Object o) {
@@ -26,6 +27,38 @@ public class Album {
         result = 31 * result + (albumTitle != null ? albumTitle.hashCode() : 0);
         result = 31 * result + (albumDate != null ? albumDate.hashCode() : 0);
         return result;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getIntCover() {
+        return intCover;
+    }
+
+    public void setIntCover(String intCover) {
+        this.intCover = intCover;
+    }
+
+    public int getIdDiscogs() {
+        return idDiscogs;
+    }
+
+    public void setIdDiscogs(int idDiscogs) {
+        this.idDiscogs = idDiscogs;
     }
 
     public String getAlbumArtist() {
@@ -55,9 +88,13 @@ public class Album {
     @Override
     public String toString() {
         return "Album{" +
-                "albumArtist='" + albumArtist + '\'' +
+                "id=" + id +
+                ", albumArtist='" + albumArtist + '\'' +
                 ", albumTitle='" + albumTitle + '\'' +
                 ", albumDate='" + albumDate + '\'' +
+                ", cover='" + cover + '\'' +
+                ", intCover='" + intCover + '\'' +
+                ", idDiscogs=" + idDiscogs +
                 '}';
     }
 }
