@@ -1,26 +1,23 @@
 package com.pewa.book;
 
-import com.pewa.Form;
-import com.pewa.Genre;
+import com.pewa.PewaType;
+import com.pewa.common.Form;
+import com.pewa.common.Genre;
 import com.pewa.MediaParse;
-import com.pewa.Person;
-import com.pewa.config.ConfigReader;
+import com.pewa.common.Person;
+import com.pewa.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.java2d.loops.GeneralRenderer;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import static com.pewa.config.ConfigReader.*;
 
 /**
  * Created by phonik on 2017-01-02.
@@ -33,7 +30,7 @@ public class BookParser implements MediaParse<Book, Integer> {
     public Book getItem(Integer id) {
         Book bookItem = new Book();
         try {
-            String url = bookItemUrl.replaceAll("query", String.valueOf(id));
+            String url = ConfigFactory.get("item.bookItemUrl").replaceAll("query", String.valueOf(id));
             final Document document = Jsoup.connect(url)
                     .timeout(5 * 1000)
                     .get();
@@ -90,6 +87,7 @@ public class BookParser implements MediaParse<Book, Integer> {
             String info = Jsoup.parse(other.html().replaceAll("<br>", "br2n")).text().replaceAll("br2n", "<br>");
             bookItem.setAdditionalInfo(info);
             bookItem.setIdBiblion(id);
+            bookItem.setType(PewaType.BOOK);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

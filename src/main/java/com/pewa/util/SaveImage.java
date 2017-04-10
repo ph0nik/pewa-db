@@ -3,7 +3,7 @@ package com.pewa.util;
 import com.pewa.PewaType;
 import com.pewa.anime.Anime;
 import com.pewa.anime.Manga;
-import com.pewa.config.ConfigReader;
+import com.pewa.config.ConfigFactory;
 import com.pewa.movie.Movie;
 import com.pewa.music.Album;
 import com.pewa.tv.TvShowSummary;
@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URL;
 
 public class SaveImage {
     /*
@@ -25,7 +24,7 @@ public class SaveImage {
     * - utworzyc link do pliku i go zwrocic
     * "ani", "man", "boo", "alb", "mov", "tv
     * */
-    private static final String imgPath = ConfigReader.imgPath;
+    private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
     private static final Logger log = LogManager.getLogger(SaveImage.class);
     private static PewaType type;
     private static String id;

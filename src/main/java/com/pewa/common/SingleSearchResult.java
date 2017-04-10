@@ -1,11 +1,32 @@
-package com.pewa;
+package com.pewa.common;
+
+import com.pewa.PewaType;
+
+import java.time.LocalDate;
 
 public class SingleSearchResult implements Comparable<SingleSearchResult> {
     private String url;
-    private String desc;
+    private String title, desc;
     private Integer idInt;
     private String poster;
     private PewaType type;
+    private LocalDate date;
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     public PewaType getType() {
         return type;
@@ -39,7 +60,7 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
         this.url = url;
     }
 
-    String getDesc() {
+    public String getDesc() {
         return desc;
     }
 
@@ -51,10 +72,12 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
     public String toString() {
         return "SingleSearchResult{" +
                 "url='" + url + '\'' +
+                ", title='" + title + '\'' +
                 ", desc='" + desc + '\'' +
                 ", idInt=" + idInt +
                 ", poster='" + poster + '\'' +
                 ", type=" + type +
+                ", date=" + date +
                 '}';
     }
 

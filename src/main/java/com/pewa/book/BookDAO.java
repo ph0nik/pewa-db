@@ -12,9 +12,7 @@ import java.util.Set;
  */
 public interface BookDAO {
 
-    public static final Logger log = LogManager.getLogger(BookDAO.class);
 
-    void initBook();
 /*
 * Inserts Book object into database
 * */

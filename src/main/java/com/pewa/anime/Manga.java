@@ -1,12 +1,16 @@
 package com.pewa.anime;
 
-import com.pewa.Genre;
-import com.pewa.Person;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
+import com.pewa.util.CustomLocalDateDeserializer;
+import com.pewa.util.CustomLocalDateSerializer;
+import com.pewa.util.CustomLocalDateTimeDeserializer;
+import com.pewa.util.CustomLocalDateTimeSerializer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -14,8 +18,13 @@ public class Manga {
     private Set<Genre> genres;
     private Set<Person> staff;
     private String titleRom, titleEng, type, description, poster, publishingStatus, intPoster;
+
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate startDate, endDate;
     private Integer id, totalChapters, totalVolumes, idAnilist;
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime dbDatetime;
 
     public String getIntPoster() {

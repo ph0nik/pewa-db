@@ -2,6 +2,8 @@ package com.pewa.book;
 
 import com.pewa.dao.MyBatisFactory;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,9 +12,12 @@ import java.util.Map;
 
 
 public class BookDAOImpl implements BookDAO {
+
+    public static final Logger log = LogManager.getLogger(BookDAOImpl.class);
+
     private List<Book> output = new ArrayList<>();
 
-    public void initBook() {
+/*    public void initBook() {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             session.update("createBookTable");
             session.update("createPersonTable");
@@ -20,7 +25,7 @@ public class BookDAOImpl implements BookDAO {
             session.update("createFormTable");
             session.commit();
         }
-    }
+    }*/
 
     public void addBook(Book bookInfo) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {

@@ -2,73 +2,90 @@ package com.pewa.tv;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
     private String tvMazeUrl, epTitle, summary;
-    private Integer tvMazeId, season, episode;
+    private Integer id, tvMazeId, season, episode;
     private LocalDate firstAired;
-
-    // TODO tv.xml wstawianie odcinków
+    private LocalDateTime dbDatetime;
 
     static final long serialVersionUID = 1L;
 
-    public void setTvMazeUrl(String tvMazeUrl) {
-        this.tvMazeUrl = tvMazeUrl;
-    }
-
-    public void setEpTitle(String epTitle) {
-        this.epTitle = epTitle;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public void setTvMazeId(Integer tvMazeId) {
-        this.tvMazeId = tvMazeId;
-    }
-
-    public void setSeason(Integer season) {
-        this.season = season;
-    }
-
-    public void setEpisode(Integer episode) {
-        this.episode = episode;
-    }
-
-    public void setFirstAired(LocalDate firstAired) {
-        this.firstAired = firstAired;
-    }
-
-    public Integer getTvMazeId() {
-        return tvMazeId;
-    }
+    public TvShowEpisode() {}
 
     public String getTvMazeUrl() {
         return tvMazeUrl;
+    }
+
+    public void setTvMazeUrl(String tvMazeUrl) {
+        this.tvMazeUrl = tvMazeUrl;
     }
 
     public String getEpTitle() {
         return epTitle;
     }
 
-    public Integer getSeason() {
-        return season;
-    }
-
-    public Integer getEpisode() {
-        return episode;
-    }
-
-    public LocalDate getFirstAired() {
-        return firstAired;
+    public void setEpTitle(String epTitle) {
+        this.epTitle = epTitle;
     }
 
     public String getSummary() {
         return summary;
     }
 
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getTvMazeId() {
+        return tvMazeId;
+    }
+
+    public void setTvMazeId(Integer tvMazeId) {
+        this.tvMazeId = tvMazeId;
+    }
+
+    public Integer getSeason() {
+        return season;
+    }
+
+    public void setSeason(Integer season) {
+        this.season = season;
+    }
+
+    public Integer getEpisode() {
+        return episode;
+    }
+
+    public void setEpisode(Integer episode) {
+        this.episode = episode;
+    }
+
+    public LocalDate getFirstAired() {
+        return firstAired;
+    }
+
+    public void setFirstAired(LocalDate firstAired) {
+        this.firstAired = firstAired;
+    }
+
+    public LocalDateTime getDbDatetime() {
+        return dbDatetime;
+    }
+
+    public void setDbDatetime(LocalDateTime dbDatetime) {
+        this.dbDatetime = dbDatetime;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -104,10 +121,12 @@ public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
                 "tvMazeUrl='" + tvMazeUrl + '\'' +
                 ", epTitle='" + epTitle + '\'' +
                 ", summary='" + summary + '\'' +
+                ", id=" + id +
                 ", tvMazeId=" + tvMazeId +
                 ", season=" + season +
                 ", episode=" + episode +
                 ", firstAired=" + firstAired +
+                ", dbDatetime=" + dbDatetime +
                 '}';
     }
 

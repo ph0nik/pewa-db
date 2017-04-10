@@ -1,10 +1,12 @@
 package com.pewa.anime;
 
 import com.pewa.MediaParse;
-import com.pewa.config.ConfigReader;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
+import com.pewa.common.Results;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import java.util.List;
 
 
@@ -14,54 +16,78 @@ import java.util.List;
  */
 public class AnimeDAOImplTest {
 
-    @BeforeClass
-    public static void initTest() {
-        ConfigReader.load();
+    private Results results;
+
+    @BeforeEach
+    public void setObjects() {
+        results = new Results();
     }
 
+    @Disabled
     @Test
     public void addAnimeToDB() {
         AnimeDAO animeDAO = new AnimeDAOImpl();
         MediaParse<Anime, Integer> getAnime = new AnimeParser();
         Anime test = getAnime.getItem(43);
         animeDAO.addAnime(test);
+        test = getAnime.getItem(45);
+        animeDAO.addAnime(test);
+        test = getAnime.getItem(47);
+        animeDAO.addAnime(test);
     }
-
+    @Disabled
+    @Test
+    public void searchAnime() {
+        AnimeDAO animeDAO = new AnimeDAOImpl();
+        Results out = animeDAO.getAnime("ghost", results);
+        out.getAnimes().forEach(System.out::println);
+    }
+    @Disabled
+    @Test
+    public void animeById() {
+        AnimeDAO animeDAO = new AnimeDAOImpl();
+        Anime out = animeDAO.getAnimeById(43);
+        System.out.println(out);
+    }
+    @Disabled
     @Test
     public void animeByYear() {
         AnimeDAO animeDAO = new AnimeDAOImpl();
         String yearStart = "1993-01-01";
         String yearEnd = "";
-        List<Anime> out = animeDAO.getAnimeByYear(yearStart,yearEnd);
-        out.forEach(System.out::println);
+        Results out = animeDAO.getAnimeByYear(yearStart,yearEnd,results);
+        out.getAnimes().forEach(System.out::println);
+
     }
+    @Disabled
     @Test
     public void animeByGenre() {
         AnimeDAO animeDAO = new AnimeDAOImpl();
-        List<Anime> out = animeDAO.getAnimeByGenre("mech");
-        out.forEach(System.out::println);
+        Genre genre = new Genre();
+        genre.setId(4);
+        Results out = animeDAO.getAnimeByGenre(genre,results);
+        out.getAnimes().forEach(System.out::println);
     }
-    @Test
-    public void searchAnime() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        List<Anime> out = animeDAO.getAnime("ghost");
-        out.forEach(System.out::println);
-    }
+    @Disabled
     @Test
     public void animeByPerson() {
         AnimeDAO animeDAO = new AnimeDAOImpl();
-        List<Anime> out = animeDAO.getAnimeByPerson("ogura");
-        out.forEach(System.out::println);
+        Person person = new Person();
+        person.setId(80);
+        Results out = animeDAO.getAnimeByPerson(person, results);
+        out.getAnimes().forEach(System.out::println);
     }
+
+
+/*    // Anime Mapper test
     @Test
-    public void animeById() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        List<Anime> out = animeDAO.getAnimeById(43);
-        out.forEach(System.out::println);
-    }
-
-
-
-
+    public void tryAnimeMappterInterface() {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+            AnimeMapper animeMapper = session.getMapper(AnimeMapper.class);
+            List<Anime> out = animeMapper.byTitleAni("%ghost%");
+            out.forEach(System.out::println);
+            session.commit();
+        }
+    }*/
 
 }

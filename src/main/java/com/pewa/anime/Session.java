@@ -1,8 +1,8 @@
-package com.pewa.config;
+package com.pewa.anime;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.pewa.anime.AnimeAccessToken;
+import com.pewa.config.ConfigFactory;
 import com.thoughtworks.xstream.XStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,14 +12,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-
-import static com.pewa.config.ConfigReader.*;
-import static com.pewa.config.ConfigReader.userAgent;
-
 public class Session {
     private static String accessToken;
     private static String tokenType;
-    private static final String SESSION = "src/main/resources/pewa-session.tmp";
+    private static final String SESSION = ConfigFactory.get("session.animeSession")/*"src/main/resources/pewa-session.tmp"*/;
     private static final Logger log = LogManager.getLogger(Session.class);
 
 
@@ -42,6 +38,9 @@ public class Session {
                     xmlOut.close();
                     logmess = new StringBuilder("Session file updated.");
                     log.info(logmess);
+                } else {
+                    logmess = new StringBuilder("Session file up to date.");
+                    log.info(logmess);
                 }
             } else {
                 logmess = new StringBuilder("Session file not found: [").append(SESSION).append("]");
@@ -61,12 +60,12 @@ public class Session {
 
     private static AnimeAccessToken aniListAuth() throws IOException {
         AnimeAccessToken animeAccessToken = new AnimeAccessToken();
-        String clientId = aniListClientId;
-        String clientSecret = aniListClientSecret;
-        String url = aniListApiEndpoint + aniListPostTokenReq;
+        String clientId = ConfigFactory.get("search.aniListClientId");
+        String clientSecret = ConfigFactory.get("search.aniListClientSecret");
+        String url = ConfigFactory.get("search.aniListApiEndpoint") + ConfigFactory.get("search.aniListPostTokenReq");
         final String getToken = Jsoup.connect(url)
                 .data("grant_type", "client_credentials", "client_id", clientId, "client_secret", clientSecret)
-                .userAgent(userAgent)
+                .userAgent(ConfigFactory.get("search.userAgent"))
                 .timeout(5 * 1000)
                 .ignoreContentType(true)
                 .post()

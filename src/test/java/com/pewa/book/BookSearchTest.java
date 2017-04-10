@@ -1,23 +1,17 @@
 package com.pewa.book;
 
 import com.pewa.MediaParse;
-import com.pewa.SingleSearchResult;
-import com.pewa.config.ConfigReader;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import com.pewa.common.SingleSearchResult;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class BookSearchTest {
-
-    @BeforeClass
-    public static void initTest() {
-        ConfigReader.load();
-
-    }
-
+    @Disabled
     @Test
     public void showSearchResults() {
         BookSearch bookSearch = new BookSearch();
@@ -27,7 +21,7 @@ public class BookSearchTest {
         assertEquals(wynik.size(), iloscWynikow);
         System.out.println("ilosc wynikow: " + wynik.size());
     }
-
+    @Disabled
     @Test
     public void tryWithEmptyResults() {
         BookSearch bookSearch = new BookSearch();
@@ -35,7 +29,7 @@ public class BookSearchTest {
         int emptyTreeSetSize = 0;
         assertEquals(wynik.size(), emptyTreeSetSize);
     }
-
+    @Disabled
     // SingleSearchResult{url='book.aspx?id=335096', desc='Car Maksymilian: Widowisko ludowe na Rusi (Gołąbek Józef)'}
     @Test
     public void scrapeFoundItem() {
@@ -46,7 +40,7 @@ public class BookSearchTest {
         System.out.println(carMaksymilian);
 
     }
-
+    @Disabled
     @Test
     public void scrapeFoundItem2() {
         MediaParse<Book, Integer> bookScraper = new BookParser();

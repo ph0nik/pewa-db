@@ -1,9 +1,11 @@
 package com.pewa.tv;
 
-import com.pewa.Genre;
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TvShowSummary implements Serializable {
@@ -21,6 +23,7 @@ public class TvShowSummary implements Serializable {
     private String intPosterMed;
     private String intPosterOrg;
     private String summary;
+    private Integer id;
     private Integer tvMazeId;
     private Integer runtime;
     private Integer thetvdbLink;
@@ -29,12 +32,43 @@ public class TvShowSummary implements Serializable {
     private LocalDate premiered;
     private Double ratingAvg;
     private List<TvShowEpisode> episodes;
+    private Set<Person> staff;
+    private LocalDateTime dbDatetime;
 
     static final long serialVersionUID = 1L;
 
     TvShowSummary() {
         this.episodes = new ArrayList<>();
         this.genres = new TreeSet<>();
+        this.staff = new TreeSet<>();
+    }
+
+    public LocalDateTime getDbDatetime() {
+        return dbDatetime;
+    }
+
+    public void setDbDatetime(LocalDateTime dbDatetime) {
+        this.dbDatetime = dbDatetime;
+    }
+
+    public Set<Person> getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Set<Person> staff) {
+        this.staff = staff;
+    }
+
+    public void setStaff(Person person) {
+        this.staff.add(person);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getIntPosterMed() {
@@ -215,26 +249,30 @@ public class TvShowSummary implements Serializable {
 
     @Override
     public String toString() {
-        return "com.pewa.tv.TvShowSummary{" +
-                "tvMazeId=" + tvMazeId +
-                ", tvMazeUrl='" + tvMazeUrl + '\'' +
+        return "TvShowSummary{" +
+                "tvMazeUrl='" + tvMazeUrl + '\'' +
                 ", title='" + title + '\'' +
                 ", type='" + type + '\'' +
                 ", language='" + language + '\'' +
-                ", genres=" + genres.toString() +
                 ", status='" + status + '\'' +
-                ", runtime='" + runtime + '\'' +
-                ", premiered='" + premiered + '\'' +
-                ", ratingAvg=" + ratingAvg +
                 ", network='" + network + '\'' +
-                ", country=" + country + '\'' +
+                ", country='" + country + '\'' +
                 ", imdbLink='" + imdbLink + '\'' +
-                ", thetvdbLink='" + thetvdbLink + '\'' +
-                ", tvrageLink='" + tvrageLink + '\'' +
                 ", posterMed='" + posterMed + '\'' +
                 ", posterOrg='" + posterOrg + '\'' +
+                ", intPosterMed='" + intPosterMed + '\'' +
+                ", intPosterOrg='" + intPosterOrg + '\'' +
                 ", summary='" + summary + '\'' +
-                "episodes=" + episodes +
+                ", id=" + id +
+                ", tvMazeId=" + tvMazeId +
+                ", runtime=" + runtime +
+                ", thetvdbLink=" + thetvdbLink +
+                ", tvrageLink=" + tvrageLink +
+                ", genres=" + genres +
+                ", premiered=" + premiered +
+                ", ratingAvg=" + ratingAvg +
+                ", episodes=" + episodes +
+                ", staff=" + staff +
                 '}';
     }
 

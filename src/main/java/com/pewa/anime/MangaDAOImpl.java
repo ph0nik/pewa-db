@@ -1,7 +1,11 @@
 package com.pewa.anime;
 
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
+import com.pewa.common.Results;
 import com.pewa.dao.MyBatisFactory;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,26 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class MangaDAOImpl implements MangaDAO {
     private List<Manga> output = new ArrayList<>();
+    private Integer countRows = 0;
 
     @Override
-    public void addManga(Manga manga) {
+    public Results addManga(Manga manga, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            session.insert("insertManga", manga);
-            session.insert("insertPeopleMan", manga);
-            session.insert("insertPeopleBridgeMan", manga);
+            countRows =+ session.insert("insertManga", manga);
+            countRows =+ session.insert("insertPeopleMan", manga);
+            countRows =+ session.insert("insertPeopleBridgeMan", manga);
             if (!manga.getGenres().isEmpty()) {
-                session.insert("insertGenreMan", manga);
-                session.insert("insertGenreBridgeMan", manga);
+                countRows =+ session.insert("insertGenreMan", manga);
+                countRows =+ session.insert("insertGenreBridgeMan", manga);
             }
             session.commit();
+
         }
+        return results.setRowsAffected(countRows);
     }
 
 
     @Override
-    public List<Manga> getManga(String query) {
+    public Results getManga(String query, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             query = new StringBuilder("%")
                     .append(query)
@@ -38,46 +46,38 @@ public class MangaDAOImpl implements MangaDAO {
             output = session.selectList("byTitleMan", query);
             session.commit();
         }
-        return output;
+        return results.setMangas(output);
     }
 
     @Override
-    public List<Manga> getMangaById(int id) {
+    public Results getMangaById(int id, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             output = session.selectList("ByIdMan", id);
             session.commit();
         }
-        return output;
+        return results.setMangas(output);
     }
 
     @Override
-    public List<Manga> getMangaByPerson(String person) {
+    public Results getMangaByPerson(Person person, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            person = new StringBuilder("%")
-                    .append(person)
-                    .append("%")
-                    .toString();
-            output = session.selectList("byPersonMan", person);
+            output = session.selectList("byPersonMan", person.getId());
             session.commit();
         }
-        return output;
+        return results.setMangas(output);
     }
 
     @Override
-    public List<Manga> getMangaByGenre(String genre) {
+    public Results getMangaByGenre(Genre genre, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            genre = new StringBuilder("%")
-                    .append(genre)
-                    .append("%")
-                    .toString();
-            output = session.selectList("byGenreMan", genre);
+            output = session.selectList("byGenreMan", genre.getId());
             session.commit();
         }
-        return output;
+        return results.setMangas(output);
     }
 
     @Override
-    public List<Manga> getMangaByYear(String x, String y) {
+    public Results getMangaByYear(String x, String y, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
             LocalDate start, end;
@@ -102,6 +102,6 @@ public class MangaDAOImpl implements MangaDAO {
             output = session.selectList("byYearMan", map);
             session.commit();
         }
-        return output;
+        return results.setMangas(output);
     }
 }

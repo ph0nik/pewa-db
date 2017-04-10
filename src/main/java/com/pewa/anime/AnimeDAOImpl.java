@@ -1,7 +1,13 @@
 package com.pewa.anime;
 
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
+import com.pewa.common.Results;
 import com.pewa.dao.MyBatisFactory;
+import com.pewa.dao.NewDataBase;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,11 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class AnimeDAOImpl implements AnimeDAO {
     private List<Anime> output = new ArrayList<>();
 
     public void addAnime(Anime anime) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH,false)) {
             session.insert("insertAnime", anime);
             session.insert("insertPeopleAni", anime);
             session.insert("insertPeopleBridgeAni", anime);
@@ -26,7 +33,8 @@ public class AnimeDAOImpl implements AnimeDAO {
         }
     }
 
-    public List<Anime> getAnime(String query) {
+    @Override
+    public Results getAnime(String query, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             query = new StringBuilder("%")
                     .append(query)
@@ -35,48 +43,44 @@ public class AnimeDAOImpl implements AnimeDAO {
             output = session.selectList("byTitleAni", query);
             session.commit();
         }
-        return output;
+        return results.setAnimes(output);
     }
 
     //TODO przerobić obiekt powrotny na Anime
-    public List<Anime> getAnimeById(int id) {
+    public Anime getAnimeById(Integer id) {
+        Anime anime = new Anime();
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("ByIdAni", id);
+            anime = session.selectOne("ByIdAni", id);
             session.commit();
         }
-        return output;
+        return anime;
     }
 
-    public List<Anime> getAnimeByPerson(String person) {
+    @Override
+    public Results getAnimeByPerson(Person person, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            person = new StringBuilder("%")
-                    .append(person)
-                    .append("%")
-                    .toString();
-            output = session.selectList("byPersonAni", person);
+            output = session.selectList("byPersonAni", person.getId());
             session.commit();
         }
-        return output;
+        return results.setAnimes(output);
     }
 
-    public List<Anime> getAnimeByGenre(String genre) {
+    @Override
+    public Results getAnimeByGenre(Genre genre, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            genre = new StringBuilder("%")
-                    .append(genre)
-                    .append("%")
-                    .toString();
-            output = session.selectList("byGenreAni", genre);
+            output = session.selectList("byGenreAni", genre.getId());
             session.commit();
         }
-        return output;
+        return results.setAnimes(output);
     }
 
-    public List<Anime> getAnimeByYear(String x, String y) {
+    @Override
+    public Results getAnimeByYear(String x, String y, Results results) {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
             LocalDate start, end;
             if (x.isEmpty()) {
-                start = LocalDate. now();
+                start = LocalDate.now();
             } else {
                 start = LocalDate.parse(x, formatter);
             }
@@ -96,6 +100,7 @@ public class AnimeDAOImpl implements AnimeDAO {
             output = session.selectList("byYearAni", map);
             session.commit();
         }
-        return output;
+        return results.setAnimes(output);
     }
+
 }

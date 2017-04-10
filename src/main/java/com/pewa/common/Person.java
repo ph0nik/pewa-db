@@ -1,13 +1,21 @@
-package com.pewa;
+package com.pewa.common;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person implements Comparable<Person>, Serializable {
+
     private Integer id;
     private String firstName;
     private String lastName;
     private String name;
     private String job;
+
+    static final long serialVersionUID = 1L;
+
+    public Person() {}
 
     public Person(String firstName, String lastName, String job) {
         this.firstName = firstName;

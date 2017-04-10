@@ -1,6 +1,7 @@
 package com.pewa;
 
 import com.pewa.dao.MyBatisFactory;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +12,11 @@ public class InitAllTables {
     private StringBuilder logMessage;
 
     public void initTables() {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH,false)) {
             session.update("createPersonTable");
             session.update("createGenreTable");
+            session.update("createLanguageTable");
+            session.update("createCountryTable");
 
             session.update("createBookTable");
             session.update("createBookPerson");
@@ -31,6 +34,14 @@ public class InitAllTables {
             session.update("createTvTable");
             session.update("createTvGenre");
             session.update("createTvEpisode");
+            session.update("createTvPerson");
+
+            session.update("createMovieTable");
+            session.update("createMovieGenre");
+            session.update("createMoviePerson");
+            session.update("createMovieLanguage");
+            session.update("createMovieCountry");
+            session.update("createMovieEncounter");
 
             session.commit();
         }

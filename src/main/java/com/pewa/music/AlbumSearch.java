@@ -1,28 +1,21 @@
 package com.pewa.music;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
 import com.pewa.PewaType;
-import com.pewa.SingleSearchResult;
-import com.pewa.config.ConfigReader;
-import org.jdom2.JDOMException;
-import org.jsoup.Connection;
-import org.xml.sax.InputSource;
+import com.pewa.common.SingleSearchResult;
+import com.pewa.config.ConfigFactory;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jsoup.Jsoup;
-
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static com.pewa.config.ConfigReader.coverByMusicBrainzId;
-import static com.pewa.config.ConfigReader.userAgent;
 
 
 public class AlbumSearch {
@@ -31,13 +24,14 @@ public class AlbumSearch {
 
 
     public static Set<SingleSearchResult> searchMusicAlbum(String query) {
-        StringBuilder url = new StringBuilder(ConfigReader.musicSearch).append(query.replaceAll(" ", "+"));
+        String url = new StringBuilder(ConfigFactory.get("search.musicSearch"))
+                                                    .append(query.replaceAll(" ", "+"))
+                                                    .toString();
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-
         SAXBuilder builder = new SAXBuilder();
         try {
-            String musicBrainzDocument = Jsoup.connect(url.toString())
-                    .userAgent(ConfigReader.userAgentMusicBrainz)
+            String musicBrainzDocument = Jsoup.connect(url)
+                    .userAgent(ConfigFactory.get("search.userAgentMB"))
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()
@@ -49,9 +43,8 @@ public class AlbumSearch {
             Namespace namespace = rootNode.getNamespace();
             List<Element> releases = rootNode.getChildren().get(0).getChildren();
 
-            for (Element i : releases) {
+            for (Element node : releases) {
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
-                Element node = i;
                 String albumId = node.getAttributeValue("id");
                 String albumTitle = node.getChildText("title", namespace);
                 String albumDate = node.getChildText("date", namespace);

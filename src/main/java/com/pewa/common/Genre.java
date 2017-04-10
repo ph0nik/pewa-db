@@ -1,10 +1,17 @@
-package com.pewa;
+package com.pewa.common;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Genre implements Comparable<Genre>, Serializable {
     private Integer id;
     private String genre;
+
+    static final long serialVersionUID = 1L;
+
+    public Genre() {}
 
     public Genre(String name) {
         this.genre = name;

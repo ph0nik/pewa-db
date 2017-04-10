@@ -1,37 +1,28 @@
 package com.pewa.movie;
 
-import com.pewa.PewaType;
-import com.pewa.SingleSearchResult;
-import com.pewa.config.ConfigReader;
-import com.pewa.imdb.GetImdbId;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import com.pewa.common.SingleSearchResult;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-import java.util.TreeSet;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 public class GetImdbIdTest {
-
-    @BeforeClass
-    public static void initTest() {
-        ConfigReader.load();
-    }
-
+    @Disabled
     @Test
     public void tryMapOfItemsMovie() {
-        GetImdbId searchMovie = new GetImdbId();
-        Set<SingleSearchResult> result = searchMovie.externalMovieSearch("versus", PewaType.MOVIE);
+        MovieSearchImpl searchMovie = new MovieSearchImpl();
+        Set<SingleSearchResult> result = searchMovie.externalMovieSearch("versus");
         assertNotNull(result);
         result.forEach(System.out::println);
     }
-
+    @Disabled
     @Test
     public void tryMapOfItemsTv() {
-        GetImdbId searchTv = new GetImdbId();
-        Set<SingleSearchResult> result = searchTv.externalMovieSearch("buffy", PewaType.TVSERIES);
+        MovieSearchImpl searchTv = new MovieSearchImpl();
+        Set<SingleSearchResult> result = searchTv.externalMovieSearch("buffy");
         result.forEach(System.out::println);
         assertNotNull(result);
     }

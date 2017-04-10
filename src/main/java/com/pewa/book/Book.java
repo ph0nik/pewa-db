@@ -1,8 +1,9 @@
 package com.pewa.book;
 
-import com.pewa.Form;
-import com.pewa.Genre;
-import com.pewa.Person;
+import com.pewa.PewaType;
+import com.pewa.common.Form;
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Book {
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
+    private PewaType type;
     private String additionalInfo, originalTitle, polishTitle, originalLanguage, category, altVersion;
 
  List a = new ArrayList();
@@ -43,6 +45,22 @@ public class Book {
                 ", firstPubDate=" + firstPubDate +
                 ", plPubDate=" + plPubDate +
                 '}';
+    }
+
+    public void setGenre(Set<Genre> genre) {
+        this.genre = genre;
+    }
+
+    public void setForm(Set<Form> form) {
+        this.form = form;
+    }
+
+    public PewaType getType() {
+        return type;
+    }
+
+    public void setType(PewaType type) {
+        this.type = type;
     }
 
     public Set<Person> getPeople() {

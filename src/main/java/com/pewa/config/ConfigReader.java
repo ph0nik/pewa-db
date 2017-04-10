@@ -16,22 +16,13 @@ public class ConfigReader {
     public static String searchMovie;
     public static String searchTv;
     public static String omdbUrl;
-    public static String tvMaze;
-    public static String tvMazeByImdbId;
-    public static String tvMazeSummary;
-    public static String tvMazeEpisodeList;
     public static String titleOrgId;
     public static String titlePlId;
     public static String searchBook;
     public static String bookItemUrl;
-    public static String rootPass;
     public static String userName;
     public static String userPass;
-    public static String dbUrlUser;
-    public static String dbUrlRoot;
     public static String dbName;
-    public static String dbLogin;
-    public static String dbPass;
     public static String userAgent;
     public static String userAgentMusicBrainz;
     public static String musicSearch;
@@ -49,6 +40,8 @@ public class ConfigReader {
     public static String aniListCharacters;
     public static String coverByMusicBrainzId;
     public static String imgPath;
+    public static String tvMazeSearchUrl;
+    public static String tvMazeSummary;
 
     //public static final String BLABLA = ConfigFactory.getConfigFactory().getString("asd");
 
@@ -66,21 +59,12 @@ public class ConfigReader {
             searchTv = config.getString("search.imdbtvshows");
             searchBook = config.getString("search.bookSearchUrl");
             searchBookAlt = config.getString("search.bookSearchUrlAlt");
-            tvMaze = config.getString("item.tvmaze");
-            tvMazeByImdbId = config.getString("item.tvmazeLookupImdb");
-            tvMazeSummary = config.getString("item.tvmazeShows");
-            tvMazeEpisodeList = config.getString("item.tvmazeEpisodes");
             titlePlId = config.getString("search.bookTitlePlId");
             titleOrgId = config.getString("search.bookTitleOrgId");
             bookItemUrl = config.getString("item.bookItemUrl");
-            rootPass = config.getString("sql.dbPass");
             userName = config.getString("sql.userName");
             userPass = config.getString("sql.userPass");
-            dbUrlUser = config.getString("sql.dbUrlUser");
-            dbUrlRoot = config.getString("sql.dbUrlRoot");
             dbName = config.getString("sql.dbName");
-            dbLogin = config.getString("sql.dbLogin");
-            dbPass = config.getString("sql.dbPass");
             userAgent = config.getString("search.userAgent");
             userAgentMusicBrainz = config.getString("search.userAgentMB");
             musicSearch = config.getString("search.musicSearch");
@@ -97,6 +81,8 @@ public class ConfigReader {
             aniListCharacters = config.getString("item.aniListCharacters");
             coverByMusicBrainzId = config.getString("search.coverByMusicBrainzId");
             imgPath = config.getString("dbCache.imgPath");
+            tvMazeSearchUrl = config.getString("search.tvMazeSearchUrl");
+            tvMazeSummary = config.getString("item.tvMazeSummary");
         } catch (ConfigurationException e) {
             log.error(e.getMessage(), e);
         } catch (NoSuchElementException e) {

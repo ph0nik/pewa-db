@@ -1,16 +1,18 @@
 import com.pewa.InitAllTables;
-import com.pewa.config.ConfigReader;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 
 public class InitAllTablesTest {
 
-    @BeforeClass
-    public static void initTest() {
-
-        ConfigReader.load();
+    @Disabled
+    @Test
+    public void dropAll() {
+        InitAllTables tables = new InitAllTables();
+        tables.dropTables();
     }
 
+    @Disabled
     @Test
     public void createTables() {
         InitAllTables tables = new InitAllTables();
@@ -18,9 +20,5 @@ public class InitAllTablesTest {
 
     }
 
-    @Test
-    public void dropAll() {
-        InitAllTables tables = new InitAllTables();
-        tables.dropTables();
-    }
+
 }

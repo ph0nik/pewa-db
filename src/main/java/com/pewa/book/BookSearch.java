@@ -1,7 +1,8 @@
 package com.pewa.book;
 
-import com.pewa.config.ConfigReader;
-import com.pewa.*;
+import com.pewa.PewaType;
+import com.pewa.common.SingleSearchResult;
+import com.pewa.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -10,9 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 
@@ -31,13 +30,13 @@ public class BookSearch {
     }
 
     public Set<SingleSearchResult> bookSearchResultSet(String userInput) {
-        String url = ConfigReader.searchBookAlt.concat(userInput.replaceAll(" ", "+"));
+        String url = ConfigFactory.get("search.bookSearchUrlAlt").concat(userInput.replaceAll(" ", "+"));
         try {
             final Document searchResults = Jsoup.connect(url)
-                    .userAgent(ConfigReader.userAgent)
+                    .userAgent(ConfigFactory.get("search.userAgent"))
                     .timeout(5 * 1000)
                     .get();
-            Elements titlePL = searchResults.getElementById(ConfigReader.titlePlId)
+            Elements titlePL = searchResults.getElementById(ConfigFactory.get("search.bookTitlePlId"))
                     .getElementsByTag("li");
 
             for (Element x : titlePL) {

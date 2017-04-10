@@ -1,22 +1,18 @@
 package com.pewa.tv;
 
 import com.pewa.MediaParse;
-import com.pewa.config.ConfigReader;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TvShowParseToObjectTest {
-    @BeforeClass
-    public static void initTest() {
-        ConfigReader.load();
-    }
-
+    @Disabled
     @Test
     public void getListOfFoundTvShows() {
-        MediaParse<TvShowSummary, String> tvShow = new TvShowParser();
-        TvShowSummary buffy = tvShow.getItem("tt0118276");
+        MediaParse<TvShowSummary, Integer> tvShow = new TvShowParser();
+        TvShowSummary buffy = tvShow.getItem(427);
         int dl = buffy.getEpisodes().size();
         assertEquals(143, dl);
 
@@ -26,11 +22,11 @@ public class TvShowParseToObjectTest {
         }*/
 
     }
-
-    @Test(expected = NullPointerException.class)
+    @Disabled
+    @Test
     public void checkWrongImdbId() {
-        MediaParse<TvShowSummary, String> tvShow = new TvShowParser();
-        TvShowSummary wrongImdbId = tvShow.getItem("6");
+        MediaParse<TvShowSummary, Integer> tvShow = new TvShowParser();
+        TvShowSummary wrongImdbId = tvShow.getItem(0);
         System.out.println(wrongImdbId.toString());
     }
 }

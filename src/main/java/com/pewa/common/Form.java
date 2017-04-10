@@ -1,10 +1,15 @@
-package com.pewa;
+package com.pewa.common;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Form implements Comparable<Form>, Serializable {
     private Integer id;
     private String form;
+
+    static final long serialVersionUID = 1L;
 
     public Form() {}
 

@@ -5,10 +5,12 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.pewa.PewaType;
-import com.pewa.SingleSearchResult;
+import com.pewa.common.SingleSearchResult;
+import com.pewa.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -16,27 +18,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.pewa.config.ConfigReader.*;
-import static com.pewa.config.Session.updateSession;
+import static com.pewa.anime.Session.updateSession;
 
+@Component
 public class AnimeMangaSearch {
 
     private final static Logger log = LogManager.getLogger(AnimeMangaSearch.class);
 
-    public Set<SingleSearchResult> aniListSearch(String query, String searchType) {
-        Set<SingleSearchResult> output = new TreeSet<>();
-        String url;
-        AnimeAccessToken animeAccessToken = updateSession();
+    /**
+     * Performs search on external web-api and returns Set of SingleSearchResult objects based on query and searchType.
+     *
+     * @param query an {@code String}
+     * @param searchType an {@code PewaType}
+     */
 
-        if (searchType.equals("anime")) {
-            url = aniListApiEndpoint + aniListSearchAnime + query;
-        } else {
-            url = aniListApiEndpoint + aniListSearchManga + query;
-        }
+    public Set<SingleSearchResult> aniListSearch(String query, PewaType searchType) {
+        Set<SingleSearchResult> output = new TreeSet<>();
+        AnimeAccessToken animeAccessToken = updateSession();
+        String anime = new StringBuilder(ConfigFactory.get("search.aniListApiEndpoint"))
+                                .append(ConfigFactory.get("search.aniListSearchAnime"))
+                                .append(query)
+                                .toString();
+        String manga = new StringBuilder(ConfigFactory.get("search.aniListApiEndpoint"))
+                                .append(ConfigFactory.get("search.aniListSearchManga"))
+                                .append(query)
+                                .toString();
+        String url = (searchType.equals(PewaType.ANIME)) ? anime : manga;
         try {
             final String getResults = Jsoup.connect(url)
                     .data("access_token", animeAccessToken.getAccessToken())
-                    .userAgent(userAgent)
+                    .userAgent(ConfigFactory.get("search.userAgent"))
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()
@@ -76,7 +87,7 @@ public class AnimeMangaSearch {
                     year = "[" + zdtStart.getYear() + " - " + zdtEnd.getYear() + "]";
                 }
                 String addInfo;
-                if (searchType.equals("anime")) {
+                if (searchType.equals(PewaType.ANIME)) {
                     int eps = singleElement.getInt("total_episodes", 0);
                     int duration = 0;
                     if (!singleElement.get("duration").isNull()) {
@@ -100,10 +111,13 @@ public class AnimeMangaSearch {
                             .toString();
                     singleSearchResult.setType(PewaType.MANGA);
                 }
-                String desc = new StringBuilder(titleRom)
-                        .append(" <")
+                String title = new StringBuilder(titleRom)
+                        .append(" [")
                         .append(titleEng)
-                        .append("> (")
+                        .append("]")
+                        .toString();
+                singleSearchResult.setTitle(title);
+                String desc = new StringBuilder("(")
                         .append(year)
                         .append(") ")
                         .append(type)

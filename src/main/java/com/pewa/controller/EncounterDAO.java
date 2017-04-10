@@ -11,12 +11,12 @@ import com.pewa.tv.TvShowSummary;
  */
 public interface EncounterDAO {
 
-    public Boolean addEncounter(Movie movie);
-    public Boolean addEncounter(Anime movie);
-    public Boolean addEncounter(Book movie);
-    public Boolean addEncounter(Album movie);
-    public Boolean addEncounter(TvShowSummary tvshow);
-    public void editEncounter(int id);
+    Boolean addEncounter(Movie movie);
+    Boolean addEncounter(Anime movie);
+    Boolean addEncounter(Book movie);
+    Boolean addEncounter(Album movie);
+    Boolean addEncounter(TvShowSummary tvshow);
+    void editEncounter(int id);
 
 
 }

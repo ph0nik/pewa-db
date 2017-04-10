@@ -1,21 +1,37 @@
 package com.pewa.anime;
 
-import com.pewa.Genre;
-import com.pewa.Person;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.common.Genre;
+import com.pewa.MediaModel;
+import com.pewa.common.Person;
+import com.pewa.util.CustomLocalDateDeserializer;
+import com.pewa.util.CustomLocalDateSerializer;
+import com.pewa.util.CustomLocalDateTimeDeserializer;
+import com.pewa.util.CustomLocalDateTimeSerializer;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Anime {
+public class Anime extends MediaModel implements Serializable {
     private String titleRom, titleEng, type, description, poster, intPoster, airingStatus;
+
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate startDate, endDate;
     private Set<Genre> genres;
     private Set<Person> staff;
     private Integer id, eps, duration, idAnilist;
+
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime dbDatetime;
-    //TODO dodac mape osob wg elementu Person
+
+    static final long serialVersionUID = 1L;
+
 
     public Anime() {
         this.genres = new TreeSet<>();
@@ -178,4 +194,51 @@ public class Anime {
                 ", dbDatetime=" + dbDatetime +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Anime anime = (Anime) o;
+
+        if (titleRom != null ? !titleRom.equals(anime.titleRom) : anime.titleRom != null) return false;
+        if (titleEng != null ? !titleEng.equals(anime.titleEng) : anime.titleEng != null) return false;
+        if (type != null ? !type.equals(anime.type) : anime.type != null) return false;
+        if (description != null ? !description.equals(anime.description) : anime.description != null) return false;
+        if (poster != null ? !poster.equals(anime.poster) : anime.poster != null) return false;
+        if (intPoster != null ? !intPoster.equals(anime.intPoster) : anime.intPoster != null) return false;
+        if (airingStatus != null ? !airingStatus.equals(anime.airingStatus) : anime.airingStatus != null) return false;
+        if (startDate != null ? !startDate.equals(anime.startDate) : anime.startDate != null) return false;
+        if (endDate != null ? !endDate.equals(anime.endDate) : anime.endDate != null) return false;
+        if (genres != null ? !genres.equals(anime.genres) : anime.genres != null) return false;
+        if (staff != null ? !staff.equals(anime.staff) : anime.staff != null) return false;
+        if (id != null ? !id.equals(anime.id) : anime.id != null) return false;
+        if (eps != null ? !eps.equals(anime.eps) : anime.eps != null) return false;
+        if (duration != null ? !duration.equals(anime.duration) : anime.duration != null) return false;
+        if (idAnilist != null ? !idAnilist.equals(anime.idAnilist) : anime.idAnilist != null) return false;
+        return dbDatetime != null ? dbDatetime.equals(anime.dbDatetime) : anime.dbDatetime == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = titleRom != null ? titleRom.hashCode() : 0;
+        result = 31 * result + (titleEng != null ? titleEng.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (poster != null ? poster.hashCode() : 0);
+        result = 31 * result + (intPoster != null ? intPoster.hashCode() : 0);
+        result = 31 * result + (airingStatus != null ? airingStatus.hashCode() : 0);
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
+        result = 31 * result + (genres != null ? genres.hashCode() : 0);
+        result = 31 * result + (staff != null ? staff.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (eps != null ? eps.hashCode() : 0);
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        result = 31 * result + (idAnilist != null ? idAnilist.hashCode() : 0);
+        result = 31 * result + (dbDatetime != null ? dbDatetime.hashCode() : 0);
+        return result;
+    }
+
 }

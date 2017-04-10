@@ -1,14 +1,35 @@
 package com.pewa.movie;
 
-import java.util.Set;
+import com.pewa.common.Genre;
+import com.pewa.common.Language;
+import com.pewa.common.Person;
+import com.pewa.common.Results;
 
 public interface MovieDAO {
 
-    Boolean addMovie(Movie movieInfo);
-    Set<Movie> moviesByTitle(String query);
-    Set<Movie> moviesByPerson(String query);
-    Set<Movie> moviesByGenre(String query);
-    Set<Movie> moviesByLanguage(String query);
-    Set<Movie> moviesByYear(int x, int y);
+    void addMovie(Movie movie);
+
+    void updMovie(Movie movie);
+
+    Results moviesByTitle(String query, Results results);
+
+    Movie moviesById(String imdbId);
+
+    /**
+     * person -> person.getId()
+     * */
+    Results moviesByPersonId(Person person, Results results);
+
+    /**
+     *
+     * genre -> genre.getId()
+    * */
+    Results moviesByGenreId(Genre genre, Results results);
+
+    Results moviesByLanguageId(Language lang, Results results);
+
+    Results moviesByYear(Integer x, Integer y, Results results);
+
+    Results moviesByDate(String x, String y, Results results);
 
 }
