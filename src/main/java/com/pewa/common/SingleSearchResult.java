@@ -1,15 +1,24 @@
 package com.pewa.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.pewa.PewaType;
+import com.pewa.util.CustomLocalDateDeserializer;
+import com.pewa.util.CustomLocalDateSerializer;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 
-public class SingleSearchResult implements Comparable<SingleSearchResult> {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class SingleSearchResult implements Encounter, Comparable<SingleSearchResult> {
     private String url;
-    private String title, desc;
+    private String title, description;
     private Integer idInt;
     private String poster;
     private PewaType type;
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate date;
 
     public LocalDate getDate() {
@@ -60,12 +69,12 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
         this.url = url;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
         return "SingleSearchResult{" +
                 "url='" + url + '\'' +
                 ", title='" + title + '\'' +
-                ", desc='" + desc + '\'' +
+                ", description='" + description + '\'' +
                 ", idInt=" + idInt +
                 ", poster='" + poster + '\'' +
                 ", type=" + type +
@@ -88,16 +97,36 @@ public class SingleSearchResult implements Comparable<SingleSearchResult> {
 
         SingleSearchResult that = (SingleSearchResult) o;
 
-        return desc != null ? desc.equals(that.desc) : that.desc == null;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (idInt != null ? !idInt.equals(that.idInt) : that.idInt != null) return false;
+        if (poster != null ? !poster.equals(that.poster) : that.poster != null) return false;
+        if (type != that.type) return false;
+        return date != null ? date.equals(that.date) : that.date == null;
     }
 
     @Override
     public int hashCode() {
-        return desc != null ? desc.hashCode() : 0;
+        int result = url != null ? url.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (idInt != null ? idInt.hashCode() : 0);
+        result = 31 * result + (poster != null ? poster.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        return result;
     }
+
+    private static Comparator<String> nullSafeStringComparator = Comparator.nullsFirst(String::compareTo);
+    private static Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsFirst(Integer::compareTo);
+    private static Comparator<SingleSearchResult> singleSearchResultComparator = Comparator.comparing(SingleSearchResult::getUrl, nullSafeStringComparator)
+            .thenComparing(SingleSearchResult::getIdInt, nullSafeIntegerComparator)
+            .thenComparing(SingleSearchResult::getTitle, nullSafeStringComparator)
+            .thenComparing(SingleSearchResult::getDescription, nullSafeStringComparator);
 
     @Override
     public int compareTo(SingleSearchResult o) {
-        return this.getDesc().compareTo(o.getDesc());
+        return singleSearchResultComparator.compare(this, o);
     }
 }

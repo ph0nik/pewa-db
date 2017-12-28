@@ -1,19 +1,28 @@
 package com.pewa.tv;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.util.CustomLocalDateDeserializer;
+import com.pewa.util.CustomLocalDateSerializer;
+import com.pewa.util.CustomLocalDateTimeDeserializer;
+import com.pewa.util.CustomLocalDateTimeSerializer;
+import com.pewa.common.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
     private String tvMazeUrl, epTitle, summary;
     private Integer id, tvMazeId, season, episode;
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate firstAired;
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime dbDatetime;
 
     static final long serialVersionUID = 1L;
-
-    public TvShowEpisode() {}
 
     public String getTvMazeUrl() {
         return tvMazeUrl;

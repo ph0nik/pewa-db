@@ -13,6 +13,10 @@ public class Genre implements Comparable<Genre>, Serializable {
 
     public Genre() {}
 
+    public Genre(Integer id) {
+        this.id = id;
+    }
+
     public Genre(String name) {
         this.genre = name;
     }

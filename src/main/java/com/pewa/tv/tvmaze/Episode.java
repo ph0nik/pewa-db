@@ -1,171 +1,143 @@
 
 package com.pewa.tv.tvmaze;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "id",
-    "url",
-    "name",
-    "season",
-    "number",
-    "airdate",
-    "airtime",
-    "airstamp",
-    "runtime",
-    "image",
-    "summary",
-    "_links"
-})
 public class Episode {
 
-    @JsonProperty("id")
+    @SerializedName("id")
+    @Expose
     private int id;
-    @JsonProperty("url")
+    @SerializedName("url")
+    @Expose
     private String url;
-    @JsonProperty("name")
+    @SerializedName("name")
+    @Expose
     private String name;
-    @JsonProperty("season")
+    @SerializedName("season")
+    @Expose
     private int season;
-    @JsonProperty("number")
+    @SerializedName("number")
+    @Expose
     private int number;
-    @JsonProperty("airdate")
+    @SerializedName("airdate")
+    @Expose
     private String airdate;
-    @JsonProperty("airtime")
+    @SerializedName("airtime")
+    @Expose
     private String airtime;
-    @JsonProperty("airstamp")
+    @SerializedName("airstamp")
+    @Expose
     private String airstamp;
-    @JsonProperty("runtime")
+    @SerializedName("runtime")
+    @Expose
     private int runtime;
-    @JsonProperty("image")
+    @SerializedName("image")
+    @Expose
     private Image___ image;
-    @JsonProperty("summary")
+    @SerializedName("summary")
+    @Expose
     private String summary;
-    @JsonProperty("_links")
+    @SerializedName("_links")
+    @Expose
     private Links____ links;
 
-    @JsonProperty("id")
     public int getId() {
         return id;
     }
 
-    @JsonProperty("id")
     public void setId(int id) {
         this.id = id;
     }
 
-    @JsonProperty("url")
     public String getUrl() {
         return url;
     }
 
-    @JsonProperty("url")
     public void setUrl(String url) {
         this.url = url;
     }
 
-    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonProperty("season")
     public int getSeason() {
         return season;
     }
 
-    @JsonProperty("season")
     public void setSeason(int season) {
         this.season = season;
     }
 
-    @JsonProperty("number")
     public int getNumber() {
         return number;
     }
 
-    @JsonProperty("number")
     public void setNumber(int number) {
         this.number = number;
     }
 
-    @JsonProperty("airdate")
     public String getAirdate() {
         return airdate;
     }
 
-    @JsonProperty("airdate")
     public void setAirdate(String airdate) {
         this.airdate = airdate;
     }
 
-    @JsonProperty("airtime")
     public String getAirtime() {
         return airtime;
     }
 
-    @JsonProperty("airtime")
     public void setAirtime(String airtime) {
         this.airtime = airtime;
     }
 
-    @JsonProperty("airstamp")
     public String getAirstamp() {
         return airstamp;
     }
 
-    @JsonProperty("airstamp")
     public void setAirstamp(String airstamp) {
         this.airstamp = airstamp;
     }
 
-    @JsonProperty("runtime")
     public int getRuntime() {
         return runtime;
     }
 
-    @JsonProperty("runtime")
     public void setRuntime(int runtime) {
         this.runtime = runtime;
     }
 
-    @JsonProperty("image")
     public Image___ getImage() {
         return image;
     }
 
-    @JsonProperty("image")
     public void setImage(Image___ image) {
         this.image = image;
     }
 
-    @JsonProperty("summary")
     public String getSummary() {
         return summary;
     }
 
-    @JsonProperty("summary")
     public void setSummary(String summary) {
         this.summary = summary;
     }
 
-    @JsonProperty("_links")
     public Links____ getLinks() {
         return links;
     }
 
-    @JsonProperty("_links")
     public void setLinks(Links____ links) {
         this.links = links;
     }

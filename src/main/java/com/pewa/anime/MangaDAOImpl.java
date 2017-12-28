@@ -1,107 +1,129 @@
 package com.pewa.anime;
 
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
+import com.pewa.PewaType;
+import com.pewa.common.Encounter;
+import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class MangaDAOImpl implements MangaDAO {
-    private List<Manga> output = new ArrayList<>();
-    private Integer countRows = 0;
+    private static final Logger log = LogManager.getLogger(MangaDAO.class);
+    private static final String formatterString = "uuuu-MM-dd";
+    private static final String addSuccess = "Manga item added  : ";
+    private static final String updateSuccess = "Manga item updated : ";
+    private static final String deleteSuccess = "Manga item deleted : ";
+    private static final String nothingFound = "No manga with this Id found : ";
+    private static final String alreadyInDb = "Manga item already in database : ";
+    private final PewaType mangaType = PewaType.MANGA;
+    private List<Encounter> output;
+    private Integer rowsAffected;
+    private Manga manga;
 
     @Override
     public Results addManga(Manga manga, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            countRows =+ session.insert("insertManga", manga);
-            countRows =+ session.insert("insertPeopleMan", manga);
-            countRows =+ session.insert("insertPeopleBridgeMan", manga);
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertManga"), manga);
+            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertPeopleMan"), manga);
+            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertPeopleBridgeMan"), manga);
             if (!manga.getGenres().isEmpty()) {
-                countRows =+ session.insert("insertGenreMan", manga);
-                countRows =+ session.insert("insertGenreBridgeMan", manga);
+                rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertGenreMan"), manga);
+                rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertGenreBridgeMan"), manga);
             }
             session.commit();
-
+            results.setRowsAffected(rowsAffected);
+            if (rowsAffected != 0) results.setReturnMessage(addSuccess + manga.getTitleRom());
+            else results.setReturnMessage(alreadyInDb + manga.getTitleRom());
         }
-        return results.setRowsAffected(countRows);
+        return results;
     }
 
+    public Results updateManga(Manga manga, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.update(ConfigFactory.get("manga-mapper.updateAnime"), manga);
+            session.commit();
+        }
+        results.setRowsAffected(rowsAffected);
+        if (rowsAffected != 0) results.setReturnMessage(updateSuccess + manga.getTitleRom());
+        else results.setReturnMessage(nothingFound + manga.getTitleRom());
+        return results;
+    }
+
+    public Results deleteManga(Integer manga, Results results){
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.delete(ConfigFactory.get("manga-mapper.deleteAnime"), manga);
+            session.commit();
+            results.setRowsAffected(rowsAffected);
+        }
+        if (rowsAffected != 0) results.setReturnMessage(deleteSuccess + manga);
+        else results.setReturnMessage(nothingFound + manga);
+        return results;
+    }
 
     @Override
-    public Results getManga(String query, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+    public Results getMangaByTitle(String query, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             query = new StringBuilder("%")
                     .append(query)
                     .append("%")
                     .toString();
-            output = session.selectList("byTitleMan", query);
+            output = session.selectList(ConfigFactory.get("manga-mapper.byTitleMan"), query);
             session.commit();
         }
-        return results.setMangas(output);
+        output.forEach(x -> x.setType(mangaType));
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results getMangaById(int id, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("ByIdMan", id);
+    public Results getMangaById(Integer id, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            manga = session.selectOne(ConfigFactory.get("manga-mapper.ByIdMan"), id);
             session.commit();
+            results.setEncounters(manga);
         }
-        return results.setMangas(output);
+        return results;
     }
 
     @Override
-    public Results getMangaByPerson(Person person, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byPersonMan", person.getId());
+    public Results getMangaByPerson(Integer person, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("manga-mapper.byPersonMan"), person);
             session.commit();
         }
-        return results.setMangas(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results getMangaByGenre(Genre genre, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byGenreMan", genre.getId());
+    public Results getMangaByGenre(Integer genre, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("manga-mapper.byGenreMan"), genre);
             session.commit();
         }
-        return results.setMangas(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results getMangaByYear(String x, String y, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
-            LocalDate start, end;
-            if (x.isEmpty()) {
-                start = LocalDate. now();
-            } else {
-                start = LocalDate.parse(x, formatter);
-            }
-            if (y.isEmpty()) {
-                end = LocalDate.now();
-            } else {
-                end = LocalDate.parse(y, formatter);
-            }
-            Map<String, LocalDate> map = new HashMap<>();
-            if (start.compareTo(end) >= 0) {
-                map.put("start", end);
-                map.put("end", start);
-            } else {
-                map.put("start", start);
-                map.put("end", end);
-            }
-            output = session.selectList("byYearMan", map);
+    public Results getMangaByYear(Request date, Results results) {
+        Integer year = date.getYear();
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("manga-mapper.byYearMovie"), year);
             session.commit();
         }
-        return results.setMangas(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 }

@@ -2,54 +2,44 @@
 package com.pewa.tv.tvmaze;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "cast",
-    "crew",
-    "episodes"
-})
 public class Embedded {
 
-    @JsonProperty("cast")
+    @SerializedName("cast")
+    @Expose
     private List<Cast> cast = null;
-    @JsonProperty("crew")
+    @SerializedName("crew")
+    @Expose
     private List<Crew> crew = null;
-    @JsonProperty("episodes")
+    @SerializedName("episodes")
+    @Expose
     private List<Episode> episodes = null;
 
-    @JsonProperty("cast")
     public List<Cast> getCast() {
         return cast;
     }
 
-    @JsonProperty("cast")
     public void setCast(List<Cast> cast) {
         this.cast = cast;
     }
 
-    @JsonProperty("crew")
     public List<Crew> getCrew() {
         return crew;
     }
 
-    @JsonProperty("crew")
     public void setCrew(List<Crew> crew) {
         this.crew = crew;
     }
 
-    @JsonProperty("episodes")
     public List<Episode> getEpisodes() {
         return episodes;
     }
 
-    @JsonProperty("episodes")
     public void setEpisodes(List<Episode> episodes) {
         this.episodes = episodes;
     }

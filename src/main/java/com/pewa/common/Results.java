@@ -1,34 +1,47 @@
 package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pewa.anime.Anime;
-import com.pewa.anime.Manga;
-import com.pewa.book.Book;
-import com.pewa.movie.Movie;
-import com.pewa.tv.TvShowSummary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by phonik on 2017-04-08.
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS , value = WebApplicationContext.SCOPE_REQUEST)
 public class Results {
 
     private String message;
     private Integer resultsFound;
-    private List<Movie> movies;
-    private List<Book> books;
-    private List<TvShowSummary> tvshows;
-    private List<Anime> animes;
-    private List<Manga> mangas;
+    private List<Encounter> encounters;
     private Integer rowsAffected;
 
+    public List<Encounter> getEncounters() {
+        return encounters;
+    }
+
+    //przeniesiony konstruktor listy z konstruktora obiektu do funkcji poniżęj
+    public void setEncounters(Encounter encouter) {
+        if (this.encounters == null) {
+            this.encounters = new ArrayList<>();
+        }
+        this.encounters.add(encouter);
+        this.resultsFound += encounters.size();
+    }
+
+    public void add(Results results) {
+        if (results.getEncounters() != null) {
+            results.getEncounters().forEach(this::setEncounters);
+        }
+
+    }
 
     public Results() {
         this.resultsFound = 0;
+        this.rowsAffected = 0;
     }
 
     public Results setRowsAffected(Integer rows) {
@@ -40,63 +53,18 @@ public class Results {
         return this.rowsAffected;
     }
 
-    public Results setMessage() {
+    public Results setReturnMessage() {
         this.message = (this.resultsFound != 0) ? "OK" : "No results found";
         return this;
     }
 
-    public Results setMovies(List<Movie> movies) {
-        this.movies = movies;
-        this.resultsFound =+ movies.size();
-        return this;
-    }
-
-    public Results setTvshows(List<TvShowSummary> tvshows) {
-        this.tvshows = tvshows;
-        this.resultsFound =+ tvshows.size();
-        return this;
-    }
-
-    public Results setBooks(List<Book> books) {
-        this.books = books;
-        this.resultsFound =+ books.size();
-        return this;
-    }
-
-    public Results setAnimes(List<Anime> animes) {
-        this.animes = animes;
-        this.resultsFound =+ animes.size();
-        return this;
-    }
-
-    public Results setMangas(List<Manga> mangas) {
-        this.mangas = mangas;
-        this.resultsFound =+ mangas.size();
+    public Results setReturnMessage(String message) {
+        this.message = message;
         return this;
     }
 
     public String getMessage() {
         return message;
-    }
-
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public List<TvShowSummary> getTvshows() {
-        return tvshows;
-    }
-
-    public List<Anime> getAnimes() {
-        return animes;
-    }
-
-    public List<Manga> getMangas() {
-        return mangas;
     }
 
     public Integer getResultsFound() {
@@ -108,11 +76,8 @@ public class Results {
         return "Results{" +
                 "message='" + message + '\'' +
                 ", resultsFound=" + resultsFound +
-                ", movies=" + movies +
-                ", books=" + books +
-                ", tvshows=" + tvshows +
-                ", animes=" + animes +
-                ", mangas=" + mangas +
+                ", encounters=" + encounters +
+                ", rowsAffected=" + rowsAffected +
                 '}';
     }
 }

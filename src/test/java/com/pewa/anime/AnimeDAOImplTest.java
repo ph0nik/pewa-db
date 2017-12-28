@@ -1,14 +1,11 @@
 package com.pewa.anime;
 
 import com.pewa.MediaParse;
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
+import com.pewa.common.Request;
 import com.pewa.common.Results;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import java.util.List;
-
 
 
 /**
@@ -17,65 +14,62 @@ import java.util.List;
 public class AnimeDAOImplTest {
 
     private Results results;
+    private Request request;
+    private Integer itemId;
+    private AnimeDAO animeDAO;
 
     @BeforeEach
     public void setObjects() {
         results = new Results();
+        request = new Request();
+        animeDAO = new AnimeDAOImpl();
     }
 
     @Disabled
     @Test
     public void addAnimeToDB() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
         MediaParse<Anime, Integer> getAnime = new AnimeParser();
         Anime test = getAnime.getItem(43);
-        animeDAO.addAnime(test);
+        animeDAO.addAnime(test, results);
         test = getAnime.getItem(45);
-        animeDAO.addAnime(test);
+        animeDAO.addAnime(test, results);
         test = getAnime.getItem(47);
-        animeDAO.addAnime(test);
+        animeDAO.addAnime(test, results);
     }
     @Disabled
     @Test
     public void searchAnime() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        Results out = animeDAO.getAnime("ghost", results);
-        out.getAnimes().forEach(System.out::println);
+        Results out = animeDAO.getAnimeByTitle("ghost", results);
+        out.getEncounters().forEach(System.out::println);
     }
     @Disabled
     @Test
     public void animeById() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        Anime out = animeDAO.getAnimeById(43);
-        System.out.println(out);
+        itemId = 43;
+        results = animeDAO.getAnimeById(itemId, results);
+        System.out.println(results);
     }
     @Disabled
     @Test
     public void animeByYear() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        String yearStart = "1993-01-01";
-        String yearEnd = "";
-        Results out = animeDAO.getAnimeByYear(yearStart,yearEnd,results);
-        out.getAnimes().forEach(System.out::println);
+        request.setYear(1995);
+        Results out = animeDAO.getAnimeByYear(request,results);
+        out.getEncounters().forEach(System.out::println);
 
     }
     @Disabled
     @Test
     public void animeByGenre() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        Genre genre = new Genre();
-        genre.setId(4);
-        Results out = animeDAO.getAnimeByGenre(genre,results);
-        out.getAnimes().forEach(System.out::println);
+        itemId = 4;
+        Results out = animeDAO.getAnimeByGenreId(itemId,results);
+        out.getEncounters().forEach(System.out::println);
     }
     @Disabled
     @Test
     public void animeByPerson() {
-        AnimeDAO animeDAO = new AnimeDAOImpl();
-        Person person = new Person();
-        person.setId(80);
-        Results out = animeDAO.getAnimeByPerson(person, results);
-        out.getAnimes().forEach(System.out::println);
+        itemId = 80;
+        Results out = animeDAO.getAnimeByPersonId(itemId, results);
+        out.getEncounters().forEach(System.out::println);
     }
 
 

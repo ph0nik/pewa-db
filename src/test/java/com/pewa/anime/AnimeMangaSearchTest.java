@@ -2,7 +2,9 @@ package com.pewa.anime;
 
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
+import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -13,17 +15,24 @@ import java.util.Set;
  * Created by phonik on 2017-02-27.
  */
 public class AnimeMangaSearchTest {
+
+    private Results results;
+    @BeforeEach
+    public void setup() {
+        results = new Results();
+    }
+
     @Disabled
     @Test
     public void showSearchResults() {
         String query = "akira";
         AnimeMangaSearch amSearch = new AnimeMangaSearch();
-        Set<SingleSearchResult> wynik = amSearch.aniListSearch(query, PewaType.ANIME);
-        wynik.stream().limit(5).forEach(System.out::println);
+        Results wynik = amSearch.aniListSearch(query, PewaType.ANIME);
+        wynik.getEncounters().stream().limit(5).forEach(System.out::println);
 
         query = "berserk";
         wynik = amSearch.aniListSearch(query, PewaType.MANGA);
-        wynik.stream().limit(2).forEach(System.out::println);
+        wynik.getEncounters().stream().limit(2).forEach(System.out::println);
     }
     @Disabled
     @Test

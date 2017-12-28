@@ -5,11 +5,14 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.pewa.PewaType;
+import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
 import com.pewa.config.ConfigFactory;
+import com.pewa.movie.tmdb.Result;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,11 +23,12 @@ import java.util.TreeSet;
 /**
  * Created by phonik on 2017-03-31.
  */
+@Component
 public class TvShowSearch {
 
     private static final Logger log = LogManager.getLogger(TvShowSearch.class);
 
-    public Set<SingleSearchResult> searchTv(String query) {
+    public Results searchTv(String query, Results results) {
         Set<SingleSearchResult> output = new TreeSet<>();
         String searchUrl = ConfigFactory.get("search.tvMazeSearchUrl").replaceAll("<query>", query).replaceAll(" ", "+");
         log.info(searchUrl);
@@ -44,7 +48,7 @@ public class TvShowSearch {
                 String title = singleElement.getString("name","");
                 singleSearchResult.setTitle(title);
                 String desc = singleElement.getString("summary","");
-                singleSearchResult.setDesc(desc);
+                singleSearchResult.setDescription(desc);
                 String poster = singleElement.get("image").asObject().getString("medium","");
                 singleSearchResult.setPoster(poster);
                 String rawDate = singleElement.getString("premiered","19000101");
@@ -57,6 +61,7 @@ public class TvShowSearch {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        return output;
+        output.forEach(results::setEncounters);
+        return results;
     }
 }

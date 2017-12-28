@@ -26,7 +26,7 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
 
     private static final Logger log = LogManager.getLogger(AnimeParser.class);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private final String nullDate = "10000101";
+    private static final String nullDate = "10000101";
 
     /*
     * Method takes AniList model id and returns object of type Anime
@@ -96,7 +96,8 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
         }
         anime.setStartDate(zdtStart);
         anime.setEndDate(zdtEnd);
-        anime.setType(jsonAnime.get("type").asString());
+        anime.setAnimeType(jsonAnime.get("type").asString());
+        anime.setType(PewaType.ANIME);
         for (JsonValue val : jsonAnime.get("genres").asArray()) {
             anime.setGenres(new Genre(val.asString()));
         }

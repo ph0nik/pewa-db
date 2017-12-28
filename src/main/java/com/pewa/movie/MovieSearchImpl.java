@@ -5,6 +5,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.pewa.PewaType;
+import com.pewa.common.Request;
 import com.pewa.config.ConfigFactory;
 import com.pewa.common.SingleSearchResult;
 import org.apache.logging.log4j.LogManager;
@@ -18,9 +19,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Component
-public class MovieSearchImpl implements MovieSearch {
+public class MovieSearchImpl {
 
     private static final Logger log = LogManager.getLogger(MovieSearchImpl.class);
+    private final PewaType pewaType = PewaType.MOVIE;
 
     /*
     * Method takes parameters:
@@ -30,7 +32,7 @@ public class MovieSearchImpl implements MovieSearch {
     * Method sends GET request to given url, and passes returned String element
     * to createReturnSetFromSearch method.
     * */
-    @Override
+
     public Set<SingleSearchResult> externalMovieSearch(String query) {
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
         try {
@@ -79,9 +81,9 @@ public class MovieSearchImpl implements MovieSearch {
                         .append(") reż. ")
                         .append(director);
                 singleSearchResult.setUrl(idImdb);
-                singleSearchResult.setDesc(basicInfo.toString());
-                singleSearchResult.setType(PewaType.MOVIE);
-                singleSearchResult.setIdInt(Integer.parseInt(idImdb.replaceAll("tt", "")));
+                singleSearchResult.setDescription(basicInfo.toString());
+                singleSearchResult.setType(pewaType);
+                singleSearchResult.setIdInt(idImdbString2Int(idImdb));
                 singleSearchResult.setPoster("");
                 searchResultSet.add(singleSearchResult);
                 basicInfo.setLength(0);
@@ -89,5 +91,12 @@ public class MovieSearchImpl implements MovieSearch {
         }
         return searchResultSet;
     }
+
+
+    public Integer idImdbString2Int(String idImdb) {
+        return Integer.parseInt(idImdb.replace("tt","11"));
+    }
+
+
 
 }

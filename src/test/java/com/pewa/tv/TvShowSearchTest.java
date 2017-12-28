@@ -1,5 +1,6 @@
 package com.pewa.tv;
 
+import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class TvShowSearchTest {
     @Test
     public void searchTv() {
         TvShowSearch searchTv = new TvShowSearch();
-        Set<SingleSearchResult> summary = searchTv.searchTv("buffy");
+        Results summary = searchTv.searchTv("buffy", new Results());
 
     }
 

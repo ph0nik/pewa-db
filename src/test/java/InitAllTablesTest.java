@@ -1,9 +1,20 @@
 import com.pewa.InitAllTables;
+import com.pewa.common.Results;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
 public class InitAllTablesTest {
+
+    private InitAllTables initAllTables;
+    private Results results;
+
+    @BeforeEach
+    public void setup() {
+        initAllTables = new InitAllTables();
+        results = new Results();
+    }
 
     @Disabled
     @Test
@@ -20,5 +31,11 @@ public class InitAllTablesTest {
 
     }
 
+    @Disabled
+    @Test
+    public void deleteperson() {
+        results = initAllTables.cleanAll(results);
+        System.out.println(results);
+    }
 
 }

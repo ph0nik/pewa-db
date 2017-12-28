@@ -17,12 +17,14 @@ import java.util.TreeSet;
 public class Main {
     public static void main(String[] args) {
 
-        Logger logger = LogManager.getLogger(Main.class);
+   /*     Logger logger = LogManager.getLogger(Main.class);
 
         Exception ex = new Exception();
         IOException ioex = new IOException();
 
-        logger.error(ioex.getMessage(),ioex);
+        logger.error(ioex.getMessage(),ioex);*/
+
+    
 
     }
 }

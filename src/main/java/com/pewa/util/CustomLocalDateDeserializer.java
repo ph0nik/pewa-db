@@ -20,12 +20,12 @@ public class CustomLocalDateDeserializer extends JsonDeserializer<LocalDate> {
     @Override
     public LocalDate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         ObjectCodec oc = jp.getCodec();
-        TextNode node = (TextNode) oc.readTree(jp);
+        TextNode node = oc.readTree(jp);
         String dateString = node.textValue();
+        if (dateString.length() < 11) dateString = dateString.concat("T00:00:00.000Z");
 
         Instant instant = Instant.parse(dateString);
         LocalDateTime dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-        LocalDate date = LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth());
-        return date;
+        return LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth());
     }
 }

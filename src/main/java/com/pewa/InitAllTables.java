@@ -1,48 +1,39 @@
 package com.pewa;
 
+import com.pewa.common.Results;
+import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
+import org.apache.commons.configuration2.SubnodeConfiguration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class InitAllTables {
 
     private static final Logger log = LogManager.getLogger(InitAllTables.class);
     private StringBuilder logMessage;
+    private Integer rowsAffected;
+    private Results results = new Results();
+    private final String cleanupSuccess = "Cleanup complete [OK]";
+    private final String cleanupFail = "Nothing found";
+    private final String cleanPerson = "Deleting Person objects with no relation...";
+    private final String cleanLanguage = "Deleting Language objects with no relation...";
+    private final String cleanCountry = "Deleting Country objects with no relation...";
+    private final String cleanGenre = "Deleting Genre objects with no relation...";
+    private final String cleanStatus = "Deleting Status objects with no relation...";
+
 
     public void initTables() {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH,false)) {
-            session.update("createPersonTable");
-            session.update("createGenreTable");
-            session.update("createLanguageTable");
-            session.update("createCountryTable");
-
-            session.update("createBookTable");
-            session.update("createBookPerson");
-            session.update("createBookGenre");
-            session.update("createFormTable");
-
-            session.update("createAnimeTable");
-            session.update("createAnimePerson");
-            session.update("createAnimeGenre");
-
-            session.update("createMangaTable");
-            session.update("createMangaPerson");
-            session.update("createMangaGenre");
-
-            session.update("createTvTable");
-            session.update("createTvGenre");
-            session.update("createTvEpisode");
-            session.update("createTvPerson");
-
-            session.update("createMovieTable");
-            session.update("createMovieGenre");
-            session.update("createMoviePerson");
-            session.update("createMovieLanguage");
-            session.update("createMovieCountry");
-            session.update("createMovieEncounter");
-
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH, false)) {
+            SubnodeConfiguration iniSection = ConfigFactory.getIniSection("init-sql-tables");
+            iniSection.getKeys()
+                    .forEachRemaining(
+                            key -> session.update(ConfigFactory.get("init-sql-tables." + key))
+                    );
             session.commit();
         }
     }
@@ -52,6 +43,27 @@ public class InitAllTables {
             session.update("dropAllTables");
             session.commit();
         }
+    }
+
+    public Results cleanAll(Results results) {
+        rowsAffected = results.getRowsAffected();
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.personCleanUp"));
+            log.debug(cleanPerson);
+            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.genreCleanUp"));
+            log.debug(cleanGenre);
+            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.countryCleanUp"));
+            log.debug(cleanCountry);
+            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.languageCleanUp"));
+            log.debug(cleanLanguage);
+            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.statusCleanUp"));
+            log.debug(cleanStatus);
+            session.commit();
+        }
+        results.setRowsAffected(rowsAffected);
+        if (rowsAffected != 0) results.setReturnMessage(cleanupSuccess);
+        else results.setReturnMessage(cleanupFail);
+        return results;
     }
 
 }

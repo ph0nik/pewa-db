@@ -1,50 +1,68 @@
 package com.pewa.book;
 
 import com.pewa.PewaType;
+import com.pewa.common.Encounter;
 import com.pewa.common.Form;
 import com.pewa.common.Genre;
 import com.pewa.common.Person;
+import com.pewa.status.Status;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Book {
-    private Integer id, votes, firstPubDate, plPubDate, idBiblion;
+@Component
+public class Book implements Comparable<Book>, Serializable, Encounter {
+    private Integer id, votes, firstPubDate, plPubDate, externalBookId;
     private Double rating;
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
     private PewaType type;
     private String additionalInfo, originalTitle, polishTitle, originalLanguage, category, altVersion;
-
- List a = new ArrayList();
+    private Set<Status> status;
 
     public Book() {
         this.people = new TreeSet<>();
         this.genre = new TreeSet<>();
         this.form = new TreeSet<>();
+        this.status = new TreeSet<>();
     }
+
     @Override
     public String toString() {
         return "Book{" +
                 "id=" + id +
+                ", votes=" + votes +
+                ", firstPubDate=" + firstPubDate +
+                ", plPubDate=" + plPubDate +
+                ", externalBookId=" + externalBookId +
+                ", rating=" + rating +
                 ", people=" + people +
                 ", genre=" + genre +
                 ", form=" + form +
+                ", type=" + type +
                 ", additionalInfo='" + additionalInfo + '\'' +
                 ", originalTitle='" + originalTitle + '\'' +
                 ", polishTitle='" + polishTitle + '\'' +
                 ", originalLanguage='" + originalLanguage + '\'' +
                 ", category='" + category + '\'' +
                 ", altVersion='" + altVersion + '\'' +
-                ", idBiblion='" + idBiblion + '\'' +
-                ", rating=" + rating +
-                ", votes=" + votes +
-                ", firstPubDate=" + firstPubDate +
-                ", plPubDate=" + plPubDate +
+                ", status=" + status +
                 '}';
+    }
+
+    public Set<Status> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Set<Status> status) {
+        this.status = status;
+    }
+
+    public void setStatus(Status status) {
+        this.status.add(status);
     }
 
     public void setGenre(Set<Genre> genre) {
@@ -63,6 +81,7 @@ public class Book {
         this.type = type;
     }
 
+
     public Set<Person> getPeople() {
         return people;
     }
@@ -70,16 +89,17 @@ public class Book {
     public void setPeople(Person person) {
         this.people.add(person);
     }
+
     public void setPeople(Set<Person> people) {
         this.people = people;
     }
 
-    public Integer getIdBiblion() {
-        return idBiblion;
+    public Integer getExternalBookId() {
+        return externalBookId;
     }
 
-    void setIdBiblion(Integer idBiblion) {
-        this.idBiblion = idBiblion;
+    void setExternalBookId(Integer externalBookId) {
+        this.externalBookId = externalBookId;
     }
 
     public String getPolishTitle() {
@@ -186,4 +206,8 @@ public class Book {
         this.id = id;
     }
 
+    @Override
+    public int compareTo(Book book) {
+        return this.originalTitle.compareTo(book.originalTitle);
+    }
 }

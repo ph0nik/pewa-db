@@ -1,11 +1,14 @@
 package com.pewa.controller;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.movie.Movie;
 import com.pewa.movie.MovieDAO;
+import com.pewa.movie.MovieDAOImpl;
 import com.pewa.movie.MovieSearch;
+import com.pewa.request.StatusRequest;
 import com.pewa.status.Status;
 import com.pewa.status.StatusDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +25,10 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/movie/")
-public class MovieControllerImpl implements MovieController {
+public class MovieController {
 
     @Autowired
+    @Qualifier(value = "movieSearchTheMovieDatabase")
     private MovieSearch movieSearch;
 
     @Autowired
@@ -34,99 +38,145 @@ public class MovieControllerImpl implements MovieController {
     private StatusDAO statusDAO;
 
     @Autowired
-    @Qualifier(value = "movieParser")
-    private MediaParse<Movie, String> movieParse;
+    private InitAllTables initAllTables;
 
+    @Autowired
+    @Qualifier(value = "movieParserTmdb")
+    private MediaParse<Movie, Integer> movieParse;
+
+    @Autowired
+    private Request request;
+
+    private final PewaType movieType = PewaType.MOVIE;
+    private final String json = MediaType.APPLICATION_JSON_VALUE;
+    private final String missingParameters = "Missing parameters: ";
+    private final String emptyStatus = "Error: Empty status";
     private Results results;
+    private Status status;
+    private Movie movie;
 
     @GetMapping(value = "search/{query}")
-    public Set<SingleSearchResult> searchExternal(@PathVariable String query) {
-        return movieSearch.externalMovieSearch(query);
+    public Results searchExternal(@PathVariable String query) {
+        return movieSearch
+                .externalMovieSearch(query, new Results())
+                .setReturnMessage();
     }
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
         return movieDao
                 .moviesByTitle(query, new Results())
-                .setMessage();
+                .setReturnMessage();
     }
 
-    @GetMapping(value = "id/{query}")
-    public Results searchById(@PathVariable Integer query) {
+    @GetMapping(value = "id/{id}")
+    public Results searchById(@PathVariable Integer id) {
         return movieDao
-                .moviesById(query, new Results())
-                .setMessage();
+                .moviesById(id, new Results())
+                .setReturnMessage();
     }
 
-    // TODO - zwraca nullpointerexception
-    @PostMapping(value = "add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results addMovie(@RequestBody Request request) {
-        Status status;
-        Results results = new Results();
-        Movie movie = movieParse.getItem(request.getImdbId());
-        if (movie.isEmpty()) {
-            results.setMessage("Error - empty element");
-            return results;
+
+    @PostMapping(value = "add", consumes = json)
+    public Results addMovie(@RequestBody StatusRequest request) {
+        results = new Results();
+        status = new Status();
+        if (request == null) {
+            return results.setReturnMessage(emptyStatus);
+        } else if (!request.checkRequiredParameters().isEmpty()) {
+            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
+            return results.setReturnMessage(returnMessage);
+        } else {
+            status.setElementType(request.getElementType());
+            status.setEncounterId(request.getEncounterId());
+            status.setComment(request.getComment());
+            status.setEncounterRating(request.getEncounterRating());
+            status.setEncounterDate(request.getEncounterDate());
+            status.setMediaSource(request.getMediaSource());
+            movie = movieParse.getItem(request.getEncounterId());
+            results = movieDao.addMovie(movie, new Results());
+            return statusDAO.addStatus(status, results);
         }
-        else {
-            results = movieDao
-                    .addMovie(movie, new Results());
-            status = request.setStatus(PewaType.MOVIE, movie.getImdbID());
-            return statusDAO
-                    .addStatusMovie(status, results);
-        }
 
     }
 
-    @PostMapping(value = "addstatus", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results addStatus(@RequestBody Request request) {
-        Status status = request.setStatus(PewaType.MOVIE, request.getId());
-        return statusDAO
-                .addStatusMovie(status, new Results());
+    @GetMapping(value = "update/{id}")
+    public Results updateMovie(@PathVariable Integer id) {
+        movie = movieParse.getItem(id);
+        results = movieDao.updMovie(movie, new Results());
+        return results;
     }
 
-    @PostMapping(value = "updatestatus", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results updateStatus(@RequestBody Request request) {
-        Status status = request.setStatus(PewaType.MOVIE, request.getId());
-        return statusDAO
-                .updateStatus(status, new Results());
+    @GetMapping(value = "delete/{id}")
+    public Results deleteMovie(@PathVariable Integer id) {
+        results = movieDao.delMovie(id, new Results());
+        return initAllTables.cleanAll(results);
     }
-    /*
-    * zapytanie POST w body musi mieć jsona, json musi reprezentować obiekt Request
-    *
-    * */
-    @PostMapping(value = "person", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByPerson(@RequestBody Request request) {
-        Person person = new Person(request.getId());
+
+//    @PostMapping(value = "addstatus", consumes = json)
+//    public Results addStatus(@RequestBody Request request) {
+//        System.out.println(request);
+//        results = new Results();
+//        if (request.getStatus() == null) {
+//            return results.setReturnMessage(emptyStatus);
+//        } else if (!request.getStatus().checkRequiredParameters(movieType).isEmpty()) {
+//            String returnMessage = missingParameters + request.getStatus().checkRequiredParameters(movieType).toString();
+//            return results.setReturnMessage(returnMessage);
+//        } else {
+//            request.getStatus().setElementType(movieType);
+//            return statusDAO.addStatus(request.getStatus(), results);
+//        }
+//    }
+
+//    @PostMapping(value = "updatestatus", consumes = json)
+//    public Results updateStatus(@RequestBody Request request) {
+//        System.out.println(request);
+//        results = new Results();
+//        if (request.getStatus() == null) {
+//            return results.setReturnMessage(emptyStatus);
+//        } else if (!request.getStatus().checkRequiredParameters(movieType).isEmpty()) {
+//            String returnMessage = missingParameters + request.getStatus().checkRequiredParameters(movieType).toString();
+//            return results.setReturnMessage(returnMessage);
+//        } else {
+//
+//            request.getStatus().setElementType(movieType);
+//            return statusDAO.updateStatus(request.getStatus(), results);
+//        }
+//    }
+
+
+//    @GetMapping(value = "delstatus/{statusId}")
+//    public Results deleteStatus(@PathVariable Integer statusId) {
+//        statusDAO.deleteStatus(statusId, new Results());
+//        return initAllTables.cleanAll(results);
+//    }
+
+    @GetMapping(value = "personId")
+    public Results searchByPerson(@PathVariable Integer personId) {
         return movieDao
-                .moviesByPersonId(person, new Results())
-                .setMessage();
+                .moviesByPersonId(personId, new Results())
+                .setReturnMessage();
     }
 
-    @PostMapping(value = "genre", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByGenre(@RequestBody Request request) {
-        Genre genre = new Genre(request.getId());
+    @GetMapping(value = "genreId")
+    public Results searchByGenre(@PathVariable Integer genreId) {
         return movieDao
-                .moviesByGenreId(genre, new Results())
-                .setMessage();
+                .moviesByGenreId(genreId, new Results())
+                .setReturnMessage();
     }
 
-    @PostMapping(value = "lang", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByLanguage(@RequestBody Request request) {
-        Language lang = new Language(request.getId());
+    @GetMapping(value = "langId")
+    public Results searchByLanguage(@PathVariable Integer langId) {
         return movieDao
-                .moviesByLanguageId(lang, new Results())
-                .setMessage();
+                .moviesByLanguageId(langId, new Results())
+                .setReturnMessage();
     }
 
-    @PostMapping(value = "date", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByDate(@RequestBody Request dateSearch) {
+    @PostMapping(value = "year", consumes = json)
+    public Results searchByYear(@RequestBody Request dateSearch) {
         return movieDao
-                .moviesByYear(
-                        dateSearch.getDateIn()
-                        , dateSearch.getDateOut()
-                        , new Results())
-                .setMessage();
+                .moviesByYear(dateSearch, new Results())
+                .setReturnMessage();
     }
 
 }

@@ -1,16 +1,21 @@
 package com.pewa.controller;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.anime.Anime;
 import com.pewa.anime.AnimeDAO;
 import com.pewa.anime.AnimeMangaSearch;
 import com.pewa.common.*;
+import com.pewa.request.StatusRequest;
+import com.pewa.status.Status;
+import com.pewa.status.StatusDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Set;
 
 /**
@@ -31,49 +36,92 @@ public class AnimeController {
     private AnimeDAO animeDAO;
 
     @Autowired
-    private Results results;
+    private InitAllTables initAllTables;
 
+    @Autowired
+    @Qualifier(value = "statusDAOImpl")
+    private StatusDAO statusDAO;
+
+    private final String json = MediaType.APPLICATION_JSON_VALUE;
+
+    private PewaType animeType = PewaType.ANIME;
+    private final String missingParameters = "Missing parameters: ";
+    private final String emptyStatus = "Error: Empty status";
+
+    private Results results;
+    private Status status;
     private Anime anime;
 
     @GetMapping(value = "search/{query}")
-    public Set<SingleSearchResult> searchExternal(@PathVariable String query) {
-        Set<SingleSearchResult> resultSet = animeMangaSearch.aniListSearch(query, PewaType.ANIME);
-        return resultSet;
+    public Results searchExternal(@PathVariable String query) {
+        return animeMangaSearch.aniListSearch(query, animeType);
     }
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return animeDAO.getAnime(query, results).setMessage();
+        return animeDAO.getAnimeByTitle(query, new Results()).setReturnMessage();
     }
 
-    @PostMapping(value = "add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results addAnime(@RequestBody Request anidId) {
-        anime = animeParse.getItem(anidId.getAniId());
-        animeDAO.addAnime(anime);
+    @GetMapping(value = "id/{id}")
+    public Results getAnime(@PathVariable Integer id) {
+        return animeDAO.getAnimeById(id, new Results()).setReturnMessage();
+    }
+
+    @PostMapping(value = "add", consumes = json)
+    public Results addAnime(@RequestBody StatusRequest request) {
+        results = new Results();
+        status = new Status();
+        if (request == null) {
+            return results.setReturnMessage(emptyStatus);
+        } else if (!request.checkRequiredParameters().isEmpty()) {
+            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
+            return results.setReturnMessage(returnMessage);
+        } else {
+            status.setElementType(request.getElementType());
+            status.setEncounterId(request.getEncounterId());
+            status.setComment(request.getComment());
+            status.setEncounterRating(request.getEncounterRating());
+            status.setEncounterDate(request.getEncounterDate());
+            status.setMediaSource(request.getMediaSource());
+            anime = animeParse.getItem(request.getEncounterId());
+            results = animeDAO.addAnime(anime, new Results());
+            return statusDAO.addStatus(status, results);
+        }
+    }
+
+    @PostMapping(value = "update", consumes = json)
+    public Results updateAnime(@RequestBody Request request) {
+        anime = animeParse.getItem(request.getExternalId());
+        results = animeDAO.updateAnime(anime, new Results());
         return results;
     }
 
-    /*
-    * zapytanie POST w body musi mieć jsona, json może mieć tylko jeden pametr, np. {"id":4} i też zostanie prawidłowo zmapowany
-    *
-    * */
-    @PostMapping(value = "person", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByPerson(@RequestBody Person person) {
-        animeDAO.getAnimeByPerson(person, results);
-        return results.setMessage();
-
+    @GetMapping(value = "delete/{id}")
+    public Results deleteAnime(@PathVariable Integer id) {
+        results = animeDAO.deleteAnime(id, new Results());
+        return initAllTables.cleanAll(results);
     }
 
-    @PostMapping(value = "genre", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByGenre(@RequestBody Genre genre) {
-        animeDAO.getAnimeByGenre(genre, results);
-        return results.setMessage();
+    @GetMapping(value = "person/{personId}")
+    public Results searchByPerson(@PathVariable Integer personId) {
+        return animeDAO
+                .getAnimeByPersonId(personId, new Results())
+                .setReturnMessage();
     }
 
-    @PostMapping(value = "date", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "genre/{genreId}")
+    public Results searchByGenre(@PathVariable Integer genreId) {
+        return animeDAO
+                .getAnimeByGenreId(genreId, new Results())
+                .setReturnMessage();
+    }
+
+    @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
-        animeDAO.getAnimeByYear(dateSearch.getDateInString(), dateSearch.getDateOutString(), results);
-        return results.setMessage();
-
+        return animeDAO
+                .getAnimeByYear(dateSearch, new Results())
+                .setReturnMessage();
     }
+
+
 }

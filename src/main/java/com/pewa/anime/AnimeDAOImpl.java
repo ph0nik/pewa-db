@@ -1,106 +1,136 @@
 package com.pewa.anime;
 
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
+import com.pewa.PewaType;
+import com.pewa.common.Encounter;
+import com.pewa.common.EncounterElement;
+import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
-import com.pewa.dao.NewDataBase;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class AnimeDAOImpl implements AnimeDAO {
-    private List<Anime> output = new ArrayList<>();
+    private static final Logger log = LogManager.getLogger(AnimeDAO.class);
+    private static final String formatterString = "uuuu-MM-dd";
+    private static final String addSuccess = "Anime item added  : ";
+    private static final String updateSuccess = "Anime item updated : ";
+    private static final String deleteSuccess = "Anime item deleted : ";
+    private static final String nothingFound = "No anime with this Id found : ";
+    private static final String alreadyInDb = "Anime item already in database : ";
+    private final PewaType animeType = PewaType.ANIME;
 
-    public void addAnime(Anime anime) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH,false)) {
-            session.insert("insertAnime", anime);
-            session.insert("insertPeopleAni", anime);
-            session.insert("insertPeopleBridgeAni", anime);
+    private List<Encounter> output;
+    private Integer rowsAffected;
+
+    public Results addAnime(Anime anime, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.insert(ConfigFactory.get("anime-mapper.insertAnime"), anime);
+            rowsAffected += session.insert(ConfigFactory.get("anime-mapper.insertPeopleAni"), anime);
+            rowsAffected += session.insert(ConfigFactory.get("anime-mapper.insertPeopleBridgeAni"), anime);
             if (!anime.getGenres().isEmpty()) {
-                session.insert("insertGenreAni", anime);
-                session.insert("insertGenreBridgeAni", anime);
+                rowsAffected += session.insert(ConfigFactory.get("anime-mapper.insertGenreAni"), anime);
+                rowsAffected += session.insert(ConfigFactory.get("anime-mapper.insertGenreBridgeAni"), anime);
             }
             session.commit();
+            results.setRowsAffected(rowsAffected);
+            if (rowsAffected != 0) results.setReturnMessage(addSuccess + anime.getTitleRom());
+            else results.setReturnMessage(alreadyInDb + anime.getTitleRom());
         }
+        return results;
     }
 
     @Override
-    public Results getAnime(String query, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+    public Results updateAnime(Anime anime, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.update(ConfigFactory.get("anime-mapper.updateAnime"), anime);
+            session.commit();
+        }
+        results.setRowsAffected(rowsAffected);
+        if (rowsAffected != 0) results.setReturnMessage(updateSuccess + anime.getTitleRom());
+        else results.setReturnMessage(nothingFound + anime.getTitleRom());
+        return results;
+    }
+
+    @Override
+    public Results deleteAnime(Integer anime, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.delete(ConfigFactory.get("anime-mapper.deleteAnime"), anime);
+            session.commit();
+            results.setRowsAffected(rowsAffected);
+        }
+        if (rowsAffected != 0) results.setReturnMessage(deleteSuccess + anime);
+        else results.setReturnMessage(nothingFound + anime);
+        return results;
+    }
+
+    @Override
+    public Results getAnimeByTitle(String query, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             query = new StringBuilder("%")
                     .append(query)
                     .append("%")
                     .toString();
-            output = session.selectList("byTitleAni", query);
+            output = session.selectList(ConfigFactory.get("anime-mapper.byTitleAni"), query);
             session.commit();
         }
-        return results.setAnimes(output);
+        output.forEach(x -> x.setType(animeType));
+        output.forEach(results::setEncounters);
+        return results;
     }
 
-    //TODO przerobić obiekt powrotny na Anime
-    public Anime getAnimeById(Integer id) {
-        Anime anime = new Anime();
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            anime = session.selectOne("ByIdAni", id);
+
+
+    @Override
+    public Results getAnimeById(Integer databaseId, Results results) {
+        Anime anime;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            anime = session.selectOne(ConfigFactory.get("anime-mapper.ByIdAni"), databaseId);
             session.commit();
+            results.setEncounters(anime);
         }
-        return anime;
+        return results;
     }
 
     @Override
-    public Results getAnimeByPerson(Person person, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byPersonAni", person.getId());
+    public Results getAnimeByPersonId(Integer personId, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("anime-mapper.byPersonAni"), personId);
             session.commit();
         }
-        return results.setAnimes(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results getAnimeByGenre(Genre genre, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byGenreAni", genre.getId());
+    public Results getAnimeByGenreId(Integer genreId, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("anime-mapper.byGenreAni"), genreId);
             session.commit();
         }
-        return results.setAnimes(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results getAnimeByYear(String x, String y, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
-            LocalDate start, end;
-            if (x.isEmpty()) {
-                start = LocalDate.now();
-            } else {
-                start = LocalDate.parse(x, formatter);
-            }
-            if (y.isEmpty()) {
-                end = LocalDate.now();
-            } else {
-                end = LocalDate.parse(y, formatter);
-            }
-            Map<String, LocalDate> map = new HashMap<>();
-            if (start.compareTo(end) >= 0) {
-                map.put("start", end);
-                map.put("end", start);
-            } else {
-                map.put("start", start);
-                map.put("end", end);
-            }
-            output = session.selectList("byYearAni", map);
+    public Results getAnimeByYear(Request date, Results results) {
+        Integer year = date.getYear();
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("anime-mapper.byYearAni"), year);
             session.commit();
         }
-        return results.setAnimes(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
 }

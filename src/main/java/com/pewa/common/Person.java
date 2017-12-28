@@ -1,15 +1,18 @@
 package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Component
 public class Person implements Comparable<Person>, Serializable {
 
-    private Integer id;
-    private String firstName;
-    private String lastName;
+    private int id;
+//    private String firstName;
+//    private String lastName;
     private String name;
     private String job;
 
@@ -17,15 +20,25 @@ public class Person implements Comparable<Person>, Serializable {
 
     public Person() {}
 
+    public Person(Integer id) {
+        this.id = id;
+    }
+
     public Person(String firstName, String lastName, String job) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
         this.job = job;
         this.name = new StringBuilder(firstName)
                 .append(" ")
                 .append(lastName)
                 .toString()
                 .trim();
+    }
+
+    public Person(int id, String name, String job) {
+        this.id = id;
+        this.name = name;
+        this.job = job;
     }
 
     public String getName() {
@@ -36,24 +49,20 @@ public class Person implements Comparable<Person>, Serializable {
         this.name = name;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     public String getJob() {
         return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
     }
 
     @Override
@@ -63,16 +72,14 @@ public class Person implements Comparable<Person>, Serializable {
 
         Person person = (Person) o;
 
-        if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(person.lastName) : person.lastName != null) return false;
+        if (id != person.id) return false;
         if (name != null ? !name.equals(person.name) : person.name != null) return false;
         return job != null ? job.equals(person.job) : person.job == null;
     }
 
     @Override
     public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (job != null ? job.hashCode() : 0);
         return result;
@@ -85,6 +92,7 @@ public class Person implements Comparable<Person>, Serializable {
         } else {
             return this.name.compareTo(person.name);
         }
+
     }
 
     @Override

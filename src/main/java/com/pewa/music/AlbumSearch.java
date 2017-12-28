@@ -60,7 +60,7 @@ public class AlbumSearch {
                         .append(")")
                         .toString();
                 singleSearchResult.setType(PewaType.MUSIC);
-                singleSearchResult.setDesc(desc);
+                singleSearchResult.setDescription(desc);
                 singleSearchResult.setUrl(albumId);
                 searchResultSet.add(singleSearchResult);
             }

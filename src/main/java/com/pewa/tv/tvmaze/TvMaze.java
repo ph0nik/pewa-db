@@ -2,288 +2,242 @@
 package com.pewa.tv.tvmaze;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "id",
-    "url",
-    "name",
-    "type",
-    "language",
-    "genres",
-    "status",
-    "runtime",
-    "premiered",
-    "officialSite",
-    "schedule",
-    "rating",
-    "weight",
-    "network",
-    "webChannel",
-    "externals",
-    "image",
-    "summary",
-    "updated",
-    "_links",
-    "_embedded"
-})
 public class TvMaze {
 
-    @JsonProperty("id")
+    @SerializedName("id")
+    @Expose
     private int id;
-    @JsonProperty("url")
+    @SerializedName("url")
+    @Expose
     private String url;
-    @JsonProperty("name")
+    @SerializedName("name")
+    @Expose
     private String name;
-    @JsonProperty("type")
+    @SerializedName("type")
+    @Expose
     private String type;
-    @JsonProperty("language")
+    @SerializedName("language")
+    @Expose
     private String language;
-    @JsonProperty("genres")
+    @SerializedName("genres")
+    @Expose
     private List<String> genres = null;
-    @JsonProperty("status")
+    @SerializedName("status")
+    @Expose
     private String status;
-    @JsonProperty("runtime")
+    @SerializedName("runtime")
+    @Expose
     private int runtime;
-    @JsonProperty("premiered")
+    @SerializedName("premiered")
+    @Expose
     private String premiered;
-    @JsonProperty("officialSite")
-    private Object officialSite;
-    @JsonProperty("schedule")
+    @SerializedName("officialSite")
+    @Expose
+    private String officialSite;
+    @SerializedName("schedule")
+    @Expose
     private Schedule schedule;
-    @JsonProperty("rating")
+    @SerializedName("rating")
+    @Expose
     private Rating rating;
-    @JsonProperty("weight")
+    @SerializedName("weight")
+    @Expose
     private int weight;
-    @JsonProperty("network")
+    @SerializedName("network")
+    @Expose
     private Network network;
-    @JsonProperty("webChannel")
-    private Object webChannel;
-    @JsonProperty("externals")
+    @SerializedName("webChannel")
+    @Expose
+    private WebChannel webChannel;
+    @SerializedName("externals")
+    @Expose
     private Externals externals;
-    @JsonProperty("image")
+    @SerializedName("image")
+    @Expose
     private Image image;
-    @JsonProperty("summary")
+    @SerializedName("summary")
+    @Expose
     private String summary;
-    @JsonProperty("updated")
+    @SerializedName("updated")
+    @Expose
     private int updated;
-    @JsonProperty("_links")
+    @SerializedName("_links")
+    @Expose
     private Links links;
-    @JsonProperty("_embedded")
+    @SerializedName("_embedded")
+    @Expose
     private Embedded embedded;
 
-    @JsonProperty("id")
     public int getId() {
         return id;
     }
 
-    @JsonProperty("id")
     public void setId(int id) {
         this.id = id;
     }
 
-    @JsonProperty("url")
     public String getUrl() {
         return url;
     }
 
-    @JsonProperty("url")
     public void setUrl(String url) {
         this.url = url;
     }
 
-    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonProperty("type")
     public String getType() {
         return type;
     }
 
-    @JsonProperty("type")
     public void setType(String type) {
         this.type = type;
     }
 
-    @JsonProperty("language")
     public String getLanguage() {
         return language;
     }
 
-    @JsonProperty("language")
     public void setLanguage(String language) {
         this.language = language;
     }
 
-    @JsonProperty("genres")
     public List<String> getGenres() {
         return genres;
     }
 
-    @JsonProperty("genres")
     public void setGenres(List<String> genres) {
         this.genres = genres;
     }
 
-    @JsonProperty("status")
     public String getStatus() {
         return status;
     }
 
-    @JsonProperty("status")
     public void setStatus(String status) {
         this.status = status;
     }
 
-    @JsonProperty("runtime")
     public int getRuntime() {
         return runtime;
     }
 
-    @JsonProperty("runtime")
     public void setRuntime(int runtime) {
         this.runtime = runtime;
     }
 
-    @JsonProperty("premiered")
     public String getPremiered() {
         return premiered;
     }
 
-    @JsonProperty("premiered")
     public void setPremiered(String premiered) {
         this.premiered = premiered;
     }
 
-    @JsonProperty("officialSite")
-    public Object getOfficialSite() {
+    public String getOfficialSite() {
         return officialSite;
     }
 
-    @JsonProperty("officialSite")
-    public void setOfficialSite(Object officialSite) {
+    public void setOfficialSite(String officialSite) {
         this.officialSite = officialSite;
     }
 
-    @JsonProperty("schedule")
     public Schedule getSchedule() {
         return schedule;
     }
 
-    @JsonProperty("schedule")
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
     }
 
-    @JsonProperty("rating")
     public Rating getRating() {
         return rating;
     }
 
-    @JsonProperty("rating")
     public void setRating(Rating rating) {
         this.rating = rating;
     }
 
-    @JsonProperty("weight")
     public int getWeight() {
         return weight;
     }
 
-    @JsonProperty("weight")
     public void setWeight(int weight) {
         this.weight = weight;
     }
 
-    @JsonProperty("network")
     public Network getNetwork() {
         return network;
     }
 
-    @JsonProperty("network")
     public void setNetwork(Network network) {
         this.network = network;
     }
 
-    @JsonProperty("webChannel")
-    public Object getWebChannel() {
+    public WebChannel getWebChannel() {
         return webChannel;
     }
 
-    @JsonProperty("webChannel")
-    public void setWebChannel(Object webChannel) {
+    public void setWebChannel(WebChannel webChannel) {
         this.webChannel = webChannel;
     }
 
-    @JsonProperty("externals")
     public Externals getExternals() {
         return externals;
     }
 
-    @JsonProperty("externals")
     public void setExternals(Externals externals) {
         this.externals = externals;
     }
 
-    @JsonProperty("image")
     public Image getImage() {
         return image;
     }
 
-    @JsonProperty("image")
     public void setImage(Image image) {
         this.image = image;
     }
 
-    @JsonProperty("summary")
     public String getSummary() {
         return summary;
     }
 
-    @JsonProperty("summary")
     public void setSummary(String summary) {
         this.summary = summary;
     }
 
-    @JsonProperty("updated")
     public int getUpdated() {
         return updated;
     }
 
-    @JsonProperty("updated")
     public void setUpdated(int updated) {
         this.updated = updated;
     }
 
-    @JsonProperty("_links")
     public Links getLinks() {
         return links;
     }
 
-    @JsonProperty("_links")
     public void setLinks(Links links) {
         this.links = links;
     }
 
-    @JsonProperty("_embedded")
     public Embedded getEmbedded() {
         return embedded;
     }
 
-    @JsonProperty("_embedded")
     public void setEmbedded(Embedded embedded) {
         this.embedded = embedded;
     }

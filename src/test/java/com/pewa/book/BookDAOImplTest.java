@@ -1,10 +1,20 @@
 package com.pewa.book;
 
 import com.pewa.MediaParse;
+import com.pewa.MediaSource;
+import com.pewa.PewaType;
+import com.pewa.common.Genre;
+import com.pewa.common.Person;
+import com.pewa.common.Request;
+import com.pewa.common.Results;
+import com.pewa.status.Status;
+import com.pewa.status.StatusDAO;
+import com.pewa.status.StatusDAOImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.time.LocalDate;
 
 
 /**
@@ -12,60 +22,83 @@ import java.util.List;
  */
 public class BookDAOImplTest {
 
+    private Results results;
+    private BookDAO nowaKsiazka;
+    private StatusDAO statusDAO;
+    private Request request;
+
+    @BeforeEach
+    public void setObjects() {
+        results = new Results();
+        nowaKsiazka = new BookDAOImpl();
+        statusDAO = new StatusDAOImpl();
+        request = new Request();
+    }
 
     // book.aspx?id=78
     // book.aspx?id=301
     @Disabled
     @Test
     public void insertBook() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
         MediaParse<Book, Integer> bookScraper = new BookParser();
-        Book ksiazka = bookScraper.getItem(301);
-        nowaKsiazka.addBook(ksiazka);
+        Integer id = 301;
+        Book ksiazka = bookScraper.getItem(id);
+        nowaKsiazka.addBook(ksiazka, results);
+        Status status = new Status();
+        status.setElementType(PewaType.BOOK);
+        status.setComment("w pustyni");
+        status.setEncounterDate(LocalDate.now());
+        status.setMediaSource(MediaSource.EBOOK);
+        status.setEncounterRating(9);
+        status.setEncounterId(ksiazka.getExternalBookId());
+        Results rs  = statusDAO.addStatus(status, results);
+        System.out.println(rs);
     }
     @Disabled
     @Test
     public void checkBasicSQL() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.getBook("obbi");
-        test.forEach(System.out::println);
+        String title = "szcz";
+        Results test = nowaKsiazka.getBook(title, results);
+        System.out.println(test.toString());
     }
 
     // 'book.aspx?id=301' - w pustyni i w puszczy
     @Disabled
     @Test
     public void checkBookById(){
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.getBookById(78);
-        test.forEach(System.out::println);
+        Integer id = 1;
+        Results test = nowaKsiazka.getBookById(id, results);
+        System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByPerson() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.booksByPerson("s");
-        test.forEach(System.out::println);
+
+        Integer person = 54;
+        Results test = nowaKsiazka.booksByPerson(person, results);
+        System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByGenre() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.booksByGenre("fant");
-        test.forEach(System.out::println);
+        Integer genre = 2;
+        Results test = nowaKsiazka.booksByGenre(genre, results);
+        System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByLanguage() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.booksByLanguage("angie");
-        test.forEach(System.out::println);
+        String language = "angielski";
+        Results test = nowaKsiazka.booksByLanguage(language, results);
+        System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByYear() {
-        BookDAO nowaKsiazka = new BookDAOImpl();
-        List<Book> test = nowaKsiazka.booksByYear(1900,2000);
-        test.forEach(System.out::println);
+        Request year = new Request();
+        year.setYear(2000);
+        Results test = nowaKsiazka.booksByYear(year, results);
+        System.out.println(test.toString());
     }
 
 

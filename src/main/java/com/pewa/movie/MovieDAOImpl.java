@@ -1,10 +1,8 @@
 package com.pewa.movie;
 
-import com.pewa.common.Genre;
-import com.pewa.common.Language;
+import com.pewa.common.*;
+import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
-import com.pewa.common.Person;
-import com.pewa.common.Results;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
@@ -13,13 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * Created by phonik on 2017-04-04.
- */
 /*
 * Komponent był dwukrotnie rejestrowany jako bean, gdy za konfigurację servleta odpowiadał plik xml,
 * a za konfigurację ogólną klasa z adnotacją @Configuration. Dodałem więc dodatkowy identyfikator dla komponentu,
@@ -31,103 +24,141 @@ import java.util.Map;
 public class MovieDAOImpl implements MovieDAO {
 
     private static final Logger log = LogManager.getLogger(MovieDAO.class);
-    private List<Movie> output;
+    private static final List<String> insertMethods = Arrays.asList(
+            ConfigFactory.get("movie-mapper.insertMovie")
+            , ConfigFactory.get("movie-mapper.insertGenreMovie")
+            , ConfigFactory.get("movie-mapper.insertGenreBridgeMovie")
+            , ConfigFactory.get("movie-mapper.insertPersonMovie")
+            , ConfigFactory.get("movie-mapper.insertPersonMovieBridge")
+            , ConfigFactory.get("movie-mapper.insertCountry")
+            , ConfigFactory.get("movie-mapper.insertCountryMovieBridge")
+            , ConfigFactory.get("movie-mapper.insertLanguage")
+            , ConfigFactory.get("movie-mapper.insertLangMovieBridge"));
+    private static final String formatterString = "uuuu-MM-dd";
+    private static final String addSuccess = "Movie item added  : ";
+    private static final String updateSuccess = "Movie item updated : ";
+    private static final String deleteSuccess = "Movie item deleted : ";
+    private static final String nothingFound = "No movie with this Id found : ";
+    private static final String alreadyInDb = "Movie item already in database : ";
+    private List<EncounterElement> output;
+    private StringBuilder logMessage;
+    private Integer rowsAffected;
 
     @Override
-    public void addMovie(Movie movieinfo) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH, false)) {
-            session.insert("insertMovie", movieinfo);
-            session.insert("insertGenreMovie", movieinfo);
-            session.insert("insertGenreBridgeMovie", movieinfo);
-            session.insert("insertPersonMovie", movieinfo);
-            session.insert("insertPersonMovieBridge", movieinfo);
-            session.insert("insertCountry", movieinfo);
-            session.insert("insertCountryMovieBridge", movieinfo);
-            session.insert("insertLanguage", movieinfo);
-            session.insert("insertLangMovieBridge", movieinfo);
+    public Results addMovie(Movie movieinfo, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            for (String method : insertMethods) {
+                logMessage = new StringBuilder(LocalDate.now() + this.getClass().toString() + ": " + method);
+                log.debug(logMessage);
+                rowsAffected += session.insert(method, movieinfo);
+            }
             session.commit();
+            results.setRowsAffected(rowsAffected);
+            if (rowsAffected != 0)
+                results.setReturnMessage(addSuccess + movieinfo.getTitle() + " " + movieinfo.getYear());
+            else results.setReturnMessage(alreadyInDb + movieinfo.getTitle() + " " + movieinfo.getYear());
         }
+        return results;
     }
 
     @Override
-    public void updMovie(Movie movie) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.BATCH, false)) {
-            session.update("updateMovie", movie);
+    public Results updMovie(Movie movie, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.update(ConfigFactory.get("movie-mapper.updateMovie"), movie);
             session.commit();
         }
+        results.setRowsAffected(rowsAffected);
+        if (rowsAffected != 0) results.setReturnMessage(updateSuccess + movie.getTitle() + " " + movie.getYear());
+        else results.setReturnMessage(nothingFound + movie.getTitle() + " " + movie.getYear());
+        return results;
+    }
+
+    @Override
+    public Results delMovie(Integer movieid, Results results) {
+        rowsAffected = 0;
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            rowsAffected += session.delete(ConfigFactory.get("movie-mapper.deleteMovie"), movieid);
+            session.commit();
+            results.setRowsAffected(rowsAffected);
+        }
+        if (rowsAffected != 0) results.setReturnMessage(deleteSuccess + movieid);
+        else results.setReturnMessage(nothingFound + movieid);
+        return results;
     }
 
     @Override
     public Results moviesByTitle(String search, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             String query = new StringBuilder("%")
                     .append(search)
                     .append("%")
                     .toString();
-            output = session.selectList("byTitleMovie", query);
+            output = session.selectList(ConfigFactory.get("movie-mapper.byTitleMovie"), query);
             session.commit();
         }
-        return results.setMovies(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Movie moviesById(String imdbId) {
+    public Results moviesById(Integer dbId, Results results) {
         Movie movie;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            movie = session.selectOne("byIdMovie", imdbId);
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            movie = session.selectOne(ConfigFactory.get("movie-mapper.byIdMovie"), dbId);
             session.commit();
+            results.setEncounters(movie);
         }
-        return movie;
-
+        return results;
     }
 
     @Override
-    public Results moviesByPersonId(Person person, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byPersonMovie", person.getId());
+    public Results moviesByPersonId(Integer person, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("movie-mapper.byPersonMovie"), person);
             session.commit();
         }
-        return results.setMovies(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results moviesByGenreId(Genre genre, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            output = session.selectList("byGenreMovie", genre.getId());
+    public Results moviesByGenreId(Integer genre, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("movie-mapper.byGenreMovie"), genre);
             session.commit();
         }
-        return results.setMovies(output);
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results moviesByLanguageId(Language lang, Results results) {
-        return null;
+    public Results moviesByLanguageId(Integer lang, Results results) {
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("movie-mapper.byLanguageMovie"), lang);
+            session.commit();
+        }
+        output.forEach(results::setEncounters);
+        return results;
     }
 
     @Override
-    public Results moviesByYear(Integer x, Integer y, Results results) {
-
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-
-            Map<String, Integer> map = new HashMap<>();
-            if (x >= y) {
-                map.put("start", y);
-                map.put("end", x);
-            } else {
-                map.put("start", x);
-                map.put("end", y);
-            }
-            output = session.selectList("byYearMovie", map);
+    public Results moviesByYear(Request date, Results results) {
+        Integer year = date.getYear();
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            output = session.selectList(ConfigFactory.get("movie-mapper.byYearMovie"), year);
             session.commit();
         }
-        return results.setMovies(output);
+        output.forEach(results::setEncounters);
+        return results;
+
     }
 
     @Override
     public Results moviesByDate(String x, String y, Results results) {
-
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatterString);
             LocalDate start, end;
             start = (x.isEmpty()) ? LocalDate.now() : LocalDate.parse(x, formatter);
             end = (y.isEmpty()) ? LocalDate.now() : LocalDate.parse(y, formatter);
@@ -139,9 +170,12 @@ public class MovieDAOImpl implements MovieDAO {
                 map.put("start", start);
                 map.put("end", end);
             }
-            output = session.selectList("byYearMovie", map);
+            output = session.selectList(ConfigFactory.get("movie-mapper.byYearMovie"), map);
             session.commit();
         }
-        return results.setMovies(output);
+        for (Encounter element : output) {
+            results.setEncounters(element);
+        }
+        return results;
     }
 }

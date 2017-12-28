@@ -1,23 +1,24 @@
 package com.pewa.anime;
 
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
+import com.pewa.common.Request;
 import com.pewa.common.Results;
-
-import java.util.List;
 
 public interface MangaDAO {
 
         Results addManga(Manga anime, Results results);
 
-        Results getManga(String query, Results results);
+        Results updateManga(Manga manga, Results results);
 
-        Results getMangaById(int id, Results results);
+        Results deleteManga(Integer manga, Results results);
 
-        Results getMangaByPerson(Person person, Results results);
+        Results getMangaByTitle(String query, Results results);
 
-        Results getMangaByGenre(Genre genre, Results results);
+        Results getMangaById(Integer mangaid, Results results);
 
-        Results getMangaByYear(String x, String y, Results results);
+        Results getMangaByPerson(Integer person, Results results);
+
+        Results getMangaByGenre(Integer genre, Results results);
+
+        Results getMangaByYear(Request date, Results results);
 
 }

@@ -2,22 +2,28 @@ package com.pewa.anime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.PewaType;
+import com.pewa.common.Encounter;
 import com.pewa.common.Genre;
 import com.pewa.common.Person;
+import com.pewa.status.Status;
 import com.pewa.util.CustomLocalDateDeserializer;
 import com.pewa.util.CustomLocalDateSerializer;
 import com.pewa.util.CustomLocalDateTimeDeserializer;
 import com.pewa.util.CustomLocalDateTimeSerializer;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Manga {
+public class Manga implements Comparable<Manga>, Serializable, Encounter {
     private Set<Genre> genres;
     private Set<Person> staff;
-    private String titleRom, titleEng, type, description, poster, publishingStatus, intPoster;
+    private String titleRom, titleEng, description, poster, publishingStatus, intPoster, mangaType;
+    private PewaType type;
+    private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -26,6 +32,22 @@ public class Manga {
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime dbDatetime;
+
+    static final long serialVersionUID = 1L;
+
+    public Manga() {
+        this.genres = new TreeSet<>();
+        this.staff = new TreeSet<>();
+        this.status = new TreeSet<>();
+    }
+
+    public String getMangaType() {
+        return mangaType;
+    }
+
+    public void setMangaType(String mangaType) {
+        this.mangaType = mangaType;
+    }
 
     public String getIntPoster() {
         return intPoster;
@@ -75,12 +97,24 @@ public class Manga {
         this.titleEng = titleEng;
     }
 
-    public String getType() {
+    public PewaType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PewaType type) {
         this.type = type;
+    }
+
+    public Set<Status> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Set<Status> status) {
+        this.status = status;
+    }
+
+    public void setStatus(Status status) {
+        this.status.add(status);
     }
 
     public LocalDate getStartDate() {
@@ -128,11 +162,9 @@ public class Manga {
     }
 
     public void setGenres(Genre genre) {
-        if(this.genres==null) {
-            this.genres = new TreeSet<>();
-        }
         this.genres.add(genre);
     }
+
     public void setGenres(Set<Genre> genres) {
         this.genres = genres;
     }
@@ -158,9 +190,6 @@ public class Manga {
     }
 
     public void setStaff(Person person) {
-        if(this.staff==null) {
-            this.staff = new TreeSet<>();
-        }
         this.staff.add(person);
     }
 
@@ -187,5 +216,10 @@ public class Manga {
                 ", idAnilist=" + idAnilist +
                 ", dbDatetime=" + dbDatetime +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Manga manga) {
+        return this.titleRom.compareTo(manga.titleRom);
     }
 }

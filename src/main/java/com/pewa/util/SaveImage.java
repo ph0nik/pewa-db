@@ -27,50 +27,56 @@ public class SaveImage {
     private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
     private static final Logger log = LogManager.getLogger(SaveImage.class);
     private static PewaType type;
-    private static String id;
+    private static Integer id;
     private static String posterLink;
     private static StringBuilder logMessage;
 
     public static String getImage(Anime anime) {
         type = PewaType.ANIME;
-        id = String.valueOf(anime.getIdAnilist());
+        id = anime.getIdAnilist();
         posterLink = anime.getPoster();
-        return getImage(type, id, posterLink);
+        return getImage(type, id.toString(), posterLink);
     }
 
     public static String getImage(Manga manga) {
         type = PewaType.MANGA;
-        id = String.valueOf(manga.getIdAnilist());
+        id = manga.getIdAnilist();
         posterLink = manga.getPoster();
-        return getImage(type, id, posterLink);
+        return getImage(type, id.toString(), posterLink);
     }
 
     public static String getImage(Movie movie) {
+        TmdbTimerTask getRecentImagePathConfig = new TmdbTimerTask();
+        TmdbApi imageConfiguration = getRecentImagePathConfig.getConfiguration();
+        String posterPath = new StringBuilder(imageConfiguration.getSecureBaseUrl()) // pobiera aktualna domene https
+                .append(imageConfiguration.getPosterSizes().get(3)) // wybiera rozmiar plakatu z dostepnych
+                .append(movie.getPoster()) // link do pliku na serwerze
+                .toString();
         type = PewaType.MOVIE;
         id = movie.getImdbID();
-        posterLink = movie.getPoster();
-        return getImage(type, id, posterLink);
+        posterLink = posterPath;
+        return getImage(type, id.toString(), posterLink);
     }
 
     public static String getImageMed(TvShowSummary tvshow) {
         type = PewaType.TVSERIES;
-        id = tvshow.getImdbLink();
+        String id = tvshow.getImdbLink();
         posterLink = tvshow.getPosterMed();
         return getImage(type, id, posterLink);
     }
 
     public static String getImageOrg(TvShowSummary tvshow) {
         type = PewaType.TVSERIES;
-        id = tvshow.getImdbLink();
+        String id = tvshow.getImdbLink();
         posterLink = tvshow.getPosterOrg();
         return getImage(type, id, posterLink);
     }
 
     public static String getImage(Album album) {
         type = PewaType.MUSIC;
-        id = String.valueOf(album.getIdDiscogs());
+        id = album.getIdDiscogs();
         posterLink = album.getCover();
-        return getImage(type, id, posterLink);
+        return getImage(type, id.toString(), posterLink);
     }
 
 
@@ -81,9 +87,13 @@ public class SaveImage {
         File file = new File(imgPath);
         directoryConfirmation = file.mkdirs();
         if (directoryConfirmation) {
-            logMessage = new StringBuilder("Folder created: [").append(fileName).append("]");
+            logMessage = new StringBuilder("Folder created: [")
+                    .append(fileName)
+                    .append("]");
         } else {
-            logMessage = new StringBuilder("Folder already exists: [").append(fileName).append("]");
+            logMessage = new StringBuilder("Folder already exists: [")
+                    .append(fileName)
+                    .append("]");
         }
         log.info(logMessage);
         switch (type) {
@@ -107,13 +117,25 @@ public class SaveImage {
                 break;
         }
         if (imageUrl.contains(".jpg")) {
-            destinationFile = fileName.append(id).append(".jpg").toString();
+            destinationFile = fileName
+                    .append(id)
+                    .append(".jpg")
+                    .toString();
         } else if (imageUrl.contains(".gif")) {
-            destinationFile = fileName.append(id).append(".gif").toString();
+            destinationFile = fileName
+                    .append(id)
+                    .append(".gif")
+                    .toString();
         } else if (imageUrl.contains(".jpeg")) {
-            destinationFile = fileName.append(id).append(".jpeg").toString();
+            destinationFile = fileName
+                    .append(id)
+                    .append(".jpeg")
+                    .toString();
         } else {
-            destinationFile = fileName.append(id).append(".png").toString();
+            destinationFile = fileName
+                    .append(id)
+                    .append(".png")
+                    .toString();
         }
         try {
             saveImage(imageUrl, destinationFile);

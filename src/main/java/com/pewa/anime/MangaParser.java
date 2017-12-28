@@ -4,6 +4,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.eclipsesource.json.ParseException;
+import com.pewa.PewaType;
 import com.pewa.common.Genre;
 import com.pewa.MediaParse;
 import com.pewa.common.Person;
@@ -28,7 +29,7 @@ public class MangaParser implements MediaParse<Manga, Integer> {
 
     private static final Logger log = LogManager.getLogger(MangaParser.class);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private final String nullDate = "10000101";
+    private static final String nullDate = "10000101";
 
     /*
     * Method takes AniList model id and returns object of type Anime
@@ -94,7 +95,8 @@ public class MangaParser implements MediaParse<Manga, Integer> {
         }
         manga.setStartDate(zdtStart);
         manga.setEndDate(zdtEnd);
-        manga.setType(jsonManga.get("type").asString());
+        manga.setMangaType(jsonManga.get("type").asString());
+        manga.setType(PewaType.MANGA);
         for (JsonValue val : jsonManga.get("genres").asArray()) {
             manga.setGenres(new Genre(val.asString()));
         }

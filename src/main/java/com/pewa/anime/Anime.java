@@ -2,9 +2,13 @@ package com.pewa.anime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.PewaType;
+import com.pewa.book.Book;
+import com.pewa.common.Encounter;
 import com.pewa.common.Genre;
 import com.pewa.MediaModel;
 import com.pewa.common.Person;
+import com.pewa.status.Status;
 import com.pewa.util.CustomLocalDateDeserializer;
 import com.pewa.util.CustomLocalDateSerializer;
 import com.pewa.util.CustomLocalDateTimeDeserializer;
@@ -16,8 +20,10 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Anime extends MediaModel implements Serializable {
-    private String titleRom, titleEng, type, description, poster, intPoster, airingStatus;
+public class Anime extends MediaModel implements Comparable<Anime>, Serializable, Encounter {
+
+    private String titleRom, titleEng, description, poster, intPoster, airingStatus, animeType;
+    private PewaType type;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -25,6 +31,7 @@ public class Anime extends MediaModel implements Serializable {
     private Set<Genre> genres;
     private Set<Person> staff;
     private Integer id, eps, duration, idAnilist;
+    private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -36,6 +43,15 @@ public class Anime extends MediaModel implements Serializable {
     public Anime() {
         this.genres = new TreeSet<>();
         this.staff = new TreeSet<>();
+        this.status = new TreeSet<>();
+    }
+
+    public String getAnimeType() {
+        return animeType;
+    }
+
+    public void setAnimeType(String animeType) {
+        this.animeType = animeType;
     }
 
     public String getIntPoster() {
@@ -86,13 +102,27 @@ public class Anime extends MediaModel implements Serializable {
         this.titleEng = titleEnd;
     }
 
-    public String getType() {
-        return type;
+
+    public PewaType getType() {
+        return this.type;
     }
 
-    public void setType(String type) {
+    public Set<Status> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Set<Status> status) {
+        this.status = status;
+    }
+
+    public void setStatus(Status status) {
+        this.status.add(status);
+    }
+
+    public void setType(PewaType type) {
         this.type = type;
     }
+
 
     public LocalDate getStartDate() {
         return startDate;
@@ -241,4 +271,13 @@ public class Anime extends MediaModel implements Serializable {
         return result;
     }
 
+    @Override
+    public int compareTo(Anime anime) {
+        return this.titleRom.compareTo(anime.titleRom);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.titleRom.isEmpty();
+    }
 }

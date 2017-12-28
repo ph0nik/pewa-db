@@ -1,29 +1,36 @@
 package com.pewa.tv;
 
 import com.eclipsesource.json.*;
+import com.google.gson.Gson;
+import com.pewa.PewaType;
+import com.pewa.common.Country;
 import com.pewa.common.Genre;
 import com.pewa.MediaParse;
+import com.pewa.common.Language;
 import com.pewa.common.Person;
 import com.pewa.config.ConfigFactory;
+import com.pewa.tv.tvmaze.TvMaze;
 import com.pewa.util.SaveImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 
+@Component
 public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
-    private String firstAiredTemp;
-    private LocalDate firstAired;
-    private TvShowSummary tvShowSummaryItem = new TvShowSummary();
+    private TvShowSummary tvShowSummaryItem;
 
     private static final Logger log = LogManager.getLogger(TvShowParser.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
     public TvShowSummary getItem(Integer tvmazeId) {
+        tvShowSummaryItem = new TvShowSummary();
         try {
             String urlSummary = ConfigFactory.get("item.tvMazeSummary").replaceAll("<tvmaze_id>", tvmazeId.toString());
             log.info(urlSummary);
@@ -40,8 +47,6 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
                 log.error(errorMsg);
             } else {
                 parseSummary(getSummary);
-                parseEpisodes(getSummary);
-                parseStaff(getSummary);
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
@@ -50,110 +55,69 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
         }
         return tvShowSummaryItem;
     }
-
-    private void parseSummary(Connection.Response cr) throws IOException, ParseException {
-        JsonValue tvmazeSum = Json.parse(cr.parse().text());
-        tvShowSummaryItem.setTvMazeId(tvmazeSum.asObject().getInt("id", 0));
-        tvShowSummaryItem.setTvMazeUrl(tvmazeSum.asObject().getString("url", ""));
-        tvShowSummaryItem.setTitle(tvmazeSum.asObject().getString("name", ""));
-        tvShowSummaryItem.setType(tvmazeSum.asObject().getString("type", ""));
-        tvShowSummaryItem.setLanguage(tvmazeSum.asObject().getString("language", ""));
-        JsonArray jsonGenresArray = tvmazeSum.asObject().get("genres").asArray();
-        for (JsonValue item : jsonGenresArray) {
-            tvShowSummaryItem.setGenres(new Genre(item.asString()));
+    private TvShowParser parseSummary(Connection.Response cr) throws IOException, ParseException {
+        Gson gson = new Gson();
+        String connectionResponseString = cr.parse().text();
+        TvMaze tvMaze = gson.fromJson(connectionResponseString, TvMaze.class);
+        tvShowSummaryItem.setTitle(tvMaze.getName());
+        tvShowSummaryItem.setPremiered(LocalDate.parse(tvMaze.getPremiered(), formatter));
+        tvShowSummaryItem.setLanguage(new Language(tvMaze.getLanguage()));
+        String country = "none";
+        String network = "none";
+        if (tvMaze.getNetwork() != null) {
+            if (tvMaze.getNetwork().getCountry() != null) country = tvMaze.getNetwork().getCountry().getName();
+            if (tvMaze.getNetwork().getName() != null) network = tvMaze.getNetwork().getName();
         }
-        tvShowSummaryItem.setStatus(tvmazeSum.asObject().getString("status", ""));
-        tvShowSummaryItem.setRuntime(tvmazeSum.asObject().getInt("runtime", 0));
-
-        firstAiredTemp = tvmazeSum.asObject().getString("premiered", "0000-01-01");
-        firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        tvShowSummaryItem.setPremiered(firstAired);
-
-        if (tvmazeSum.asObject().get("rating").asObject().get("average").isNull()) {
-            tvShowSummaryItem.setRatingAvg(0.0);
-        } else {
-            tvShowSummaryItem.setRatingAvg(tvmazeSum.asObject().get("rating").asObject().getDouble("average", 0.0));
+        else if (tvMaze.getWebChannel() != null) {
+            if (tvMaze.getWebChannel().getCountry() != null) country = tvMaze.getWebChannel().getCountry().getName();
+            if (tvMaze.getWebChannel().getName() != null) network = tvMaze.getWebChannel().getName();
         }
+        tvShowSummaryItem.setCountry(new Country(country));
+        tvShowSummaryItem.setNetwork(network);
+        tvMaze.getEmbedded().getCrew().forEach(cm -> {
+            String job = cm.getType().toLowerCase();
+            if (job.equals("executive producer") || job.equals("creator")) {
+                tvShowSummaryItem.setStaff(new Person(cm.getPerson().getName(), "", job));
+            }
+        });
+        tvMaze.getEmbedded().getCast().forEach(ca -> {
+            String actor = "actor";
+            tvShowSummaryItem.setStaff(new Person(ca.getPerson().getName(), "", actor));
+        });
+        tvMaze.getGenres().forEach(g -> {
+            tvShowSummaryItem.setGenres(new Genre(g));
+        });
+        tvShowSummaryItem.setTvMazeUrl(tvMaze.getUrl());
+        tvShowSummaryItem.setTvMazeId(tvMaze.getId());
+        tvShowSummaryItem.setImdbLink(tvMaze.getExternals().getImdb());
+        tvShowSummaryItem.setThetvdbLink(tvMaze.getExternals().getThetvdb());
+        tvShowSummaryItem.setTvrageLink(tvMaze.getExternals().getTvrage());
 
-        if (tvmazeSum.asObject().get("network").isNull()) {
-            tvShowSummaryItem.setNetwork(tvmazeSum.asObject().get("webChannel").asObject().getString("name", ""));
-            tvShowSummaryItem.setCountry(tvmazeSum.asObject().get("webChannel").asObject().get("country").asObject().getString("name", ""));
-        } else {
-            tvShowSummaryItem.setNetwork(tvmazeSum.asObject().get("network").asObject().getString("name", ""));
-            tvShowSummaryItem.setCountry(tvmazeSum.asObject().get("network").asObject().get("country").asObject().getString("name", ""));
-        }
-
-        JsonObject tvmazeExternals = tvmazeSum.asObject().get("externals").asObject();
-        tvShowSummaryItem.setImdbLink(tvmazeExternals.getString("imdb", ""));
-        if (tvmazeExternals.get("tvrage").isNull()) {
-            tvShowSummaryItem.setTvrageLink(0);
-        } else {
-            tvShowSummaryItem.setTvrageLink(tvmazeExternals.getInt("tvrage", 0));
-        }
-        if (tvmazeExternals.get("thetvdb").isNull()) {
-            tvShowSummaryItem.setThetvdbLink(0);
-        } else {
-            tvShowSummaryItem.setThetvdbLink(tvmazeExternals.getInt("thetvdb", 0));
-        }
-        JsonObject tvmazePosters = tvmazeSum.asObject().get("image").asObject();
-        tvShowSummaryItem.setPosterMed(tvmazePosters.getString("medium", ""));
+        tvShowSummaryItem.setPosterOrg(tvMaze.getImage().getOriginal());
+        tvShowSummaryItem.setPosterMed(tvMaze.getImage().getMedium());
         tvShowSummaryItem.setIntPosterMed(SaveImage.getImageMed(tvShowSummaryItem));
-        tvShowSummaryItem.setPosterOrg(tvmazePosters.getString("original", ""));
         tvShowSummaryItem.setIntPosterOrg(SaveImage.getImageOrg(tvShowSummaryItem));
-        tvShowSummaryItem.setSummary(tvmazeSum.asObject().getString("summary", ""));
-    }
 
-    private void parseEpisodes(Connection.Response cr) throws IOException, ParseException {
-        JsonArray tvmazeEpisodes = Json.parse(cr.parse().text())
-                                                        .asObject()
-                                                        .get("_embedded")
-                                                        .asObject()
-                                                        .get("episodes")
-                                                        .asArray();
-        for (JsonValue ep : tvmazeEpisodes) {
-            int tvMazeId = ep.asObject().getInt("id", 0);
-            String tvMazeUrl = ep.asObject().getString("url", "");
-            String epTitle = ep.asObject().getString("name", "");
-            int season = ep.asObject().getInt("season", 0);
-            int episode = ep.asObject().getInt("number", 0);
-            firstAiredTemp = ep.asObject().getString("airdate", "0000-01-01");
-            firstAired = LocalDate.parse(firstAiredTemp, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String summary = ep.asObject().getString("summary", "");
-            TvShowEpisode tvShowEpisode = new TvShowEpisode();
-            tvShowEpisode.setEpTitle(epTitle);
-            tvShowEpisode.setFirstAired(firstAired);
-            tvShowEpisode.setSeason(season);
-            tvShowEpisode.setEpisode(episode);
-            tvShowEpisode.setSummary(summary);
-            tvShowEpisode.setTvMazeId(tvMazeId);
-            tvShowEpisode.setTvMazeUrl(tvMazeUrl);
-            tvShowSummaryItem.setEpisodes(tvShowEpisode);
-        }
-    }
+        tvShowSummaryItem.setRatingAvg(tvMaze.getRating().getAverage());
+        tvShowSummaryItem.setRuntime(tvMaze.getRuntime());
+        tvShowSummaryItem.setSummary(tvMaze.getSummary());
+        tvShowSummaryItem.setStatus(tvMaze.getStatus());
+        tvShowSummaryItem.setShowType(tvMaze.getType());
+        tvShowSummaryItem.setType(PewaType.TVSERIES);
 
-    private void parseStaff(Connection.Response cr) throws IOException, ParseException {
-        JsonArray tvmazeStaff = Json.parse(cr.parse().text())
-                .asObject()
-                .get("_embedded")
-                .asObject()
-                .get("cast")
-                .asArray();
-        for (JsonValue person : tvmazeStaff) {
-            String name = person.asObject().get("person").asObject().getString("name","");
-            String job = "actor";
-            tvShowSummaryItem.setStaff(new Person(name,"",job));
-        }
-        tvmazeStaff = Json.parse(cr.parse().text())
-                .asObject()
-                .get("_embedded")
-                .asObject()
-                .get("crew")
-                .asArray();
-        for (JsonValue person : tvmazeStaff) {
-            String job = person.asObject().getString("type","");
-            String name = person.asObject().get("person").asObject().getString("name","");
-            tvShowSummaryItem.setStaff(new Person(name,"",job));
-        }
+        tvMaze.getEmbedded().getEpisodes().forEach(e -> {
+            TvShowEpisode episode = new TvShowEpisode();
+            episode.setTvMazeId(e.getId());
+            episode.setSeason(e.getSeason());
+            episode.setEpisode(e.getNumber());
+            episode.setSummary(e.getSummary());
+            episode.setEpTitle(e.getName());
+            episode.setTvMazeUrl(e.getUrl());
+            episode.setFirstAired(LocalDate.parse(e.getAirdate(), formatter));
+            tvShowSummaryItem.setEpisodes(episode);
+        });
+
+        return this;
     }
 
 }

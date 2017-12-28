@@ -1,28 +1,22 @@
 
 package com.pewa.tv.tvmaze;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "href"
-})
 public class Self__ {
 
-    @JsonProperty("href")
+    @SerializedName("href")
+    @Expose
     private String href;
 
-    @JsonProperty("href")
     public String getHref() {
         return href;
     }
 
-    @JsonProperty("href")
     public void setHref(String href) {
         this.href = href;
     }

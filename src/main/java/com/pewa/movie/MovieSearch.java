@@ -1,5 +1,7 @@
 package com.pewa.movie;
 
+import com.pewa.common.Request;
+import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
 import org.springframework.stereotype.Component;
 
@@ -11,5 +13,7 @@ import java.util.Set;
 @Component
 public interface MovieSearch {
 
-    Set<SingleSearchResult> externalMovieSearch(String query);
+    Results externalMovieSearch(String query, Results results);
+
+    Integer idImdbString2Int(String idImdb);
 }

@@ -1,16 +1,13 @@
 package com.pewa.config;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+
+/*
 public class ConfigReader {
     public static String searchUrl;
     public static String searchMovie;
@@ -90,3 +87,4 @@ public class ConfigReader {
         }
     }
 }
+*/

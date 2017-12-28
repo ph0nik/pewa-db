@@ -1,6 +1,6 @@
 package com.pewa.music;
 
-import com.pewa.config.ConfigReader;
+import com.pewa.config.ConfigFactory;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
@@ -18,12 +18,12 @@ public class AlbumParseToObjectMB {
 
     public static Album parseAlbum(String musicBrainzId) {
         Album album = new Album();
-        String url = ConfigReader.musicBrainzItem.replaceAll("<query>", musicBrainzId);
+        String url = ConfigFactory.get("musicBrainzItem").replaceAll("<query>", musicBrainzId);
         System.out.println(url);
         SAXBuilder builder = new SAXBuilder();
         try {
             String musicBrainzDocument = Jsoup.connect(url.toString())
-                    .userAgent(ConfigReader.userAgentMusicBrainz)
+                    .userAgent(ConfigFactory.get("userAgentMB"))
                     .timeout(5 * 1000)
                     .ignoreContentType(true)
                     .get()

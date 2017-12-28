@@ -1,6 +1,7 @@
 package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.commons.codec.language.bm.Lang;
 
 import java.io.Serializable;
 
@@ -10,22 +11,26 @@ import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Language implements Comparable<Language>, Serializable {
-    private int id;
+    private Integer id;
     private String language;
 
     static final long serialVersionUID = 1L;
 
     public Language() {}
 
+    public Language(Integer id) {
+        this.id = id;
+    }
+
     public Language(String lang) {
         this.language = lang;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

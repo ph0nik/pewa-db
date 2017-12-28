@@ -1,54 +1,44 @@
 
 package com.pewa.tv.tvmaze;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "name",
-    "code",
-    "timezone"
-})
 public class Country {
 
-    @JsonProperty("name")
+    @SerializedName("name")
+    @Expose
     private String name;
-    @JsonProperty("code")
+    @SerializedName("code")
+    @Expose
     private String code;
-    @JsonProperty("timezone")
+    @SerializedName("timezone")
+    @Expose
     private String timezone;
 
-    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonProperty("code")
     public String getCode() {
         return code;
     }
 
-    @JsonProperty("code")
     public void setCode(String code) {
         this.code = code;
     }
 
-    @JsonProperty("timezone")
     public String getTimezone() {
         return timezone;
     }
 
-    @JsonProperty("timezone")
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }

@@ -27,7 +27,50 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26">
-      <console name="mysql-root" type="STANDARD"><![CDATA[drop tables genre_book, genre_anime, genre_manga, book_form, genre, person_anime, person_book, person_manga, person, book;]]></console>
+      <console name="mysql-root" type="STANDARD"><![CDATA[select * from anime;
+
+select * from status;
+
+SELECT
+        b.id,
+        b.original_title,
+        b.polish_title,
+        b.original_language,
+        b.category,
+        b.alt_version,
+        b.id_biblionetka,
+        b.rating,
+        b.votes,
+        b.first_pub_date,
+        b.pl_pub_date,
+        b.book_info,
+        b.type,
+        p.id AS person_id,
+        p.name AS person_name,
+        pb.job AS person_job,
+        g.id AS genre_id,
+        g.genre,
+        bf.id AS form_id,
+        bf.form,
+        s.media_source,
+        s.date_encounter,
+        s.rating AS user_rating,
+        s.date_added AS status_added,
+        s.comment
+        FROM
+            (person_book pb, genre_book gb, book_form bf, status_book sb)
+        INNER JOIN
+        (person p, book b, genre g, status s)
+        ON
+			p.id = pb.person_id
+            AND b.id = pb.book_id
+            AND g.id = gb.genre_id
+            AND b.id = gb.book_id
+            AND s.id = sb.status_id
+            AND b.id = sb.book_id
+        WHERE
+        b.original_title LIKE '% %'
+        ;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">

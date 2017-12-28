@@ -1,9 +1,13 @@
 package com.pewa.controller;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.anime.*;
 import com.pewa.common.*;
+import com.pewa.request.StatusRequest;
+import com.pewa.status.Status;
+import com.pewa.status.StatusDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -18,6 +22,10 @@ import java.util.Set;
 @RequestMapping("/manga/")
 public class MangaController {
 
+    private final String json = MediaType.APPLICATION_JSON_VALUE;
+    private final String missingParameters = "Missing parameters: ";
+    private final String emptyStatus = "Error: Empty status";
+
     @Autowired
     private AnimeMangaSearch animeMangaSearch;
 
@@ -29,48 +37,84 @@ public class MangaController {
     private MangaDAO mangaDAO;
 
     @Autowired
-    private Results results;
+    private StatusDAO statusDAO;
 
+    @Autowired
+    private InitAllTables initAllTables;
+
+    private Results results;
+    private PewaType mangaType = PewaType.MANGA;
     private Manga manga;
+    private Status status;
 
     @GetMapping(value = "search/{query}")
-    public Set<SingleSearchResult> searchExternal(@PathVariable String query) {
-        Set<SingleSearchResult> resultSet = animeMangaSearch.aniListSearch(query, PewaType.MANGA);
-        return resultSet;
+    public Results searchExternal(@PathVariable String query) {
+        return animeMangaSearch.aniListSearch(query, mangaType).setReturnMessage();
     }
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return mangaDAO.getManga(query, results).setMessage();
+        return mangaDAO.getMangaByTitle(query, new Results()).setReturnMessage();
     }
 
-    @PostMapping(value = "add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results addAnime(@RequestBody Request anidId) {
-        manga = mangaParse.getItem(anidId.getAniId());
-        mangaDAO.addManga(manga, results);
-        return results.setMessage();
-    }
-    /*
-    * zapytanie POST w body musi mieć jsona, json może mieć tylko jeden pametr, np. {"id":4} i też zostanie prawidłowo zmapowany
-    *
-    * */
-    @PostMapping(value = "person", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByPerson(@RequestBody Person person) {
-        mangaDAO.getMangaByPerson(person, results);
-        return results.setMessage();
-
+    @GetMapping(value = "id/{id}")
+    public Results getManga(@PathVariable Integer id) {
+        return mangaDAO.getMangaById(id, new Results()).setReturnMessage();
     }
 
-    @PostMapping(value = "genre", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Results searchByGenre(@RequestBody Genre genre) {
-        mangaDAO.getMangaByGenre(genre, results);
-        return results.setMessage();
+    @PostMapping(value = "add", consumes = json)
+    public Results addAnime(@RequestBody StatusRequest request) {
+        results = new Results();
+        status = new Status();
+        if (request == null) {
+            return results.setReturnMessage(emptyStatus);
+        } else if (!request.checkRequiredParameters().isEmpty()) {
+            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
+            return results.setReturnMessage(returnMessage);
+        } else {
+            status.setElementType(request.getElementType());
+            status.setEncounterId(request.getEncounterId());
+            status.setComment(request.getComment());
+            status.setEncounterRating(request.getEncounterRating());
+            status.setEncounterDate(request.getEncounterDate());
+            status.setMediaSource(request.getMediaSource());
+            manga = mangaParse.getItem(request.getEncounterId());
+            results = mangaDAO.addManga(manga, new Results());
+            return statusDAO.addStatus(status, results);
+        }
     }
 
-    @PostMapping(value = "date", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "update", consumes = json)
+    public Results updateManga(@RequestBody Request request) {
+        manga = mangaParse.getItem(request.getExternalId());
+        return mangaDAO.updateManga(manga, new Results());
+    }
+
+    @GetMapping(value = "delete/{id}")
+    public Results deleteAnime(@PathVariable Integer id) {
+        results = mangaDAO.deleteManga(id, new Results());
+        return initAllTables.cleanAll(results);
+    }
+
+
+    @GetMapping(value = "person/{personId}")
+    public Results searchByPerson(@PathVariable Integer personId) {
+        return mangaDAO
+                .getMangaByPerson(personId, new Results())
+                .setReturnMessage();
+    }
+
+    @GetMapping(value = "genre/{genreId}")
+    public Results searchByGenre(@PathVariable Integer genreId) {
+        return mangaDAO
+                .getMangaByGenre(genreId, new Results())
+                .setReturnMessage();
+    }
+
+    @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
-        mangaDAO.getMangaByYear(dateSearch.getDateInString(), dateSearch.getDateOutString(), results);
-        return results.setMessage();
-
+        return mangaDAO
+                .getMangaByYear(dateSearch, new Results())
+                .setReturnMessage();
     }
 }

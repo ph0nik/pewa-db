@@ -9,9 +9,12 @@ package com.pewa.anime;
 
 import com.pewa.common.Genre;
 import com.pewa.common.Person;
+import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.movie.tmdb.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.lang.ref.ReferenceQueue;
 import java.util.List;
 
  public interface AnimeDAO {
@@ -19,26 +22,33 @@ import java.util.List;
     /*
     * Adds Anime element into database
     * */
-    void addAnime(Anime anime);
+    Results addAnime(Anime anime, Results results);
+
+    Results updateAnime(Anime anime, Results results);
+
+    Results deleteAnime(Integer anime, Results results);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnime(String query, Results results);
+    Results getAnimeByTitle(String query, Results results);
     /*
     * Returns List of elements of Anime type based on query ofInteger type.
     * */
-    Anime getAnimeById(Integer id);
+
+    Results getAnimeById(Integer databaseId, Results results);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnimeByPerson(Person person, Results results);
+    Results getAnimeByPersonId(Integer person, Results results);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnimeByGenre(Genre genre, Results results);
+    Results getAnimeByGenreId(Integer genre, Results results);
     /*
     * Return List of Elements of Anime type based on queriees of String type.
     * Inputs are converted internally into LocalDate objects.
     * */
-    Results getAnimeByYear(String x, String y, Results results);
+    Results getAnimeByYear(Request date, Results results);
+
+
 }

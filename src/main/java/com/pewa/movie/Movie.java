@@ -6,32 +6,44 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.common.Country;
-import com.pewa.common.Genre;
-import com.pewa.common.Language;
-import com.pewa.common.Person;
+import com.pewa.common.*;
+import com.pewa.config.ConfigFactory;
+import com.pewa.status.Status;
+import com.pewa.util.CustomLocalDateDeserializer;
+import com.pewa.util.CustomLocalDateSerializer;
 import com.pewa.util.CustomLocalDateTimeDeserializer;
 import com.pewa.util.CustomLocalDateTimeSerializer;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Movie extends MediaModel implements Comparable<Movie>, Serializable {
+@Component
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Movie extends MediaModel implements Comparable<Movie>, Serializable, Encounter {
 
-    private String title, titlePl, awards, metascore, imdbRating, imdbVotes, imdbID, intPoster, runtime, plot, ageRating, relDate;
+    private String title, titlePl, intPoster, plot;
     @JsonIgnore
     private String poster;
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    private LocalDate relDate;
+    @JsonDeserialize(using = CustomLocalDateDeserializer.class)
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate relDatePl;
-    private Integer year, id;
+    private Integer year, id, runtime, tmdbId;
+//    @JsonProperty(value = "StandardImdbId")
+    @JsonIgnore
+    private Integer imdbID;
+    private String imdbLink;
     private Set<Language> language;
     private Set<Country> country;
     private Set<Genre> genres;
     private Set<Person> staff;
     private PewaType type;
+    private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -39,10 +51,50 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     private LocalDateTime dbDatetime;
 
     public Movie() {
-        this.genres = new TreeSet<>();
-        this.language = new TreeSet<>();
-        this.country = new TreeSet<>();
-        this.staff = new TreeSet<>();
+//        this.genres = new TreeSet<>();
+//        this.language = new TreeSet<>();
+//        this.country = new TreeSet<>();
+
+//        this.status = new TreeSet<>();
+    }
+
+
+    public Integer getImdbID() {
+        return imdbID;
+    }
+
+    public void setImdbID(Integer imdbID) {
+        this.imdbID = imdbID;
+        String url = ConfigFactory.get("custom-getters.imdb");
+        String imdbIdString = this.imdbID.toString().replaceFirst("11","tt");
+        this.imdbLink = url.replaceAll("<id>", imdbIdString);
+    }
+
+    public String getImdbLink() {
+        return imdbLink;
+    }
+
+    public Integer getTmdbId() {
+        return tmdbId;
+    }
+
+    public void setTmdbId(Integer tmdbId) {
+        this.tmdbId = tmdbId;
+    }
+
+    public Set<Status> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        if (this.status == null) {
+            this.status = new TreeSet<>();
+        }
+        this.status.add(status);
+    }
+
+    public void setStatus(Set<Status> status) {
+        this.status = status;
     }
 
     public LocalDateTime getDbDatetime() {
@@ -94,6 +146,9 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setStaff(Person person) {
+        if (this.staff == null) {
+            this.staff = new HashSet<>();
+        }
         this.staff.add(person);
     }
 
@@ -121,27 +176,19 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
         this.year = year;
     }
 
-    public String getAgeRating() {
-        return ageRating;
-    }
-
-    public void setAgeRating(String ageRating) {
-        this.ageRating = ageRating;
-    }
-
-    public String getRelDate() {
+    public LocalDate getRelDate() {
         return relDate;
     }
 
-    public void setRelDate(String relDate) {
+    public void setRelDate(LocalDate relDate) {
         this.relDate = relDate;
     }
 
-    public String getRuntime() {
+    public Integer getRuntime() {
         return runtime;
     }
 
-    public void setRuntime(String runtime) {
+    public void setRuntime(Integer runtime) {
         this.runtime = runtime;
     }
 
@@ -154,6 +201,9 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setGenres(Genre genre) {
+        if (this.genres == null) {
+            this.genres = new TreeSet<>();
+        }
         this.genres.add(genre);
     }
 
@@ -174,6 +224,9 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setLanguage(Language language) {
+        if (this.language == null) {
+            this.language = new TreeSet<>();
+        }
         this.language.add(language);
     }
 
@@ -186,15 +239,10 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setCountry(Country country) {
+        if (this.country == null) {
+            this.country = new TreeSet<>();
+        }
         this.country.add(country);
-    }
-
-    public String getAwards() {
-        return awards;
-    }
-
-    public void setAwards(String awards) {
-        this.awards = awards;
     }
 
     public String getPoster() {
@@ -205,64 +253,35 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
         this.poster = poster;
     }
 
-    public String getMetascore() {
-        return metascore;
-    }
 
-    public void setMetascore(String metascore) {
-        this.metascore = metascore;
-    }
-
-    public String getImdbRating() {
-        return imdbRating;
-    }
-
-    public void setImdbRating(String imdbRating) {
-        this.imdbRating = imdbRating;
-    }
-
-    public String getImdbVotes() {
-        return imdbVotes;
-    }
-
-    public void setImdbVotes(String imdbVotes) {
-        this.imdbVotes = imdbVotes;
-    }
-
-    public String getImdbID() {
-        return imdbID;
-    }
-
-    public void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
-    }
 
     @Override
     public String toString() {
         return "Movie{" +
                 "title='" + title + '\'' +
                 ", titlePl='" + titlePl + '\'' +
-                ", awards='" + awards + '\'' +
-                ", poster='" + poster + '\'' +
-                ", metascore='" + metascore + '\'' +
-                ", imdbRating='" + imdbRating + '\'' +
-                ", imdbVotes='" + imdbVotes + '\'' +
-                ", imdbID='" + imdbID + '\'' +
                 ", intPoster='" + intPoster + '\'' +
-                ", runtime='" + runtime + '\'' +
                 ", plot='" + plot + '\'' +
-                ", ageRating='" + ageRating + '\'' +
-                ", relDate='" + relDate + '\'' +
+                ", poster='" + poster + '\'' +
+                ", relDate=" + relDate +
                 ", relDatePl=" + relDatePl +
                 ", year=" + year +
                 ", id=" + id +
+                ", imdbID=" + imdbID +
+                ", runtime=" + runtime +
+                ", tmdbId=" + tmdbId +
                 ", language=" + language +
                 ", country=" + country +
                 ", genres=" + genres +
                 ", staff=" + staff +
                 ", type=" + type +
+                ", status=" + status +
                 ", dbDatetime=" + dbDatetime +
                 '}';
+    }
+
+    public boolean isEmpty() {
+        return this.title == null || this.title.isEmpty();
     }
 
     @Override
@@ -274,48 +293,44 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
 
         if (title != null ? !title.equals(movie.title) : movie.title != null) return false;
         if (titlePl != null ? !titlePl.equals(movie.titlePl) : movie.titlePl != null) return false;
-        if (awards != null ? !awards.equals(movie.awards) : movie.awards != null) return false;
-        if (poster != null ? !poster.equals(movie.poster) : movie.poster != null) return false;
-        if (metascore != null ? !metascore.equals(movie.metascore) : movie.metascore != null) return false;
-        if (imdbRating != null ? !imdbRating.equals(movie.imdbRating) : movie.imdbRating != null) return false;
-        if (imdbVotes != null ? !imdbVotes.equals(movie.imdbVotes) : movie.imdbVotes != null) return false;
-        if (imdbID != null ? !imdbID.equals(movie.imdbID) : movie.imdbID != null) return false;
         if (intPoster != null ? !intPoster.equals(movie.intPoster) : movie.intPoster != null) return false;
         if (runtime != null ? !runtime.equals(movie.runtime) : movie.runtime != null) return false;
         if (plot != null ? !plot.equals(movie.plot) : movie.plot != null) return false;
-        if (ageRating != null ? !ageRating.equals(movie.ageRating) : movie.ageRating != null) return false;
+        if (poster != null ? !poster.equals(movie.poster) : movie.poster != null) return false;
         if (relDate != null ? !relDate.equals(movie.relDate) : movie.relDate != null) return false;
         if (relDatePl != null ? !relDatePl.equals(movie.relDatePl) : movie.relDatePl != null) return false;
         if (year != null ? !year.equals(movie.year) : movie.year != null) return false;
+        if (id != null ? !id.equals(movie.id) : movie.id != null) return false;
+        if (imdbID != null ? !imdbID.equals(movie.imdbID) : movie.imdbID != null) return false;
         if (language != null ? !language.equals(movie.language) : movie.language != null) return false;
         if (country != null ? !country.equals(movie.country) : movie.country != null) return false;
         if (genres != null ? !genres.equals(movie.genres) : movie.genres != null) return false;
         if (staff != null ? !staff.equals(movie.staff) : movie.staff != null) return false;
-        return type == movie.type;
+        if (type != movie.type) return false;
+        if (status != null ? !status.equals(movie.status) : movie.status != null) return false;
+        return dbDatetime != null ? dbDatetime.equals(movie.dbDatetime) : movie.dbDatetime == null;
     }
 
     @Override
     public int hashCode() {
         int result = title != null ? title.hashCode() : 0;
         result = 31 * result + (titlePl != null ? titlePl.hashCode() : 0);
-        result = 31 * result + (awards != null ? awards.hashCode() : 0);
-        result = 31 * result + (poster != null ? poster.hashCode() : 0);
-        result = 31 * result + (metascore != null ? metascore.hashCode() : 0);
-        result = 31 * result + (imdbRating != null ? imdbRating.hashCode() : 0);
-        result = 31 * result + (imdbVotes != null ? imdbVotes.hashCode() : 0);
-        result = 31 * result + (imdbID != null ? imdbID.hashCode() : 0);
         result = 31 * result + (intPoster != null ? intPoster.hashCode() : 0);
         result = 31 * result + (runtime != null ? runtime.hashCode() : 0);
         result = 31 * result + (plot != null ? plot.hashCode() : 0);
-        result = 31 * result + (ageRating != null ? ageRating.hashCode() : 0);
+        result = 31 * result + (poster != null ? poster.hashCode() : 0);
         result = 31 * result + (relDate != null ? relDate.hashCode() : 0);
         result = 31 * result + (relDatePl != null ? relDatePl.hashCode() : 0);
         result = 31 * result + (year != null ? year.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (imdbID != null ? imdbID.hashCode() : 0);
         result = 31 * result + (language != null ? language.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
         result = 31 * result + (genres != null ? genres.hashCode() : 0);
         result = 31 * result + (staff != null ? staff.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (dbDatetime != null ? dbDatetime.hashCode() : 0);
         return result;
     }
 
