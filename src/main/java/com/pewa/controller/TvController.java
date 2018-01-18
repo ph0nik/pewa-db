@@ -100,9 +100,9 @@ public class TvController {
         }
     }
 
-    @PostMapping(value = "update", consumes = json)
-    public Results updateTvShow(@RequestBody Request request) {
-        tvShowSummary = tvShowParser.getItem(request.getExternalId());
+    @GetMapping(value = "update/{id}")
+    public Results updateTvShow(@PathVariable Integer id) {
+        tvShowSummary = tvShowParser.getItem(id);
         results = tvShowDAO.updateTvShow(tvShowSummary, new Results());
         return results;
     }

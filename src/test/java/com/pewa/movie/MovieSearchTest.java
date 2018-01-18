@@ -53,7 +53,7 @@ public class MovieSearchTest {
     @Test
     public void searchAllExternal() {
         GlobalSearch globalSearch = new GlobalSearch();
-        String query = "ogniem";
+        String query = "alien";
         Results results = globalSearch.itemsExternalByTitle(query, new Results());
         results.getEncounters().forEach(System.out::println);
     }

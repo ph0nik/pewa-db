@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class StatusDAOImpl implements StatusDAO {
 
-    private static final Logger log = LogManager.getLogger(StatusDAOImpl.class);
+    private static final Logger log = LogManager.getLogger(StatusDAO.class);
     private final String formatterString = "uuuu-MM-dd";
     private final String statusDeleteSucces = "[OK] Status deleted : ";
     private final String statusUpdateSucces = "[OK] Status updated : ";
@@ -138,35 +138,46 @@ public class StatusDAOImpl implements StatusDAO {
                     .collect(Collectors.groupingBy(Status::getElementType, Collectors.mapping(Status::getEncounterId, Collectors.toSet())));
             Set<Integer> encounterIdList;
             List<Encounter> encountersOutput;
+            log.info(results.getResultsFound());
 
             encounterIdList = encouterIdsGrouped.get(PewaType.TVSERIES);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("tv-mapper.byExternalIdTv"), encounterIdList);
                 encountersOutput.forEach(t -> t.setType(PewaType.TVSERIES));
                 encountersOutput.forEach(results::setEncounters);
+                log.info("tv size: " + encountersOutput.size());
+                log.info("result tv: " + results.getResultsFound());
             }
             encounterIdList = encouterIdsGrouped.get(PewaType.MOVIE);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("movie-mapper.byExternalIdMovie"), encounterIdList);
                 encountersOutput.forEach(results::setEncounters);
+                log.info("movie size: " + encountersOutput.size());
+                log.info("result movie: " + results.getResultsFound());
             }
             encounterIdList = encouterIdsGrouped.get(PewaType.ANIME);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("anime-mapper.byExternalIdAni"), encounterIdList);
                 encountersOutput.forEach(t -> t.setType(PewaType.ANIME));
                 encountersOutput.forEach(results::setEncounters);
+                log.info("anime size: " + encountersOutput.size());
+                log.info("result anime: " + results.getResultsFound());
             }
             encounterIdList = encouterIdsGrouped.get(PewaType.MANGA);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("manga-mapper.byExternalIdMan"), encounterIdList);
                 encountersOutput.forEach(t -> t.setType(PewaType.MANGA));
                 encountersOutput.forEach(results::setEncounters);
+                log.info("manga size: " + encountersOutput.size());
+                log.info("result manga: " + results.getResultsFound());
             }
             encounterIdList = encouterIdsGrouped.get(PewaType.BOOK);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("book-mapper.byExternalIdBook"), encounterIdList);
                 encountersOutput.forEach(t -> t.setType(PewaType.BOOK));
                 encountersOutput.forEach(results::setEncounters);
+                log.info("bok size: " + encountersOutput.size());
+                log.info("result book: " + results.getResultsFound());
             }
         }
         return results;

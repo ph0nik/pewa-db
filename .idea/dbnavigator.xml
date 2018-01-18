@@ -29,7 +29,7 @@
     <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26">
       <console name="mysql-root" type="STANDARD"><![CDATA[select * from anime;
 
-select * from status;
+select * from movie;
 
 SELECT
         b.id,

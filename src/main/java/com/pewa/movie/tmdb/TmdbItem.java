@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+//TODO add column to movie table, change sql script, change movie object and parser
+
 public class TmdbItem {
 
     @SerializedName("adult")

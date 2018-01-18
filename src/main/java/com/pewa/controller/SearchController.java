@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class SearchController {
 
     @Autowired
-    @Qualifier
     private GlobalSearch globalSearch;
 
 

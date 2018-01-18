@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,7 @@ public class BookSearch {
             for (Element x : titlePL) {
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
                 String author = x.select("a[href*=author]").stream().map(a -> a.text()).collect(Collectors.joining(", "));
+
                 String title = x.select("a[href*=book]").eq(0).text();
                 String link = x.select("a[href*=book]").eq(0).attr("href");
                 int biblionetkaId = Integer.parseInt(
@@ -60,6 +62,9 @@ public class BookSearch {
                 singleSearchResult.setIdInt(biblionetkaId);
                 singleSearchResult.setTitle(title);
                 singleSearchResult.setDescription(author);
+                // zapytanie nie zwraca dat, tymczasowa data
+                singleSearchResult.setDate(LocalDate.now());
+                log.info(singleSearchResult);
                 searchResultSet.add(singleSearchResult);
             }
         } catch (IOException e) {

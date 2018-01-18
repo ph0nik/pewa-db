@@ -10,11 +10,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 
 @Component
 public class InitAllTables {
 
     private static final Logger log = LogManager.getLogger(InitAllTables.class);
+    private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
     private StringBuilder logMessage;
     private Integer rowsAffected;
     private Results results = new Results();
@@ -65,5 +70,14 @@ public class InitAllTables {
         else results.setReturnMessage(cleanupFail);
         return results;
     }
+
+    public void checkForUnconnectedFiles() {
+        File folder = new File(imgPath);
+        List<File> listOfFiles = Arrays.asList(folder.listFiles());
+
+        listOfFiles.forEach(System.out::println);
+    }
+
+
 
 }

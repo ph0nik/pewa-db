@@ -1,6 +1,9 @@
 package com.pewa.controller;
 
 import com.pewa.config.ConfigFactory;
+import com.pewa.tv.TvShowSearch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +25,13 @@ import java.util.List;
 public class ImageController {
 
     private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
+    private static final Logger log = LogManager.getLogger(ImageController.class);
 
     @GetMapping(value = "{fileName:.+}")
     public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) {
 
         ResponseEntity<InputStreamResource> imageContent = null;
-        System.out.println(imgPath + fileName);
+        log.info(imgPath + " | " + fileName);
         File imageFile = new File(imgPath + fileName);
         try {
             FileInputStream imageStream = new FileInputStream(imageFile);

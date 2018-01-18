@@ -102,6 +102,8 @@ public class StatusRequest {
                     missingParameters.add(this.getClass().getDeclaredField("encounterRating").getName());
                 if (this.comment == null)
                     missingParameters.add(this.getClass().getDeclaredField("comment").getName());
+                if (this.encounterId == null)
+                    missingParameters.add(this.getClass().getDeclaredField("encounterId").getName());
             }
         } catch (NoSuchFieldException e) {
             e.printStackTrace();

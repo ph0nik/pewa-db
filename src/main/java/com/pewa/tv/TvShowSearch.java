@@ -4,11 +4,13 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.google.gson.Gson;
 import com.pewa.PewaType;
 import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
 import com.pewa.config.ConfigFactory;
 import com.pewa.movie.tmdb.Result;
+import com.pewa.tv.tvmaze.search.ShowSearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -40,19 +42,27 @@ public class TvShowSearch {
                     .get()
                     .text();
             JsonArray parseResults = Json.parse(searchResult).asArray();
+
             for (JsonValue result : parseResults) {
+                Gson gson = new Gson();
                 SingleSearchResult singleSearchResult = new SingleSearchResult();
+                ShowSearch showSearch = gson.fromJson(result.toString(), ShowSearch.class);
+
                 JsonObject singleElement = result.asObject().get("show").asObject();
-                int tvmazeId = singleElement.getInt("id",0);
+                int tvmazeId = showSearch.getShow().getId();
                 singleSearchResult.setIdInt(tvmazeId);
-                String title = singleElement.getString("name","");
+                String title = showSearch.getShow().getName();
                 singleSearchResult.setTitle(title);
-                String desc = singleElement.getString("summary","");
-                singleSearchResult.setDescription(desc);
-                String poster = singleElement.get("image").asObject().getString("medium","");
-                singleSearchResult.setPoster(poster);
-                String rawDate = singleElement.getString("premiered","19000101");
-                LocalDate date = LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String desc = showSearch.getShow().getSummary();
+                if (desc != null && !"".equals(desc)) {
+                    singleSearchResult.setDescription(desc);
+                } else {
+                    singleSearchResult.setDescription("N/A");
+                }
+                String rawDate = showSearch.getShow().getPremiered();
+                LocalDate date = (rawDate == null || rawDate.length() == 0)
+                        ? LocalDate.now()
+                        : LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 singleSearchResult.setDate(date);
                 singleSearchResult.setType(PewaType.TVSERIES);
                 log.info(singleSearchResult);

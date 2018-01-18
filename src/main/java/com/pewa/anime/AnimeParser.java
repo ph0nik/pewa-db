@@ -41,7 +41,7 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
                         .append(aniListId)
                         .append(ConfigFactory.get("item.aniListCharacters"))
                         .toString();
-        System.out.println(url);
+        log.info(url); // logging url
         Connection.Response getSingleItem = null;
         try {
             getSingleItem = Jsoup.connect(url)
@@ -76,6 +76,7 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
     private Anime parseItemToObject(Connection.Response cr, Anime anime) throws IOException, ParseException {
         JsonObject jsonAnime;
         jsonAnime = Json.parse(cr.parse().text()).asObject();
+        log.info(jsonAnime); // logging parsed object
         anime.setIdAnilist(jsonAnime.get("id").asInt());
         anime.setPoster(jsonAnime.get("image_url_lge").asString());
         String intPoster = SaveImage.getImage(anime);
@@ -111,7 +112,11 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
             anime.setStaff(new Person(firstName, lastName, role));
         }
         anime.setEps(jsonAnime.get("total_episodes").asInt());
-        anime.setDuration(jsonAnime.getInt("duration", 0));
+        if (jsonAnime.get("duration").isNull()) {
+            anime.setDuration(0);
+        } else {
+            anime.setDuration(jsonAnime.getInt("duration", 0));
+        }
         anime.setAiringStatus(jsonAnime.getString("airing_status", ""));
         return anime;
     }

@@ -29,14 +29,13 @@ public class Results {
             this.encounters = new ArrayList<>();
         }
         this.encounters.add(encouter);
-        this.resultsFound += encounters.size();
+        this.resultsFound = this.encounters.size();
     }
 
     public void add(Results results) {
         if (results.getEncounters() != null) {
             results.getEncounters().forEach(this::setEncounters);
         }
-
     }
 
     public Results() {

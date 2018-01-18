@@ -16,7 +16,8 @@ public class TvShowSearchTest {
     @Test
     public void searchTv() {
         TvShowSearch searchTv = new TvShowSearch();
-        Results summary = searchTv.searchTv("buffy", new Results());
+        Results summary = searchTv.searchTv("alien", new Results());
+        summary.getEncounters().forEach(System.out::println);
 
     }
 

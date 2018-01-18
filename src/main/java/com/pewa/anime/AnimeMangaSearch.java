@@ -76,10 +76,9 @@ public class AnimeMangaSearch {
             String titleRom = singleElement.get("title_romaji").asString();
             String titleEng = singleElement.get("title_english").asString();
             int id = singleElement.get("id").asInt();
-            String fuzzyDateStart = "19700101";
-            if (!singleElement.get("start_date_fuzzy").isNull()) {
-                fuzzyDateStart = singleElement.get("start_date_fuzzy").toString(); // YYYYDDMM
-            }
+            String fuzzyDateStart = (!singleElement.get("start_date_fuzzy").isNull())
+                    ? singleElement.get("start_date_fuzzy").toString()
+                    : "19700101";
             if (fuzzyDateStart.length() == 4 || fuzzyDateStart.substring(4, 8).equals("0000")) {
                 fuzzyDateStart = fuzzyDateStart.substring(0, 4) + "0101";
             }
@@ -87,16 +86,20 @@ public class AnimeMangaSearch {
             String addInfo;
             if (searchType.equals(PewaType.ANIME)) {
                 String animeType = singleElement.getString("type", "");
-                String desc = singleElement.getString("description", "");
+                String desc = (singleElement.get("description").isNull())
+                        ? "N/A"
+                        : singleElement.getString("description","");
                 addInfo = new StringBuilder("[")
                         .append(animeType)
                         .append("] ")
                         .append(desc)
                         .toString();
-                singleSearchResult.setType(PewaType.ANIME);
+                singleSearchResult.setType(searchType);
             } else {
-                addInfo = singleElement.getString("description", "");
-                singleSearchResult.setType(PewaType.MANGA);
+                addInfo = (singleElement.get("description").isNull())
+                        ? "N/A"
+                        : singleElement.getString("description","");
+                singleSearchResult.setType(searchType);
             }
             String title = new StringBuilder(titleRom)
                     .append(" [")

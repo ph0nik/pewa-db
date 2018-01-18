@@ -81,7 +81,7 @@ class StatusDAOImplTest {
     public void getXStatuses() {
         Integer numberOfStatuses = 10;
         Results statusByNumber = statusDAO.getStatusByNumber(numberOfStatuses, results);
-        statusByNumber.getEncounters().forEach(e -> System.out.println("wynik : " + e));
+
     }
 
 }

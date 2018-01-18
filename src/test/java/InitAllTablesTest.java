@@ -38,4 +38,10 @@ public class InitAllTablesTest {
         System.out.println(results);
     }
 
+    @Disabled
+    @Test
+    public void images() {
+        initAllTables.checkForUnconnectedFiles();
+    }
+
 }

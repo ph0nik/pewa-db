@@ -108,6 +108,7 @@ public class MovieDAOImpl implements MovieDAO {
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             movie = session.selectOne(ConfigFactory.get("movie-mapper.byIdMovie"), dbId);
             session.commit();
+            movie.getStatus().forEach(x -> x.setEncounterId(movie.getTmdbId()));
             results.setEncounters(movie);
         }
         return results;

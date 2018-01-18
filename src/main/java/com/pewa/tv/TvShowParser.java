@@ -58,6 +58,7 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
     private TvShowParser parseSummary(Connection.Response cr) throws IOException, ParseException {
         Gson gson = new Gson();
         String connectionResponseString = cr.parse().text();
+        log.info(connectionResponseString); // logging json string response
         TvMaze tvMaze = gson.fromJson(connectionResponseString, TvMaze.class);
         tvShowSummaryItem.setTitle(tvMaze.getName());
         tvShowSummaryItem.setPremiered(LocalDate.parse(tvMaze.getPremiered(), formatter));
