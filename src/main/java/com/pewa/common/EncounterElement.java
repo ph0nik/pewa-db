@@ -14,7 +14,7 @@ import java.util.Set;
 public class EncounterElement implements Comparable<EncounterElement>, Serializable, Encounter{
 //    <!-- id, title, year, type, status -> id, encDate, addDate, rating -->
     private Integer id;
-    private String title;
+    private String title, engTitle;
     private Integer year;
     private PewaType type;
     private Set<Status> status;
@@ -28,6 +28,7 @@ public class EncounterElement implements Comparable<EncounterElement>, Serializa
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (engTitle != null ? !engTitle.equals(that.engTitle) : that.engTitle != null) return false;
         if (year != null ? !year.equals(that.year) : that.year != null) return false;
         if (type != that.type) return false;
         return status != null ? status.equals(that.status) : that.status == null;
@@ -37,6 +38,7 @@ public class EncounterElement implements Comparable<EncounterElement>, Serializa
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (engTitle != null ? engTitle.hashCode() : 0);
         result = 31 * result + (year != null ? year.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
@@ -48,10 +50,19 @@ public class EncounterElement implements Comparable<EncounterElement>, Serializa
         return "EncounterElement{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", titleEng='" + engTitle + '\'' +
                 ", year=" + year +
                 ", type=" + type +
                 ", status=" + status +
                 '}';
+    }
+
+    public String getEngTitle() {
+        return engTitle;
+    }
+
+    public void setEngTitle(String titleEng) {
+        this.engTitle = titleEng;
     }
 
     public Integer getId() {

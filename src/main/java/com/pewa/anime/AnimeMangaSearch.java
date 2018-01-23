@@ -101,12 +101,8 @@ public class AnimeMangaSearch {
                         : singleElement.getString("description","");
                 singleSearchResult.setType(searchType);
             }
-            String title = new StringBuilder(titleRom)
-                    .append(" [")
-                    .append(titleEng)
-                    .append("]")
-                    .toString();
-            singleSearchResult.setTitle(title);
+            singleSearchResult.setTitle(titleRom);
+            singleSearchResult.setAltTitle(titleEng);
             singleSearchResult.setDescription(addInfo);
             singleSearchResult.setIdInt(id);
             singleSearchResult.setDate(zdt);

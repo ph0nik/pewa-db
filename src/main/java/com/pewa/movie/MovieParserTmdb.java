@@ -3,6 +3,7 @@ package com.pewa.movie;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
+import com.neovisionaries.i18n.LanguageAlpha3Code;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.common.*;
@@ -64,6 +65,7 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
         TmdbItem tmdbItem = gson.fromJson(responseJson, TmdbItem.class);
         movieitem.setImdbID(idImdbString2Int(tmdbItem.getImdbId()));
         movieitem.setTitle(tmdbItem.getOriginalTitle());
+        movieitem.setEngTitle(tmdbItem.getTitle());
         tmdbItem.getAlternativeTitles().getTitles().forEach(t -> {
             if (t.getIso31661().equals("PL")) movieitem.setTitlePl(t.getTitle());
         });
@@ -77,12 +79,22 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
             if (role.equals("director") || role.equals("screenplay") || role.equals("writer")|| role.equals("original music composer"))
                 movieitem.setStaff(new Person(s.getName(), "", role));
         });
-        tmdbItem.getSpokenLanguages().forEach(l -> movieitem.setLanguage(new Language(l.getName())));
+        tmdbItem.getSpokenLanguages().forEach(l -> {
+            String languageNameByCode;
+            try {
+                languageNameByCode = LanguageAlpha3Code.getByCodeIgnoreCase(l.getIso6391()).getName();
+            } catch (NullPointerException ex) {
+                log.error("[" + ex.toString() + "] @ " + LanguageAlpha3Code.class);
+                languageNameByCode = l.getName();
+            }
+            movieitem.setLanguage(new Language(languageNameByCode));
+        });
         tmdbItem.getProductionCountries().forEach(c -> movieitem.setCountry(new Country(c.getName())));
         tmdbItem.getGenres().forEach(g -> movieitem.setGenres(new Genre(g.getName())));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate releaseDate = LocalDate.parse(tmdbItem.getReleaseDate(), formatter);
         movieitem.setRelDate(releaseDate);
+        movieitem.setTmdbRating(tmdbItem.getVoteAverage());
         movieitem.setYear(movieitem.getRelDate().getYear());
         movieitem.setType(PewaType.MOVIE);
         movieitem.setRuntime(tmdbItem.getRuntime());

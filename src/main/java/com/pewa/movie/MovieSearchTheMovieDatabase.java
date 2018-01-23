@@ -33,7 +33,6 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
 
     public Results externalMovieSearch(String request, Results results) {
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-        //TODO przywrócić string w ciągu, bez sensowne pakowanie i wypakowywanie z obiektu request
         try {
             String url = new StringBuilder(ConfigFactory.get("themoviedb.url"))
                     .append(ConfigFactory.get("themoviedb.search"))
@@ -68,6 +67,7 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
             SingleSearchResult ssr = new SingleSearchResult();
             ssr.setIdInt(sr.getId());
             ssr.setTitle(sr.getOriginalTitle());
+            ssr.setAltTitle(sr.getTitle());
             if (sr.getPosterPath() != null) ssr.setPoster(sr.getPosterPath());
             if (sr.getReleaseDate().length() == 0)
                 ssr.setDate(LocalDate.now());

@@ -46,21 +46,19 @@ public class MovieDAOImplTest {
 
     }
 
-//    termit - 103064
-//    john wick -  2911666
-    // evil aliens = 110383353
-    // aliens - 110090605
-    // cowboys vs aliens - 110409847
+
+    // aliens - 679
+    // terminator - 218
     @Disabled
     @Test
     public void addMovie() {
-        MediaParse<Movie, String> movieParser = new MovieParser();
-        Movie movie = movieParser.getItem("tt0383353");
+        MediaParse<Movie, Integer> movieParser = new MovieParserTmdb();
+        Movie movie = movieParser.getItem(679);
         System.out.println(movie.toString());
         movieDAO.addMovie(movie, results);
         Status status = new Status();
         status.setElementType(PewaType.MOVIE);
-        status.setComment("Bardzo fajny film");
+        status.setComment("Aliens");
         status.setEncounterDate(LocalDate.now());
         status.setMediaSource(MediaSource.COMPUTER);
         status.setEncounterRating(9);
@@ -70,7 +68,7 @@ public class MovieDAOImplTest {
     @Disabled
     @Test
     public void searchMovieByQuery(){
-        String req = "alien";
+        String req = "blade";
         Results movie = movieDAO.moviesByTitle(req, results);
         System.out.println(movie);
     }
@@ -78,7 +76,7 @@ public class MovieDAOImplTest {
     @Test
     public void updateMovie(){
         MediaParse<Movie, Integer> movieParser = new MovieParserTmdb();
-        Integer request = 218;
+        Integer request = 679;
         Movie americanBuffalo = movieParser.getItem(request);
 //        System.out.println(americanBuffalo.toString());
         Results results = movieDAO.updMovie(americanBuffalo, new Results());
@@ -87,13 +85,14 @@ public class MovieDAOImplTest {
     @Disabled
     @Test
     public void getMovieById(){
-        Integer request = 7;
+        Integer request = 6;
         Results sampleMovie = movieDAO.moviesById(request, results);
         Movie movie = (Movie) sampleMovie.getEncounters().get(0);
 
         System.out.println(movie);
 //        sampleMovie.getStaff().forEach(System.out::println);
     }
+
     @Disabled
     @Test
     public void searchMovieByPerson() {

@@ -1,6 +1,8 @@
 package com.pewa;
 
+import com.neovisionaries.i18n.LanguageAlpha3Code;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -16,6 +18,16 @@ import java.util.TreeSet;
 
 public class Main {
     public static void main(String[] args) {
+
+        String bo = "";
+    try {
+        bo = LanguageAlpha3Code.getByCodeIgnoreCase("jasda").getName();
+    } catch (NullPointerException ex) {
+        bo = "[" + ex.toString() + "] @ " + LanguageAlpha3Code.class;
+    }
+
+
+        System.out.println(bo);
 
    /*     Logger logger = LogManager.getLogger(Main.class);
 

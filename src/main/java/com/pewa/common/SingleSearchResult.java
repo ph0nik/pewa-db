@@ -13,13 +13,21 @@ import java.util.Comparator;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SingleSearchResult implements Encounter, Comparable<SingleSearchResult> {
     private String url;
-    private String title, description;
+    private String title, description, altTitle;
     private Integer idInt;
     private String poster;
     private PewaType type;
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate date;
+
+    public String getAltTitle() {
+        return altTitle;
+    }
+
+    public void setAltTitle(String altTitle) {
+        this.altTitle = altTitle;
+    }
 
     public LocalDate getDate() {
         return date;
@@ -83,6 +91,7 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
                 "url='" + url + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", altTitle='" + altTitle + '\'' +
                 ", idInt=" + idInt +
                 ", poster='" + poster + '\'' +
                 ", type=" + type +
@@ -100,6 +109,7 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (altTitle != null ? !altTitle.equals(that.altTitle) : that.altTitle != null) return false;
         if (idInt != null ? !idInt.equals(that.idInt) : that.idInt != null) return false;
         if (poster != null ? !poster.equals(that.poster) : that.poster != null) return false;
         if (type != that.type) return false;
@@ -111,6 +121,7 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
         int result = url != null ? url.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (altTitle != null ? altTitle.hashCode() : 0);
         result = 31 * result + (idInt != null ? idInt.hashCode() : 0);
         result = 31 * result + (poster != null ? poster.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);

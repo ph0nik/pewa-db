@@ -48,7 +48,7 @@ class MovieSearchTheMovieDatabaseTest {
     public void getMovieDetails() {
         MediaParse<Movie, Integer> getMovie = new MovieParserTmdb();
         Request request = new Request();
-        Integer movieid = 105;
+        Integer movieid = 426284;
         Movie movie = getMovie.getItem(movieid); // Aliens
         System.out.println(movie);
     }
