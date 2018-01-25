@@ -194,7 +194,7 @@ public class MovieParser implements MediaParse<Movie, String> {
         movieItem.setLanguage(languageSet);
         movieItem.setGenres(genreSet);
         movieItem.setPlot(plot);
-        movieItem.setImdbID(movieSearch.idImdbString2Int(imdbId));
+        movieItem.setImdbID(idImdbString2Int(imdbId));
         movieItem.setPoster(externalPoster);
         movieItem.setIntPoster(SaveImage.getImage(movieItem));
         movieItem.setType(PewaType.MOVIE);
@@ -202,5 +202,8 @@ public class MovieParser implements MediaParse<Movie, String> {
         return movieItem;
     }
 
+    private Integer idImdbString2Int(String idImdb) {
+        return (idImdb.isEmpty() || idImdb.length() == 0) ? 0 : Integer.parseInt(idImdb.replace("tt","11"));
+    }
 
 }

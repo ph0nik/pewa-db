@@ -30,23 +30,58 @@ import java.util.TreeSet;
 public class MovieSearchTheMovieDatabase implements MovieSearch {
 
     private static final Logger log = LogManager.getLogger(MovieSearchTheMovieDatabase.class);
+    private int totalPages;
+
+/**
+* Creates proper url addres for TheMovieDB api.
+*/
+    private String buildUrl(String query, int resultsPage) {
+        return new StringBuilder(ConfigFactory.get("themoviedb.url"))
+                .append(ConfigFactory.get("themoviedb.search"))
+                .toString()
+                .replaceAll("<api-key>", ConfigFactory.get("themoviedb.apiKey"))
+                .replaceAll("<query>", query)
+                .replaceAll("<page>", Integer.toString(resultsPage));
+    }
+
+/**
+ * Returns request response as String, based on given url
+ * */
+    private String getPage(String url) throws IOException {
+        return Jsoup.connect(url)
+                .userAgent(ConfigFactory.get("search.userAgentMB"))
+                .timeout(5 * 1000)
+                .ignoreContentType(true)
+                .get()
+                .text();
+    }
 
     public Results externalMovieSearch(String request, Results results) {
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        totalPages = 1;
         try {
-            String url = new StringBuilder(ConfigFactory.get("themoviedb.url"))
-                    .append(ConfigFactory.get("themoviedb.search"))
-                    .toString()
-                    .replaceAll("<api-key>", ConfigFactory.get("themoviedb.apiKey"))
-                    .replaceAll("<query>", request);
+            String url = buildUrl(request, totalPages);
+            String tmdbSearch = getPage(url);
+//            String url = new StringBuilder(ConfigFactory.get("themoviedb.url"))
+//                    .append(ConfigFactory.get("themoviedb.search"))
+//                    .toString()
+//                    .replaceAll("<api-key>", ConfigFactory.get("themoviedb.apiKey"))
+//                    .replaceAll("<query>", request);
 
-            String tmdbSearch = Jsoup.connect(url)
-                    .userAgent(ConfigFactory.get("search.userAgentMB"))
-                    .timeout(5 * 1000)
-                    .ignoreContentType(true)
-                    .get()
-                    .text();
+//            String tmdbSearch = Jsoup.connect(url)
+//                    .userAgent(ConfigFactory.get("search.userAgentMB"))
+//                    .timeout(5 * 1000)
+//                    .ignoreContentType(true)
+//                    .get()
+//                    .text();
             searchResultSet = createReturnSetFromSearch(tmdbSearch);
+            if (totalPages > 1) {
+                totalPages = (totalPages > 20) ? 20 : totalPages;
+                for (int i = 2; i <= totalPages; i++) {
+                    url = buildUrl(request, i);
+                    searchResultSet.addAll(createReturnSetFromSearch(getPage(url)));
+                }
+            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -54,14 +89,10 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
         return results;
     }
 
-    @Override
-    public Integer idImdbString2Int(String idImdb) {
-        return null;
-    }
-
     private Set<SingleSearchResult> createReturnSetFromSearch(String tmdbSearch) {
         Gson gson = new Gson();
         TmdbSearchResult tmdbSearchResult = gson.fromJson(tmdbSearch, TmdbSearchResult.class);
+        totalPages = tmdbSearchResult.getTotalPages();
         Set<SingleSearchResult> searchResultSet = new TreeSet<>();
         for (Result sr : tmdbSearchResult.getResults()) {
             SingleSearchResult ssr = new SingleSearchResult();
@@ -83,31 +114,4 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
         }
         return searchResultSet;
     }
-
-/*    private Set<SingleSearchResult> createReturnSetFromSearch(String tmdbSearch) {
-        JsonArray tmdbArray = Json.parse(tmdbSearch).asObject().get("results").asArray();
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-
-        for (JsonValue valueObject : tmdbArray) {
-            JsonObject tmdbObject = valueObject.asObject();
-            SingleSearchResult singleSearchResult = new SingleSearchResult();
-            Integer id = tmdbObject.getInt("id",0);
-            singleSearchResult.setIdInt(id);
-            String movieTitle = tmdbObject.getString("title", "");
-            singleSearchResult.setTitle(movieTitle);
-            JsonValue poster_path = tmdbObject.get("poster_path");
-            String moviePoster = poster_path.isNull() ? "" : poster_path.asString();
-            singleSearchResult.setPoster(moviePoster);
-            String movieDescription = tmdbObject.getString("overview","");
-            singleSearchResult.setDescription(movieDescription);
-            String movieDate = tmdbObject.getString("release_date","");
-            if (movieDate.length() == 0)
-                singleSearchResult.setDate(LocalDate.now());
-            else
-                singleSearchResult.setDate(LocalDate.parse(movieDate, DateTimeFormatter.ISO_LOCAL_DATE));
-            singleSearchResult.setType(PewaType.MOVIE);
-            searchResultSet.add(singleSearchResult);
-        }
-        return searchResultSet;
-    }*/
 }

@@ -2,11 +2,14 @@ package com.pewa.movie;
 
 import com.pewa.MediaParse;
 import com.pewa.common.Results;
+import com.pewa.common.SingleSearchResult;
 import com.pewa.util.GlobalSearch;
 import jdk.nashorn.internal.objects.Global;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
 
 
 public class MovieSearchTest {

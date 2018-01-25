@@ -14,6 +14,4 @@ import java.util.Set;
 public interface MovieSearch {
 
     Results externalMovieSearch(String query, Results results);
-
-    Integer idImdbString2Int(String idImdb);
 }

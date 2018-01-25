@@ -3,6 +3,8 @@ package com.pewa.anime;
 import com.pewa.MediaParse;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.status.StatusDAO;
+import com.pewa.status.StatusDAOImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -45,7 +47,7 @@ public class AnimeDAOImplTest {
     @Disabled
     @Test
     public void animeById() {
-        itemId = 43;
+        itemId = 33;
         results = animeDAO.getAnimeById(itemId, results);
         System.out.println(results);
     }
@@ -71,6 +73,15 @@ public class AnimeDAOImplTest {
         Results out = animeDAO.getAnimeByPersonId(itemId, results);
         out.getEncounters().forEach(System.out::println);
     }
+    @Disabled
+    @Test
+    public void getGlobal() {
+        StatusDAO statusDAO = new StatusDAOImpl();
+        int request = 30;
+        Results results = statusDAO.getStatusByNumber(request, new Results()).setReturnMessage();
+        System.out.println(results);
+    }
+
 
 
 /*    // Anime Mapper test

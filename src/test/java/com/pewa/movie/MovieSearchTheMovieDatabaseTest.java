@@ -28,7 +28,7 @@ class MovieSearchTheMovieDatabaseTest {
     @Test
     public void tryMapOfItemsMovie() {
         MovieSearchTheMovieDatabase searchMovie = new MovieSearchTheMovieDatabase();
-        String query = "ghost in the shell";
+        String query = "aliens";
         Results result = searchMovie.externalMovieSearch(query, new Results());
         assertNotNull(result);
         result.getEncounters().forEach(System.out::println);

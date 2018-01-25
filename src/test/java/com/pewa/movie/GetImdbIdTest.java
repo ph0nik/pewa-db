@@ -34,14 +34,4 @@ public class GetImdbIdTest {
         assertNotNull(result);
 //        result.forEach(System.out::println);
     }
-    @Disabled
-    @Test
-    public void tryMapOfItemsTv() {
-        MovieSearchImpl searchTv = new MovieSearchImpl();
-        String query = "buffy";
-        request.setEncounterType(PewaType.TVSERIES);
-        Set<SingleSearchResult> result = searchTv.externalMovieSearch(query);
-        result.forEach(System.out::println);
-        assertNotNull(result);
-    }
 }

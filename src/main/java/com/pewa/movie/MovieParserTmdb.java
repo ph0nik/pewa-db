@@ -101,7 +101,7 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
         return movieitem;
     }
 
-    public Integer idImdbString2Int(String idImdb) {
+    private Integer idImdbString2Int(String idImdb) {
         return (idImdb.isEmpty() || idImdb.length() == 0) ? 0 : Integer.parseInt(idImdb.replace("tt","11"));
     }
 }
