@@ -4,7 +4,10 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.eclipsesource.json.ParseException;
+import com.google.gson.Gson;
 import com.pewa.*;
+import com.pewa.anime.anilist.Media;
+import com.pewa.anime.anilist.ResponseAnime;
 import com.pewa.common.Genre;
 import com.pewa.common.Person;
 import com.pewa.config.ConfigFactory;
@@ -13,9 +16,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -31,8 +37,8 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
     /*
     * Method takes AniList model id and returns object of type Anime
     * */
-    @Override
-    public Anime getItem(Integer aniListId) {
+    @Deprecated
+    public Anime getItem2(Integer aniListId) {
         AnimeAccessToken animeAccessToken = updateSession();
 
         Anime anime = new Anime();
@@ -73,6 +79,7 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
     * Method takes Connection.Response object and returns Anime type object.
     * It's called only when server response code is 200.
     * */
+    @Deprecated
     private Anime parseItemToObject(Connection.Response cr, Anime anime) throws IOException, ParseException {
         JsonObject jsonAnime;
         jsonAnime = Json.parse(cr.parse().text()).asObject();
@@ -119,5 +126,87 @@ public class AnimeParser implements MediaParse<Anime, Integer> {
         }
         anime.setAiringStatus(jsonAnime.getString("airing_status", ""));
         return anime;
+    }
+
+    @Override
+    public Anime getItem(Integer id) {
+        Anime anime = new Anime();
+        try {
+            AnimeMangaQuery animeMangaQuery = setQueryObject(id);
+            String s = sendRequest(animeMangaQuery);
+            anime = parseResponse(s, new Anime());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return anime;
+    }
+
+    private Anime parseResponse(String responseObject, Anime anime) {
+        Gson gson = new Gson();
+        ResponseAnime responseAnime = gson.fromJson(responseObject, ResponseAnime.class);
+        Media animeMedia = responseAnime.getData().getMedia();
+        anime.setType(PewaType.ANIME);
+        anime.setAiringStatus(animeMedia.getStatus());
+        anime.setDuration(animeMedia.getDuration());
+        anime.setTitleRom(animeMedia.getTitle().getRomaji());
+        String eng = animeMedia.getTitle().getEnglish();
+        if (eng == null || "".equals(eng)) {
+            anime.setTitleEng(anime.getTitleRom());
+        } else {
+            anime.setTitleEng(eng);
+        }
+        animeMedia.getGenres().forEach(g -> anime.setGenres(new Genre(g)));
+        animeMedia.getStaff().getEdges().forEach(s ->
+                anime.setStaff(new Person(
+                        s.getNode().getName().getFirst(),
+                        s.getNode().getName().getLast(),
+                        s.getRole().toLowerCase())));
+        animeMedia.getCharacters().getEdges().forEach(ch ->
+                ch.getVoiceActors().forEach(va ->
+                        anime.setStaff(new Person(
+                                va.getName().getFirst(),
+                                va.getName().getLast(),
+                                "actor")))
+                );
+        anime.setAnimeType(animeMedia.getType());
+        anime.setDescription(animeMedia.getDescription());
+        anime.setEps(animeMedia.getEpisodes());
+        String startDate = animeMedia.getStartDate().getYear().toString()
+                + String.format("%02d", animeMedia.getStartDate().getMonth())
+                + String.format("%02d", animeMedia.getStartDate().getDay());
+        anime.setStartDate(LocalDate.parse(startDate, formatter));
+        String endDate = animeMedia.getEndDate().getYear().toString()
+                + String.format("%02d", animeMedia.getEndDate().getMonth())
+                + String.format("%02d", animeMedia.getEndDate().getDay());
+        anime.setEndDate(LocalDate.parse(endDate, formatter));
+        anime.setIdAnilist(animeMedia.getId());
+        anime.setPoster(animeMedia.getCoverImage().getLarge());
+        String intPoster = SaveImage.getImage(anime);
+        anime.setIntPoster(intPoster);
+        return anime;
+    }
+
+    private String sendRequest(AnimeMangaQuery request) throws IOException {
+        String url = "https://graphql.anilist.co";
+        Document response = Jsoup.connect(url)
+                .userAgent(ConfigFactory.get("search.userAgent"))
+                .data("query", request.getQuery())
+                .data("variables", request.getVariables())
+                .timeout(5 * 1000)
+                .ignoreContentType(true)
+                .post();
+        return response.text();
+    }
+
+    private AnimeMangaQuery setQueryObject(int id) throws IOException {
+        String filePath = "src/main/resources/graphql/anime-object.graphql";
+        String variables = "{\"id\":"+ id +",\"type\":\"ANIME\"}";
+        StringBuilder query = new StringBuilder("");
+        Files.readAllLines(Paths.get(filePath))
+                .forEach(query::append);
+        AnimeMangaQuery amq = new AnimeMangaQuery();
+        amq.setVariables(variables);
+        amq.setQuery(query.toString());
+        return amq;
     }
 }

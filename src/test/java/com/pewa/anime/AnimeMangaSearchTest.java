@@ -34,6 +34,17 @@ public class AnimeMangaSearchTest {
         wynik = amSearch.aniListSearch(query, PewaType.MANGA);
         wynik.getEncounters().stream().limit(2).forEach(System.out::println);
     }
+
+    @Disabled
+    @Test
+    public void graphQlTest() {
+        AnimeMangaSearch amSearch = new AnimeMangaSearch();
+        String query = "ghost in the shell";
+        Results singleSearchResults = amSearch.aniListSearchV2(query, PewaType.ANIME);
+        System.out.println(singleSearchResults);
+    }
+
+
     @Disabled
     @Test
     public void getSingleItemAnime() {
@@ -43,6 +54,15 @@ public class AnimeMangaSearchTest {
         //Anime test = getAnimeItem(43);
         System.out.println(anime);
     }
+
+    @Disabled
+    @Test
+    public void getSingleItemWithV2() {
+        AnimeParser animeParseToObject = new AnimeParser();
+        Anime itemV2 = animeParseToObject.getItem(47);
+        System.out.println(itemV2);
+    }
+
     @Disabled
     @Test
     public void getSingleItemManga() {

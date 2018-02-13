@@ -19,15 +19,18 @@ public class Results {
     private List<Encounter> encounters;
     private Integer rowsAffected;
 
+    public Results() {
+        this.encounters = new ArrayList<>();
+        this.resultsFound = 0;
+        this.rowsAffected = 0;
+    }
+
     public List<Encounter> getEncounters() {
         return encounters;
     }
 
     //przeniesiony konstruktor listy z konstruktora obiektu do funkcji poniżęj
     public void setEncounters(Encounter encouter) {
-        if (this.encounters == null) {
-            this.encounters = new ArrayList<>();
-        }
         this.encounters.add(encouter);
         this.resultsFound = this.encounters.size();
     }
@@ -36,11 +39,6 @@ public class Results {
         if (results.getEncounters() != null) {
             results.getEncounters().forEach(this::setEncounters);
         }
-    }
-
-    public Results() {
-        this.resultsFound = 0;
-        this.rowsAffected = 0;
     }
 
     public Results setRowsAffected(Integer rows) {

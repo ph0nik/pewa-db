@@ -70,6 +70,6 @@ public class Language implements Comparable<Language>, Serializable {
 
     @Override
     public int compareTo(Language o) {
-        return o.language.compareTo(o.language);
+        return this.language.compareTo(o.language);
     }
 }

@@ -118,4 +118,8 @@ public class MangaParser implements MediaParse<Manga, Integer> {
         manga.setPublishingStatus(jsonManga.getString("publishing_status", ""));
         return manga;
     }
+
+    public AnimeMangaQuery setQueryObject(int id) {
+        return null;
+    }
 }

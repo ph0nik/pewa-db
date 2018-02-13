@@ -54,7 +54,7 @@ public class AnimeController {
 
     @GetMapping(value = "search/{query}")
     public Results searchExternal(@PathVariable String query) {
-        return animeMangaSearch.aniListSearch(query, animeType);
+        return animeMangaSearch.aniListSearchV2(query, animeType);
     }
 
     @GetMapping(value = "searchdb/{query}")

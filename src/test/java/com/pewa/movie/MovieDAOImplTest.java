@@ -53,17 +53,17 @@ public class MovieDAOImplTest {
     @Test
     public void addMovie() {
         MediaParse<Movie, Integer> movieParser = new MovieParserTmdb();
-        Movie movie = movieParser.getItem(679);
+        Movie movie = movieParser.getItem(268477);
         System.out.println(movie.toString());
-        movieDAO.addMovie(movie, results);
-        Status status = new Status();
-        status.setElementType(PewaType.MOVIE);
-        status.setComment("Aliens");
-        status.setEncounterDate(LocalDate.now());
-        status.setMediaSource(MediaSource.COMPUTER);
-        status.setEncounterRating(9);
-        status.setEncounterId(movie.getImdbID());
-        statusDAO.addStatus(status, results);
+//        movieDAO.addMovie(movie, results);
+//        Status status = new Status();
+//        status.setElementType(PewaType.MOVIE);
+//        status.setComment("Aliens");
+//        status.setEncounterDate(LocalDate.now());
+//        status.setMediaSource(MediaSource.COMPUTER);
+//        status.setEncounterRating(9);
+//        status.setEncounterId(movie.getImdbID());
+//        statusDAO.addStatus(status, results);
     }
     @Disabled
     @Test

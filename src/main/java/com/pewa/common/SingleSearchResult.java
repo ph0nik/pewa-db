@@ -12,10 +12,8 @@ import java.util.Comparator;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SingleSearchResult implements Encounter, Comparable<SingleSearchResult> {
-    private String url;
     private String title, description, altTitle;
     private Integer idInt;
-    private String poster;
     private PewaType type;
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -61,22 +59,6 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
         this.idInt = idInt;
     }
 
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -88,12 +70,10 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
     @Override
     public String toString() {
         return "SingleSearchResult{" +
-                "url='" + url + '\'' +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", altTitle='" + altTitle + '\'' +
                 ", idInt=" + idInt +
-                ", poster='" + poster + '\'' +
                 ", type=" + type +
                 ", date=" + date +
                 '}';
@@ -106,24 +86,20 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
 
         SingleSearchResult that = (SingleSearchResult) o;
 
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (altTitle != null ? !altTitle.equals(that.altTitle) : that.altTitle != null) return false;
         if (idInt != null ? !idInt.equals(that.idInt) : that.idInt != null) return false;
-        if (poster != null ? !poster.equals(that.poster) : that.poster != null) return false;
         if (type != that.type) return false;
         return date != null ? date.equals(that.date) : that.date == null;
     }
 
     @Override
     public int hashCode() {
-        int result = url != null ? url.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
+        int result = title != null ? title.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (altTitle != null ? altTitle.hashCode() : 0);
         result = 31 * result + (idInt != null ? idInt.hashCode() : 0);
-        result = 31 * result + (poster != null ? poster.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
         return result;
@@ -131,8 +107,7 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
 
     private static Comparator<String> nullSafeStringComparator = Comparator.nullsFirst(String::compareTo);
     private static Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsFirst(Integer::compareTo);
-    private static Comparator<SingleSearchResult> singleSearchResultComparator = Comparator.comparing(SingleSearchResult::getUrl, nullSafeStringComparator)
-            .thenComparing(SingleSearchResult::getIdInt, nullSafeIntegerComparator)
+    private static Comparator<SingleSearchResult> singleSearchResultComparator = Comparator.comparing(SingleSearchResult::getIdInt, nullSafeIntegerComparator)
             .thenComparing(SingleSearchResult::getTitle, nullSafeStringComparator)
             .thenComparing(SingleSearchResult::getDescription, nullSafeStringComparator);
 

@@ -61,7 +61,7 @@ public class AlbumSearch {
                         .toString();
                 singleSearchResult.setType(PewaType.MUSIC);
                 singleSearchResult.setDescription(desc);
-                singleSearchResult.setUrl(albumId);
+
                 searchResultSet.add(singleSearchResult);
             }
         } catch (IOException e) {

@@ -52,11 +52,11 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     private LocalDateTime dbDatetime;
 
     public Movie() {
-//        this.genres = new TreeSet<>();
-//        this.language = new TreeSet<>();
-//        this.country = new TreeSet<>();
-
-//        this.status = new TreeSet<>();
+        this.genres = new TreeSet<>();
+        this.language = new TreeSet<>();
+        this.country = new TreeSet<>();
+        this.status = new TreeSet<>();
+        this.staff = new TreeSet<>();
     }
 
     public String getEngTitle() {
@@ -103,9 +103,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setStatus(Status status) {
-        if (this.status == null) {
-            this.status = new TreeSet<>();
-        }
         this.status.add(status);
     }
 
@@ -162,9 +159,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setStaff(Person person) {
-        if (this.staff == null) {
-            this.staff = new HashSet<>();
-        }
         this.staff.add(person);
     }
 
@@ -217,9 +211,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setGenres(Genre genre) {
-        if (this.genres == null) {
-            this.genres = new TreeSet<>();
-        }
         this.genres.add(genre);
     }
 
@@ -240,9 +231,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setLanguage(Language language) {
-        if (this.language == null) {
-            this.language = new TreeSet<>();
-        }
         this.language.add(language);
     }
 
@@ -255,9 +243,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     }
 
     public void setCountry(Country country) {
-        if (this.country == null) {
-            this.country = new TreeSet<>();
-        }
         this.country.add(country);
     }
 

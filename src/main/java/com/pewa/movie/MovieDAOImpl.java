@@ -110,6 +110,8 @@ public class MovieDAOImpl implements MovieDAO {
             session.commit();
             movie.getStatus().forEach(x -> x.setEncounterId(movie.getTmdbId()));
             results.setEncounters(movie);
+        } catch (NullPointerException npe) {
+            log.error(npe.getStackTrace());
         }
         return results;
     }

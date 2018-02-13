@@ -4,11 +4,13 @@ import com.pewa.MediaParse;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
+import com.pewa.movie.tmdb.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,17 +30,19 @@ class MovieSearchTheMovieDatabaseTest {
     @Test
     public void tryMapOfItemsMovie() {
         MovieSearchTheMovieDatabase searchMovie = new MovieSearchTheMovieDatabase();
-        String query = "aliens";
+        String query = "it";
         Results result = searchMovie.externalMovieSearch(query, new Results());
         assertNotNull(result);
-        result.getEncounters().forEach(System.out::println);
+//        result.getEncounters().forEach(System.out::println);
     }
 
     @Disabled
     @Test
-    public void searchInternalDb() {
-
-
+    public void tryEmptyResultsCollection() {
+        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        Results results = new Results();
+        searchResultSet.forEach(results::setEncounters);
+        System.out.println(results);
     }
 
     // aliens - 679
@@ -48,7 +52,7 @@ class MovieSearchTheMovieDatabaseTest {
     public void getMovieDetails() {
         MediaParse<Movie, Integer> getMovie = new MovieParserTmdb();
         Request request = new Request();
-        Integer movieid = 426284;
+        Integer movieid = 400710;
         Movie movie = getMovie.getItem(movieid); // Aliens
         System.out.println(movie);
     }

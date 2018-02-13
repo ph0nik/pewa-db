@@ -89,8 +89,11 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
             }
             movieitem.setLanguage(new Language(languageNameByCode));
         });
+        if (movieitem.getLanguage().isEmpty()) movieitem.setLanguage(new Language("N/A"));
         tmdbItem.getProductionCountries().forEach(c -> movieitem.setCountry(new Country(c.getName())));
+        if (movieitem.getCountry().isEmpty()) movieitem.setCountry(new Country("N/A"));
         tmdbItem.getGenres().forEach(g -> movieitem.setGenres(new Genre(g.getName())));
+        if (movieitem.getGenres().isEmpty()) movieitem.setGenres(new Genre("N/A"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate releaseDate = LocalDate.parse(tmdbItem.getReleaseDate(), formatter);
         movieitem.setRelDate(releaseDate);
