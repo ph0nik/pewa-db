@@ -35,29 +35,49 @@ public class BookDAOImplTest {
         request = new Request();
     }
 
+    // 384 - krzyzacy
+    // 305839 - ludzie i kraby
+    @Disabled
+    @Test
+    public void getExternalBook() {
+        MediaParse<Book, Integer> bookScraper = new BookParser();
+        Integer id = 384;
+        Book item = bookScraper.getItem(id);
+        System.out.println(item);
+    }
+
     // book.aspx?id=78
     // book.aspx?id=301
     @Disabled
     @Test
     public void insertBook() {
         MediaParse<Book, Integer> bookScraper = new BookParser();
-        Integer id = 301;
+        Integer id = 384;
         Book ksiazka = bookScraper.getItem(id);
         nowaKsiazka.addBook(ksiazka, results);
         Status status = new Status();
         status.setElementType(PewaType.BOOK);
-        status.setComment("w pustyni");
+        status.setComment("krzyżacy");
         status.setEncounterDate(LocalDate.now());
         status.setMediaSource(MediaSource.EBOOK);
-        status.setEncounterRating(9);
+        status.setEncounterRating(7);
         status.setEncounterId(ksiazka.getExternalBookId());
         Results rs  = statusDAO.addStatus(status, results);
         System.out.println(rs);
     }
+
+    @Disabled
+    @Test
+    public void deleteFromDb() {
+        Integer id  = 3;
+        Results results = nowaKsiazka.delBook(3, this.results);
+        System.out.println(results.getMessage());
+    }
+
     @Disabled
     @Test
     public void checkBasicSQL() {
-        String title = "szcz";
+        String title = "n";
         Results test = nowaKsiazka.getBook(title, results);
         System.out.println(test.toString());
     }
@@ -96,7 +116,7 @@ public class BookDAOImplTest {
     @Test
     public void checkBooksByYear() {
         Request year = new Request();
-        year.setYear(2000);
+        year.setYear(1976);
         Results test = nowaKsiazka.booksByYear(year, results);
         System.out.println(test.toString());
     }

@@ -73,6 +73,9 @@ SELECT
         ;]]></console>
     </connection>
   </component>
+  <component name="DBNavigator.Project.DatabaseSessionManager">
+    <connection id="14032e49-f2cc-4fa6-92db-a98c57661f26" />
+  </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.country" active-filter-id="" />
     <filter-list connection-id="14032e49-f2cc-4fa6-92db-a98c57661f26" dataset="pewadb.movie" active-filter-id="" />
@@ -137,6 +140,7 @@ SELECT
         </ssh-settings>
         <details>
           <charset value="UTF-8" />
+          <session-management value="true" />
           <ddl-file-binding value="true" />
           <database-logging value="true" />
           <connect-automatically value="true" />
@@ -325,6 +329,8 @@ SELECT
       <general>
         <show-object-navigation-gutter value="false" />
         <show-spec-declaration-navigation-gutter value="true" />
+        <enable-spellchecking value="true" />
+        <enable-reference-spellchecking value="false" />
       </general>
       <confirmations>
         <save-changes value="false" />
@@ -494,7 +500,6 @@ SELECT
         <debug-execution-timeout value="600" />
         <focus-result value="false" />
         <prompt-execution value="false" />
-        <target-connection value="ASK" />
       </statement-execution>
       <script-execution>
         <command-line-interfaces />

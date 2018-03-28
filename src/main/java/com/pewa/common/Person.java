@@ -11,8 +11,6 @@ import java.io.Serializable;
 public class Person implements Comparable<Person>, Serializable {
 
     private int id;
-//    private String firstName;
-//    private String lastName;
     private String name;
     private String job;
 
@@ -25,8 +23,6 @@ public class Person implements Comparable<Person>, Serializable {
     }
 
     public Person(String firstName, String lastName, String job) {
-//        this.firstName = firstName;
-//        this.lastName = lastName;
         this.job = job;
         this.name = new StringBuilder(firstName)
                 .append(" ")

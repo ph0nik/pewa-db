@@ -14,7 +14,7 @@ public class Form implements Comparable<Form>, Serializable {
     public Form() {}
 
     public Form(String form) {
-        this.form = form;
+        this.form = ("".equals(form)) ? Empty.NOT_AVAILABLE : form;
     }
 
     public Integer getId() {

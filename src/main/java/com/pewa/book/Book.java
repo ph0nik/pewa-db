@@ -1,26 +1,28 @@
 package com.pewa.book;
 
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.common.Encounter;
-import com.pewa.common.Form;
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
+import com.pewa.common.*;
 import com.pewa.status.Status;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.metamodel.EmbeddableType;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.Set;
 import java.util.TreeSet;
 
 @Component
-public class Book implements Comparable<Book>, Serializable, Encounter {
+public class Book extends MediaModel implements Comparable<Book>, Serializable, Encounter {
+
     private Integer id, votes, firstPubDate, plPubDate, externalBookId;
     private Double rating;
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
     private PewaType type;
-    private String additionalInfo, originalTitle, polishTitle, originalLanguage, category, altVersion;
+    private String additionalInfo, originalTitle, polishTitle, originalLanguage, category;
     private Set<Status> status;
 
     public Book() {
@@ -48,7 +50,6 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
                 ", polishTitle='" + polishTitle + '\'' +
                 ", originalLanguage='" + originalLanguage + '\'' +
                 ", category='" + category + '\'' +
-                ", altVersion='" + altVersion + '\'' +
                 ", status=" + status +
                 '}';
     }
@@ -66,10 +67,17 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     public void setGenre(Set<Genre> genre) {
-        this.genre = genre;
+        if (genre.isEmpty()) {
+            this.genre.add(new Genre(Empty.NOT_AVAILABLE));
+        } else {
+            this.genre = genre;
+        }
     }
 
     public void setForm(Set<Form> form) {
+        if (form.isEmpty()) {
+            this.form.add(new Form(Empty.NOT_AVAILABLE));
+        }
         this.form = form;
     }
 
@@ -123,7 +131,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
+        this.originalLanguage = (originalLanguage == null || "".equals(originalLanguage)) ? Empty.NOT_AVAILABLE : originalLanguage;
     }
 
     public String getCategory() {
@@ -131,7 +139,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setCategory(String category) {
-        this.category = category;
+        this.category = (category == null || "".equals(category)) ? Empty.NOT_AVAILABLE : category;
     }
 
     public Set<Genre> getGenre() {
@@ -155,7 +163,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setFirstPubDate(Integer firstPubDate) {
-        this.firstPubDate = firstPubDate;
+        this.firstPubDate = (firstPubDate == null) ? 0 : firstPubDate;
     }
 
     public Integer getPlPubDate() {
@@ -163,15 +171,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setPlPubDate(Integer plPubDate) {
-        this.plPubDate = plPubDate;
-    }
-
-    public String getAltVersion() {
-        return altVersion;
-    }
-
-    void setAltVersion(String altVersion) {
-        this.altVersion = altVersion;
+        this.plPubDate = (plPubDate == null) ? 0 : plPubDate;
     }
 
     public String getAdditionalInfo() {
@@ -179,7 +179,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
+        this.additionalInfo = (additionalInfo == null || "".equals(additionalInfo)) ? Empty.NOT_AVAILABLE : additionalInfo;
     }
 
     public Double getRating() {
@@ -187,7 +187,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setRating(Double rating) {
-        this.rating = rating;
+        this.rating = (rating == null) ? 0 : rating;
     }
 
     public Integer getVotes() {
@@ -195,7 +195,7 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     }
 
     void setVotes(Integer votes) {
-        this.votes = votes;
+        this.votes = (votes == null) ? 0 : votes;
     }
 
     public Integer getId() {
@@ -209,5 +209,11 @@ public class Book implements Comparable<Book>, Serializable, Encounter {
     @Override
     public int compareTo(Book book) {
         return this.originalTitle.compareTo(book.originalTitle);
+    }
+
+    // TODO
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

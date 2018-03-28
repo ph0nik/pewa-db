@@ -18,7 +18,7 @@ public class Genre implements Comparable<Genre>, Serializable {
     }
 
     public Genre(String name) {
-        this.genre = name;
+        this.genre = (name == null || "".equals(name)) ? Empty.NOT_AVAILABLE : name;
     }
 
     public Integer getId() {

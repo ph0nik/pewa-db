@@ -1,153 +1,94 @@
 package com.pewa.book;
 
 import com.pewa.PewaType;
-import com.pewa.common.*;
-import com.pewa.config.ConfigFactory;
-import com.pewa.dao.MyBatisFactory;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
+import com.pewa.common.Encounter;
+import com.pewa.common.MediaDAO;
+import com.pewa.common.Request;
+import com.pewa.common.Results;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class BookDAOImpl implements BookDAO {
+public class BookDAOImpl extends MediaDAO implements BookDAO {
 
     public static final Logger log = LogManager.getLogger(BookDAOImpl.class);
-    private static final String addSuccess = "Book item added  : ";
-    private static final String updateSuccess = "Book item updated : ";
-    private static final String deleteSuccess = "Book item deleted : ";
-    private static final String nothingFound = "No book with this Id found : ";
-    private static final String alreadyInDb = "Book item already in database : ";
-    private static final String formatterString = "uuuu-MM-dd";
     private final PewaType bookType = PewaType.BOOK;
     private List<Encounter> output;
-    private Integer rowsAffected;
+    private List<String> mapperList = new ArrayList<>();
+    private String returnMessage = "";
+    private String infoField = "";
 
-    public void initBook() {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            session.update("createBookTable");
-            session.update("createPersonTable");
-            session.update("createGenreTable");
-            session.update("createFormTable");
-            session.commit();
-        }
+    public BookDAOImpl() {
+        super(PewaType.BOOK);
     }
 
-    @Override
+    public List<String> getMapperList() {
+        return mapperList;
+    }
+
+    public String getInfoField() {
+        return infoField;
+    }
+
     public Results addBook(Book book, Results results) {
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertBook"), book);
-            rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertPeopleBoo"), book);
-            rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertPeopleBridgeBoo"), book);
-            if (!book.getGenre().isEmpty()) {
-                rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertGenreBoo"), book);
-                rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertGenreBridgeBoo"), book);
-            }
-            if (!book.getForm().isEmpty()) {
-                rowsAffected += session.insert(ConfigFactory.get("book-mapper.insertForm"), book);
-            }
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-            if (rowsAffected != 0) results.setReturnMessage(addSuccess + book.getOriginalTitle());
-            else results.setReturnMessage(alreadyInDb + book.getOriginalTitle());
-        }
-        return results;
+        infoField = book.getOriginalTitle();
+        mapperList = Arrays.asList(
+                "book-mapper.insertBook",
+                "book-mapper.insertPeopleBoo",
+                "book-mapper.insertPeopleBridgeBoo",
+                "book-mapper.insertGenreBoo",
+                "book-mapper.insertGenreBridgeBoo",
+                "book-mapper.insertForm"
+        );
+        return super.add(book, results);
     }
 
-    @Override
     public Results delBook(Integer bookid, Results results) {
-    rowsAffected = 0;
-    try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-        rowsAffected += session.delete(ConfigFactory.get("book-mapper.deleteBook"), bookid);
-        session.commit();
-        results.setRowsAffected(rowsAffected);
-        }
-        if (rowsAffected != 0) results.setReturnMessage(deleteSuccess + bookid);
-        else  results.setReturnMessage(nothingFound + bookid);
-        return results;
+        mapperList = Arrays.asList("book-mapper.deleteBook");
+        return super.delete(bookid, results);
     }
 
-    @Override
     public Results udpateBook(Book book, Results results) {
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.update(ConfigFactory.get("book-mapper.updateBook"), book);
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-        }
-        if (rowsAffected !=0) results.setReturnMessage(updateSuccess + book.getOriginalTitle());
-        else results.setReturnMessage(nothingFound + book.getOriginalTitle());
-        return results;
+        infoField = book.getOriginalTitle();
+        mapperList = Arrays.asList("book-mapper.updateBook");
+        return super.update(book, results);
     }
 
-    @Override
     public Results getBook(String request, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            String query = new StringBuilder("%")
-                    .append(request)
-                    .append("%")
-                    .toString();
-            output = session.selectList(ConfigFactory.get("book-mapper.byTitle"), query);
-            session.commit();
-        }
-        output.forEach(x -> x.setType(bookType));
-        output.forEach(results::setEncounters);
-        return results;
+        mapperList = Arrays.asList("book-mapper.byTitle");
+        return super.search(request, results);
     }
 
-    @Override
     public Results getBookById(Integer bookId, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("book-mapper.ById"), bookId);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+        mapperList = Arrays.asList("book-mapper.ById");
+        return super.get(bookId, results);
     }
 
-    @Override
     public Results booksByPerson(Integer personId, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("book-mapper.byPerson"), personId);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+        mapperList = Arrays.asList("book-mapper.byPerson");
+        return super.get(personId, results);
     }
 
-    @Override
-    public Results booksByGenre(Integer genreId, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("book-mapper.byGenre"), genreId);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+    public Results booksByGenre(Integer genreId, Results results)  {
+        mapperList = Arrays.asList("book-mapper.byGenre");
+        return super.get(genreId, results);
     }
 
-    @Override
-    public Results booksByLanguage(String language, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("book-mapper.byLanguage"), language);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
-    }
-
-    @Override
     public Results booksByYear(Request date, Results results) {
         Integer year = date.getYear();
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("book-mapper.byYear"), year);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+        mapperList = Arrays.asList("book-mapper.byYear");
+        return super.get(year, results);
     }
+
+    public Results booksByLanguage(String language, Results results) {
+        mapperList = Arrays.asList("book-mapper.byLanguage");
+        return super.language(language, results);
+    }
+
 
 }

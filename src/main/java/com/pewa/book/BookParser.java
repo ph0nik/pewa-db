@@ -79,11 +79,6 @@ public class BookParser implements MediaParse<Book, Integer> {
             Integer rokWydPl = extractInt(basicInfo.select(rokPolskiegoWydania).text());
                 if (rokWydPl.equals(0)) bookItem.setPlPubDate(rokWydPierwsze);
                 else bookItem.setPlPubDate(rokWydPl);
-            //TODO odczyt kolejnego elementu po wskazanym (ul)
-   /*         String alternatywne = ConfigFactory.get("biblionetka.alternatywne");
-            String alternVer = extractString(basicInfo.select(alternatywne).text());
-            System.out.println(alternVer);
-            bookItem.setAltVersion(alternVer);*/
 
             String ratingAvg = ConfigFactory.get("biblionetka.ratingAverage");
             String ratingVot = ConfigFactory.get("biblionetka.ratingVotes");
