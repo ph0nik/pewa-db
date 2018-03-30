@@ -6,7 +6,6 @@ import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.movie.Movie;
 import com.pewa.movie.MovieDAO;
-import com.pewa.movie.MovieDAOImpl;
 import com.pewa.movie.MovieSearch;
 import com.pewa.request.StatusRequest;
 import com.pewa.status.Status;
@@ -15,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.Media;
-import java.util.Set;
 
 /**
  * Created by phonik on 2017-03-02.
@@ -65,14 +61,14 @@ public class MovieController {
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
         return movieDao
-                .moviesByTitle(query, new Results())
+                .moviesByTitle(query)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "id/{id}")
     public Results searchById(@PathVariable Integer id) {
         return movieDao
-                .moviesById(id, new Results())
+                .moviesById(id)
                 .setReturnMessage();
     }
 
@@ -94,7 +90,7 @@ public class MovieController {
             status.setEncounterDate(request.getEncounterDate());
             status.setMediaSource(request.getMediaSource());
             movie = movieParse.getItem(request.getEncounterId());
-            results = movieDao.addMovie(movie, new Results());
+            results = movieDao.addMovie(movie);
             return statusDAO.addStatus(status, results);
         }
 
@@ -103,13 +99,12 @@ public class MovieController {
     @GetMapping(value = "update/{id}")
     public Results updateMovie(@PathVariable Integer id) {
         movie = movieParse.getItem(id);
-        results = movieDao.updMovie(movie, new Results());
-        return results;
+        return movieDao.updateMovie(movie);
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteMovie(@PathVariable Integer id) {
-        results = movieDao.delMovie(id, new Results());
+        results = movieDao.deleteMovie(id);
         return initAllTables.cleanAll(results);
     }
 
@@ -154,28 +149,28 @@ public class MovieController {
     @GetMapping(value = "personId")
     public Results searchByPerson(@PathVariable Integer personId) {
         return movieDao
-                .moviesByPersonId(personId, new Results())
+                .moviesByPersonId(personId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "genreId")
     public Results searchByGenre(@PathVariable Integer genreId) {
         return movieDao
-                .moviesByGenreId(genreId, new Results())
+                .moviesByGenreId(genreId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "langId")
     public Results searchByLanguage(@PathVariable Integer langId) {
         return movieDao
-                .moviesByLanguageId(langId, new Results())
+                .moviesByLanguageId(langId)
                 .setReturnMessage();
     }
 
     @PostMapping(value = "year", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
         return movieDao
-                .moviesByYear(dateSearch, new Results())
+                .moviesByYear(dateSearch)
                 .setReturnMessage();
     }
 

@@ -54,7 +54,7 @@ public class TvShowDAOImplTest {
 //        TvShowSummary buffy = tvShow.getItem(427);
         Integer id = 427;
         TvShowSummary item = tvShow.getItem(id);
-        tvShowDAO.addTvShow(item, results);
+        tvShowDAO.addTvShow(item);
 //        System.out.println(item.getEpisodes().get(3));
     }
 
@@ -80,15 +80,15 @@ public class TvShowDAOImplTest {
     public void getTvShow() throws Exception {
         TvShowDAO tvShowDAO = new TvShowDAOImpl();
         String query = "buffy";
-        Results tvShows = tvShowDAO.tvshowByTitle(query, results);
+        Results tvShows = tvShowDAO.tvshowByTitle(query);
         System.out.println(tvShows);
     }
     @Disabled
     @Test
     public void getTvShowById() throws Exception {
         TvShowDAO tvShowDAO = new TvShowDAOImpl();
-        Integer tvid = 12;
-        Results tvShows = tvShowDAO.tvshowById(tvid, results);
+        Integer tvid = 5;
+        Results tvShows = tvShowDAO.tvshowById(tvid);
         System.out.println(tvShows);
     }
     @Disabled
@@ -96,7 +96,7 @@ public class TvShowDAOImplTest {
     public void getTvShowByPerson() throws Exception {
         // Person{id=679, name='David Greenwalt', job='executive producer'}
         int personId = 679;
-        Results tvshows = tvShowDAO.tvshowByPersonId(personId, results);
+        Results tvshows = tvShowDAO.tvshowByPersonId(personId);
         System.out.println(tvshows);
     }
     @Disabled
@@ -104,7 +104,7 @@ public class TvShowDAOImplTest {
     public void getTvShowByGenre() throws Exception {
         // Genre{id=54, genre='Drama'}
         int genreId = 54;
-        Results tvshows = tvShowDAO.tvshowByGenreId(genreId, results);
+        Results tvshows = tvShowDAO.tvshowByGenreId(genreId);
         System.out.println(tvshows);
     }
 
@@ -113,7 +113,7 @@ public class TvShowDAOImplTest {
     public void getTvShowsByLanguage() {
         // language=Language{id=1, language='English'}
         int langId = 1;
-        Results tvshows = tvShowDAO.tvshowByLanguageId(langId, results);
+        Results tvshows = tvShowDAO.tvshowByLanguageId(langId);
         System.out.println(tvshows);
     }
 
@@ -122,7 +122,7 @@ public class TvShowDAOImplTest {
     public void getTvShowsbyContry() {
         // country=Country{id=3, country='United States'}
         int countryId = 3;
-        Results tvshows = tvShowDAO.tvshowByCountryId(countryId, results);
+        Results tvshows = tvShowDAO.tvshowByCountryId(countryId);
         System.out.println(tvshows);
     }
 
@@ -130,24 +130,8 @@ public class TvShowDAOImplTest {
     @Test
     public void getTvShowByYear() throws Exception {
         int year = 1997;
-        Results tvshow = tvShowDAO.tvshowByYear(year, results);
+        Results tvshow = tvShowDAO.tvshowByYear(year);
         System.out.println(tvshow);
-    }
-
-    @Disabled
-    @Test
-    public void universalIdPicker() {
-        PewaSelect select = new PewaSelect();
-        select.setFrom("person_tv");
-        select.setInnerJoin("person");
-        select.setId(685);
-        select.setEquals("person_tv.person_id");
-        select.setOn("person.id");
-        select.setSelect("tv_id");
-        select.setWhereIn("tv.id");
-        Results tvshowsByPersonId = tvShowDAO.getObjectById(select, results);
-        System.out.println(tvshowsByPersonId);
-
     }
 
 

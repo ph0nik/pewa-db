@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.status.Status;
@@ -18,11 +19,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class TvShowSummary implements Comparable<TvShowSummary>, Serializable, Encounter {
+public class TvShowSummary extends MediaModel implements Comparable<TvShowSummary>, Serializable, Encounter {
 
     private String tvMazeUrl, title, showType, status, network,
             imdbLink, posterMed, posterOrg, intPosterMed, intPosterOrg, summary;
-    private PewaType type;
+    private PewaType type = PewaType.TVSERIES;
     private Integer id, tvMazeId, runtime, thetvdbLink, tvrageLink;
     private Country country;
     private Language language;
@@ -392,5 +393,10 @@ public class TvShowSummary implements Comparable<TvShowSummary>, Serializable, E
     @Override
     public int compareTo(TvShowSummary tvshow) {
         return this.title.compareTo(tvshow.title);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

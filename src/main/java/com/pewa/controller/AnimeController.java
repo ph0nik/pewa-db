@@ -59,12 +59,16 @@ public class AnimeController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return animeDAO.getAnimeByTitle(query, new Results()).setReturnMessage();
+        return animeDAO
+                .getAnimeByTitle(query)
+                .setReturnMessage();
     }
 
     @GetMapping(value = "id/{id}")
     public Results getAnime(@PathVariable Integer id) {
-        return animeDAO.getAnimeById(id, new Results()).setReturnMessage();
+        return animeDAO
+                .getAnimeById(id)
+                .setReturnMessage();
     }
 
     @PostMapping(value = "add", consumes = json)
@@ -84,7 +88,7 @@ public class AnimeController {
             status.setEncounterDate(request.getEncounterDate());
             status.setMediaSource(request.getMediaSource());
             anime = animeParse.getItem(request.getEncounterId());
-            results = animeDAO.addAnime(anime, new Results());
+            results = animeDAO.addAnime(anime);
             return statusDAO.addStatus(status, results);
         }
     }
@@ -92,34 +96,33 @@ public class AnimeController {
     @PostMapping(value = "update", consumes = json)
     public Results updateAnime(@RequestBody Request request) {
         anime = animeParse.getItem(request.getExternalId());
-        results = animeDAO.updateAnime(anime, new Results());
-        return results;
+        return animeDAO.updateAnime(anime);
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteAnime(@PathVariable Integer id) {
-        results = animeDAO.deleteAnime(id, new Results());
+        results = animeDAO.deleteAnime(id);
         return initAllTables.cleanAll(results);
     }
 
     @GetMapping(value = "person/{personId}")
     public Results searchByPerson(@PathVariable Integer personId) {
         return animeDAO
-                .getAnimeByPersonId(personId, new Results())
+                .getAnimeByPersonId(personId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "genre/{genreId}")
     public Results searchByGenre(@PathVariable Integer genreId) {
         return animeDAO
-                .getAnimeByGenreId(genreId, new Results())
+                .getAnimeByGenreId(genreId)
                 .setReturnMessage();
     }
 
     @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
         return animeDAO
-                .getAnimeByYear(dateSearch, new Results())
+                .getAnimeByYear(dateSearch)
                 .setReturnMessage();
     }
 

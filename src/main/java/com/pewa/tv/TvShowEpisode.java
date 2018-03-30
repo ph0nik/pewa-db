@@ -2,6 +2,8 @@ package com.pewa.tv;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.MediaModel;
+import com.pewa.PewaType;
 import com.pewa.util.CustomLocalDateDeserializer;
 import com.pewa.util.CustomLocalDateSerializer;
 import com.pewa.util.CustomLocalDateTimeDeserializer;
@@ -12,7 +14,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
+public class TvShowEpisode extends MediaModel implements Serializable, Comparable<TvShowEpisode> {
     private String tvMazeUrl, epTitle, summary;
     private Integer id, tvMazeId, season, episode;
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
@@ -21,6 +23,7 @@ public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime dbDatetime;
+    private PewaType type;
 
     static final long serialVersionUID = 1L;
 
@@ -147,4 +150,19 @@ public class TvShowEpisode implements Serializable, Comparable<TvShowEpisode> {
             return this.season.compareTo(ep.season);
         }
     }
+
+    @Override
+    public boolean isEmpty() {
+        return epTitle.isEmpty();
+    }
+
+//    @Override
+//    public PewaType getType() {
+//        return type;
+//    }
+//
+//    @Override
+//    public void setType(PewaType type) {
+//        this.type = type;
+//    }
 }

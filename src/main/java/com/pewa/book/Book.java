@@ -21,7 +21,7 @@ public class Book extends MediaModel implements Comparable<Book>, Serializable, 
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
-    private PewaType type;
+    private PewaType type = PewaType.BOOK;
     private String additionalInfo, originalTitle, polishTitle, originalLanguage, category;
     private Set<Status> status;
 

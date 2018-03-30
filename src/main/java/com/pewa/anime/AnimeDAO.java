@@ -22,33 +22,33 @@ import java.util.List;
     /*
     * Adds Anime element into database
     * */
-    Results addAnime(Anime anime, Results results);
+    Results addAnime(Anime anime);
 
-    Results updateAnime(Anime anime, Results results);
+    Results updateAnime(Anime anime);
 
-    Results deleteAnime(Integer anime, Results results);
+    Results deleteAnime(Integer anime);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnimeByTitle(String query, Results results);
+    Results getAnimeByTitle(String query);
     /*
     * Returns List of elements of Anime type based on query ofInteger type.
     * */
 
-    Results getAnimeById(Integer databaseId, Results results);
+    Results getAnimeById(Integer databaseId);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnimeByPersonId(Integer person, Results results);
+    Results getAnimeByPersonId(Integer person);
     /*
     * Returns List of elements of Anime type based on query of String type.
     * */
-    Results getAnimeByGenreId(Integer genre, Results results);
+    Results getAnimeByGenreId(Integer genre);
     /*
     * Return List of Elements of Anime type based on queriees of String type.
     * Inputs are converted internally into LocalDate objects.
     * */
-    Results getAnimeByYear(Request date, Results results);
+    Results getAnimeByYear(Request date);
 
 
 }

@@ -77,13 +77,6 @@ public class AnimeMangaSearch {
         String url = (searchType.equals(PewaType.ANIME)) ? anime : manga;
         try {
             String getResults = getPage(url);
-//            String getResults = Jsoup.connect(url)
-//                    .data("access_token", animeAccessToken.getAccessToken())
-//                    .userAgent(ConfigFactory.get("search.userAgent"))
-//                    .timeout(5 * 1000)
-//                    .ignoreContentType(true)
-//                    .get()
-//                    .text();
             JsonValue objResults = Json.parse(getResults);
             if (!objResults.isObject()) {
                 output = aniListSearch(objResults.asArray());
@@ -141,7 +134,7 @@ public class AnimeMangaSearch {
 
     public Results aniListSearchV2(String query, PewaType type) {
         Results results = new Results();
-        AnimeMangaQuery animeMangaQuery = null;
+        AnimeMangaQuery animeMangaQuery;
         try {
             animeMangaQuery = setQueryObject(query, type);
             Set<SingleSearchResult> singleSearchResults = parseSearchResult(sendRequest(animeMangaQuery));

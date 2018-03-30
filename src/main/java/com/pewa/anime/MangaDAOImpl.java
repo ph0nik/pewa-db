@@ -2,6 +2,7 @@ package com.pewa.anime;
 
 import com.pewa.PewaType;
 import com.pewa.common.Encounter;
+import com.pewa.common.MediaDAO;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
 import com.pewa.config.ConfigFactory;
@@ -12,118 +13,82 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class MangaDAOImpl implements MangaDAO {
+public class MangaDAOImpl extends MediaDAO implements MangaDAO {
     private static final Logger log = LogManager.getLogger(MangaDAO.class);
-    private static final String formatterString = "uuuu-MM-dd";
-    private static final String addSuccess = "Manga item added  : ";
-    private static final String updateSuccess = "Manga item updated : ";
-    private static final String deleteSuccess = "Manga item deleted : ";
-    private static final String nothingFound = "No manga with this Id found : ";
-    private static final String alreadyInDb = "Manga item already in database : ";
-    private final PewaType mangaType = PewaType.MANGA;
-    private List<Encounter> output;
-    private Integer rowsAffected;
-    private Manga manga;
+    private List<String> mapperList = new ArrayList<>();
+    private String infoField = "";
 
-    @Override
-    public Results addManga(Manga manga, Results results) {
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertManga"), manga);
-            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertPeopleMan"), manga);
-            rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertPeopleBridgeMan"), manga);
-            if (!manga.getGenres().isEmpty()) {
-                rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertGenreMan"), manga);
-                rowsAffected += session.insert(ConfigFactory.get("manga-mapper.insertGenreBridgeMan"), manga);
-            }
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-            if (rowsAffected != 0) results.setReturnMessage(addSuccess + manga.getTitleRom());
-            else results.setReturnMessage(alreadyInDb + manga.getTitleRom());
-        }
-        return results;
-    }
-
-    public Results updateManga(Manga manga, Results results) {
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.update(ConfigFactory.get("manga-mapper.updateAnime"), manga);
-            session.commit();
-        }
-        results.setRowsAffected(rowsAffected);
-        if (rowsAffected != 0) results.setReturnMessage(updateSuccess + manga.getTitleRom());
-        else results.setReturnMessage(nothingFound + manga.getTitleRom());
-        return results;
-    }
-
-    public Results deleteManga(Integer manga, Results results){
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.delete(ConfigFactory.get("manga-mapper.deleteAnime"), manga);
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-        }
-        if (rowsAffected != 0) results.setReturnMessage(deleteSuccess + manga);
-        else results.setReturnMessage(nothingFound + manga);
-        return results;
+    public MangaDAOImpl() {
+        super(PewaType.MANGA);
     }
 
     @Override
-    public Results getMangaByTitle(String query, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            query = new StringBuilder("%")
-                    .append(query)
-                    .append("%")
-                    .toString();
-            output = session.selectList(ConfigFactory.get("manga-mapper.byTitleMan"), query);
-            session.commit();
-        }
-        output.forEach(x -> x.setType(mangaType));
-        output.forEach(results::setEncounters);
-        return results;
+    public Results addManga(Manga manga) {
+        infoField = manga.getTitleEng();
+        mapperList = Arrays.asList(
+                "manga-mapper.insertManga",
+                "manga-mapper.insertPeopleMan",
+                "manga-mapper.insertPeopleBridgeMan",
+                "manga-mapper.insertGenreMan",
+                "manga-mapper.insertGenreBridgeMan"
+        );
+        return super.add(manga);
+    }
+
+    public Results updateManga(Manga manga) {
+        infoField = manga.getTitleEng();
+        mapperList = Arrays.asList("manga-mapper.updateAnime");
+        return super.update(manga);
+    }
+
+    public Results deleteManga(Integer manga){
+        mapperList = Arrays.asList("manga-mapper.deleteAnime");
+        return super.delete(manga);
     }
 
     @Override
-    public Results getMangaById(Integer id, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            manga = session.selectOne(ConfigFactory.get("manga-mapper.ByIdMan"), id);
-            session.commit();
-            results.setEncounters(manga);
-        }
-        return results;
+    public Results getMangaByTitle(String query) {
+        mapperList = Arrays.asList("manga-mapper.byTitleMan");
+        return super.search(query);
     }
 
     @Override
-    public Results getMangaByPerson(Integer person, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("manga-mapper.byPersonMan"), person);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+    public Results getMangaById(Integer id) {
+        mapperList = Arrays.asList("manga-mapper.ByIdMan");
+        return super.get(id);
     }
 
     @Override
-    public Results getMangaByGenre(Integer genre, Results results) {
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("manga-mapper.byGenreMan"), genre);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+    public Results getMangaByPerson(Integer person) {
+        mapperList = Arrays.asList("manga-mapper.byPersonMan");
+        return super.get(person);
     }
 
     @Override
-    public Results getMangaByYear(Request date, Results results) {
+    public Results getMangaByGenre(Integer genre) {
+        mapperList = Arrays.asList("manga-mapper.byGenreMan");
+        return super.get(genre);
+    }
+
+    @Override
+    public Results getMangaByYear(Request date) {
         Integer year = date.getYear();
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            output = session.selectList(ConfigFactory.get("manga-mapper.byYearMovie"), year);
-            session.commit();
-        }
-        output.forEach(results::setEncounters);
-        return results;
+        mapperList = Arrays.asList("manga-mapper.byYearMovie");
+        return super.get(year);
+    }
+
+    @Override
+    public List<String> getMapperList() {
+        return mapperList;
+    }
+
+    @Override
+    public String getInfoField() {
+        return infoField;
     }
 }

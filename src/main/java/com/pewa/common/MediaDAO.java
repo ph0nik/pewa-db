@@ -14,28 +14,29 @@ import java.util.List;
 
 public abstract class MediaDAO {
 
-    public static final String ADD_SUCCESS = " item added  : ";
-    public static final String UPDATE_SUCCESS = " item updated : ";
-    public static final String DELETE_SUCCESS = " item deleted : ";
-    public static final String SEARCH_SUCCESS = " element(s) found";
-    public static final String NOTHING_FOUND = " no item with this ID found : ";
-    public static final String DUPLICATE_ITEM = " item already in database : ";
+    private static final String ADD_SUCCESS = "item added  : ";
+    private static final String UPDATE_SUCCESS = "item updated : ";
+    private static final String DELETE_SUCCESS = "item deleted : ";
+    private static final String SEARCH_SUCCESS = "element(s) found";
+    private static final String NOTHING_FOUND = "no item with this ID found : ";
+    private static final String DUPLICATE_ITEM = "item already in database : ";
     private int rowsAffected;
-    private List<Encounter> output;
-    private String returnMessage;
+    private List<MediaModel> output;
+    private String returnMessage = "";
     private PewaType type;
+    private Results results;
 
-    public MediaDAO(PewaType type) {
+    protected MediaDAO(PewaType type) {
         this.type = type;
-        returnMessage = "";
     }
 
     private String getType() {
-        return type.toString().toLowerCase();
+        return "[" + type.toString().toLowerCase() + "] ";
     }
 
     // All fields of MediaModel object have to be present
-    public Results add(MediaModel media, Results results) {
+    protected Results add(MediaModel media) {
+        results = new Results();
         rowsAffected = 0;
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             for (String mapper : getMapperList()) {
@@ -44,13 +45,14 @@ public abstract class MediaDAO {
             session.commit();
             results.setRowsAffected(rowsAffected);
             returnMessage = (rowsAffected != 0)
-                    ? "[" + getType() + "]" + ADD_SUCCESS + getInfoField()
-                    : "[" + getType() + "]" + DUPLICATE_ITEM + getInfoField();
+                    ? getType() + ADD_SUCCESS + getInfoField()
+                    : getType() + DUPLICATE_ITEM + getInfoField();
         }
         return results.setReturnMessage(returnMessage);
     }
 
-    public Results delete(Integer id, Results results) {
+    protected Results delete(Integer id) {
+        results = new Results();
         rowsAffected = 0;
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             for (String mapper : getMapperList()) {
@@ -59,14 +61,15 @@ public abstract class MediaDAO {
             session.commit();
             results.setRowsAffected(rowsAffected);
             returnMessage = (rowsAffected != 0)
-                    ? "[" + getType() + "]" + DELETE_SUCCESS + getInfoField()
-                    : "[" + getType() + "]" + NOTHING_FOUND + getInfoField();
+                    ? getType() + DELETE_SUCCESS + getInfoField()
+                    : getType() + NOTHING_FOUND + getInfoField();
 //            log.info(returnMessage);
         }
         return results.setReturnMessage(returnMessage);
     }
 
-    public Results update(MediaModel media, Results results) {
+    protected Results update(MediaModel media) {
+        results = new Results();
         rowsAffected = 0;
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             for (String mapper : getMapperList()) {
@@ -75,13 +78,14 @@ public abstract class MediaDAO {
             session.commit();
             results.setRowsAffected(rowsAffected);
             returnMessage = (rowsAffected != 0)
-                    ? "[" + getType() + "]" + UPDATE_SUCCESS + getInfoField()
-                    : "[" + getType() + "]" + NOTHING_FOUND + getInfoField();
+                    ? getType() + UPDATE_SUCCESS + getInfoField()
+                    : getType() + NOTHING_FOUND + getInfoField();
         }
         return results.setReturnMessage(returnMessage);
     }
 
-    public Results search(String request, Results results) {
+    protected Results search(String request) {
+        results = new Results();
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             String query = new StringBuilder("%")
                     .append(request)
@@ -89,35 +93,38 @@ public abstract class MediaDAO {
                     .toString();
             output = session.selectList(ConfigFactory.get(getMapperList().get(0)), query);
             session.commit();
-            output.forEach(x -> x.setType(type));
             output.forEach(results::setEncounters);
+
             returnMessage = (output.isEmpty())
-                    ? "[" + getType() + "]" + NOTHING_FOUND
-                    : "[" + getType() + "] " + output.size() + SEARCH_SUCCESS;
+                    ? getType() + NOTHING_FOUND
+                    : getType() + output.size() + SEARCH_SUCCESS;
         }
         return results.setReturnMessage(returnMessage);
     }
 
-    public Results get(Integer mediaId, Results results) {
+
+    protected Results get(Integer mediaId) {
+        results = new Results();
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             output = session.selectList(ConfigFactory.get(getMapperList().get(0)), mediaId);
             session.commit();
             output.forEach(results::setEncounters);
             returnMessage = (output.size() == 0)
-                    ? "[" + getType() + "]" + NOTHING_FOUND + mediaId
-                    : "[" + getType() + "] " + output.size() + SEARCH_SUCCESS;
+                    ? getType() + NOTHING_FOUND + mediaId
+                    : getType() + output.size() + SEARCH_SUCCESS;
         }
         return results.setReturnMessage(returnMessage);
     }
 
-    public Results language(String language, Results results) {
+    protected Results language(String language) {
+        results = new Results();
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
             output = session.selectList(ConfigFactory.get(getMapperList().get(0)), language);
             session.commit();
             output.forEach(results::setEncounters);
             returnMessage = (output.size() == 0)
-                    ? "[" + getType() + "]" + NOTHING_FOUND
-                    : "[" + getType() + "] " + output.size() + SEARCH_SUCCESS;
+                    ? getType() + NOTHING_FOUND
+                    : getType() + output.size() + SEARCH_SUCCESS;
         }
         return results.setReturnMessage(returnMessage);
     }

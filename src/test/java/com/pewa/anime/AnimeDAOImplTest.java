@@ -32,30 +32,30 @@ public class AnimeDAOImplTest {
     public void addAnimeToDB() {
         MediaParse<Anime, Integer> getAnime = new AnimeParser();
         Anime test = getAnime.getItem(43);
-        animeDAO.addAnime(test, results);
+        animeDAO.addAnime(test);
         test = getAnime.getItem(45);
-        animeDAO.addAnime(test, results);
+        animeDAO.addAnime(test);
         test = getAnime.getItem(47);
-        animeDAO.addAnime(test, results);
+        animeDAO.addAnime(test);
     }
     @Disabled
     @Test
     public void searchAnime() {
-        Results out = animeDAO.getAnimeByTitle("ghost", results);
+        Results out = animeDAO.getAnimeByTitle("ghost");
         System.out.println(out);
     }
     @Disabled
     @Test
     public void animeById() {
         itemId = 3;
-        results = animeDAO.getAnimeById(itemId, results);
+        results = animeDAO.getAnimeById(itemId);
         System.out.println(results);
     }
     @Disabled
     @Test
     public void animeByYear() {
         request.setYear(1995);
-        Results out = animeDAO.getAnimeByYear(request,results);
+        Results out = animeDAO.getAnimeByYear(request);
         System.out.println(out);
         out.getEncounters().forEach(System.out::println);
 
@@ -64,14 +64,14 @@ public class AnimeDAOImplTest {
     @Test
     public void animeByGenre() {
         itemId = 4;
-        Results out = animeDAO.getAnimeByGenreId(itemId,results);
+        Results out = animeDAO.getAnimeByGenreId(itemId);
         out.getEncounters().forEach(System.out::println);
     }
     @Disabled
     @Test
     public void animeByPerson() {
         itemId = 80;
-        Results out = animeDAO.getAnimeByPersonId(itemId, results);
+        Results out = animeDAO.getAnimeByPersonId(itemId);
         out.getEncounters().forEach(System.out::println);
     }
     @Disabled

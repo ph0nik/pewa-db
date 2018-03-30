@@ -49,17 +49,21 @@ public class MangaController {
 
     @GetMapping(value = "search/{query}")
     public Results searchExternal(@PathVariable String query) {
-        return animeMangaSearch.aniListSearch(query, mangaType).setReturnMessage();
+        return animeMangaSearch.aniListSearchV2(query, mangaType).setReturnMessage();
     }
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return mangaDAO.getMangaByTitle(query, new Results()).setReturnMessage();
+        return mangaDAO
+                .getMangaByTitle(query)
+                .setReturnMessage();
     }
 
     @GetMapping(value = "id/{id}")
     public Results getManga(@PathVariable Integer id) {
-        return mangaDAO.getMangaById(id, new Results()).setReturnMessage();
+        return mangaDAO
+                .getMangaById(id)
+                .setReturnMessage();
     }
 
     @PostMapping(value = "add", consumes = json)
@@ -79,7 +83,7 @@ public class MangaController {
             status.setEncounterDate(request.getEncounterDate());
             status.setMediaSource(request.getMediaSource());
             manga = mangaParse.getItem(request.getEncounterId());
-            results = mangaDAO.addManga(manga, new Results());
+            results = mangaDAO.addManga(manga);
             return statusDAO.addStatus(status, results);
         }
     }
@@ -87,12 +91,12 @@ public class MangaController {
     @PostMapping(value = "update", consumes = json)
     public Results updateManga(@RequestBody Request request) {
         manga = mangaParse.getItem(request.getExternalId());
-        return mangaDAO.updateManga(manga, new Results());
+        return mangaDAO.updateManga(manga);
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteAnime(@PathVariable Integer id) {
-        results = mangaDAO.deleteManga(id, new Results());
+        results = mangaDAO.deleteManga(id);
         return initAllTables.cleanAll(results);
     }
 
@@ -100,21 +104,21 @@ public class MangaController {
     @GetMapping(value = "person/{personId}")
     public Results searchByPerson(@PathVariable Integer personId) {
         return mangaDAO
-                .getMangaByPerson(personId, new Results())
+                .getMangaByPerson(personId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "genre/{genreId}")
     public Results searchByGenre(@PathVariable Integer genreId) {
         return mangaDAO
-                .getMangaByGenre(genreId, new Results())
+                .getMangaByGenre(genreId)
                 .setReturnMessage();
     }
 
     @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
         return mangaDAO
-                .getMangaByYear(dateSearch, new Results())
+                .getMangaByYear(dateSearch)
                 .setReturnMessage();
     }
 }

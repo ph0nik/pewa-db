@@ -17,27 +17,25 @@ import java.util.List;
 public interface TvShowDAO {
 
         //TODO przygotować kontroler seriali wraz zodznaczaniem obejrzanych odcinków
-        Results addTvShow(TvShowSummary tvshow, Results results);
+        Results addTvShow(TvShowSummary tvshow);
 
-        Results updateTvShow(TvShowSummary tvshow, Results results);
+        Results updateTvShow(TvShowSummary tvshow);
 
-        Results deleteTvShow(Integer tvshowid, Results results);
+        Results deleteTvShow(Integer tvshowid);
 
-        Results tvshowByTitle(String query, Results results);
+        Results tvshowByTitle(String query);
 
-        Results tvshowById(Integer dbId, Results results);
+        Results tvshowById(Integer dbId);
 
-        Results tvshowByPersonId(Integer person, Results results);
+        Results tvshowByPersonId(Integer person);
 
-        Results tvshowByGenreId(Integer genre, Results results);
+        Results tvshowByGenreId(Integer genre);
 
-        Results tvshowByLanguageId(Integer lang, Results results);
+        Results tvshowByLanguageId(Integer lang);
 
-        Results tvshowByCountryId(Integer count, Results results);
+        Results tvshowByCountryId(Integer count);
 
-        Results tvshowByYear(Integer date, Results results);
-
-        Results getObjectById(PewaSelect id, Results results);
+        Results tvshowByYear(Integer date);
 
         TvShowSummary getTvShowByExternalId(Integer id);
 

@@ -54,7 +54,7 @@ public class BookDAOImplTest {
         MediaParse<Book, Integer> bookScraper = new BookParser();
         Integer id = 384;
         Book ksiazka = bookScraper.getItem(id);
-        nowaKsiazka.addBook(ksiazka, results);
+        nowaKsiazka.addBook(ksiazka);
         Status status = new Status();
         status.setElementType(PewaType.BOOK);
         status.setComment("krzyżacy");
@@ -70,7 +70,7 @@ public class BookDAOImplTest {
     @Test
     public void deleteFromDb() {
         Integer id  = 3;
-        Results results = nowaKsiazka.delBook(3, this.results);
+        Results results = nowaKsiazka.delBook(3);
         System.out.println(results.getMessage());
     }
 
@@ -78,7 +78,7 @@ public class BookDAOImplTest {
     @Test
     public void checkBasicSQL() {
         String title = "n";
-        Results test = nowaKsiazka.getBook(title, results);
+        Results test = nowaKsiazka.getBook(title);
         System.out.println(test.toString());
     }
 
@@ -87,7 +87,7 @@ public class BookDAOImplTest {
     @Test
     public void checkBookById(){
         Integer id = 1;
-        Results test = nowaKsiazka.getBookById(id, results);
+        Results test = nowaKsiazka.getBookById(id);
         System.out.println(test.toString());
     }
     @Disabled
@@ -95,21 +95,21 @@ public class BookDAOImplTest {
     public void checkBooksByPerson() {
 
         Integer person = 54;
-        Results test = nowaKsiazka.booksByPerson(person, results);
+        Results test = nowaKsiazka.booksByPerson(person);
         System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByGenre() {
         Integer genre = 2;
-        Results test = nowaKsiazka.booksByGenre(genre, results);
+        Results test = nowaKsiazka.booksByGenre(genre);
         System.out.println(test.toString());
     }
     @Disabled
     @Test
     public void checkBooksByLanguage() {
         String language = "angielski";
-        Results test = nowaKsiazka.booksByLanguage(language, results);
+        Results test = nowaKsiazka.booksByLanguage(language);
         System.out.println(test.toString());
     }
     @Disabled
@@ -117,7 +117,7 @@ public class BookDAOImplTest {
     public void checkBooksByYear() {
         Request year = new Request();
         year.setYear(1976);
-        Results test = nowaKsiazka.booksByYear(year, results);
+        Results test = nowaKsiazka.booksByYear(year);
         System.out.println(test.toString());
     }
 

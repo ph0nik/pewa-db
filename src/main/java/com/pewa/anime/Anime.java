@@ -22,8 +22,10 @@ import java.util.TreeSet;
 
 public class Anime extends MediaModel implements Comparable<Anime>, Serializable, Encounter {
 
+//    private final static PewaType type = PewaType.ANIME;
+
     private String titleRom, titleEng, description, poster, intPoster, airingStatus, animeType;
-    private PewaType type;
+    private PewaType type = PewaType.ANIME;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -38,7 +40,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
     private LocalDateTime dbDatetime;
 
     static final long serialVersionUID = 1L;
-
 
     public Anime() {
         this.genres = new TreeSet<>();
@@ -278,6 +279,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
 
     @Override
     public boolean isEmpty() {
-        return this.titleRom.isEmpty();
+        return titleRom.isEmpty();
     }
 }

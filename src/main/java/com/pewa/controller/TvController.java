@@ -64,14 +64,14 @@ public class TvController {
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
         return tvShowDAO
-                .tvshowByTitle(query, new Results())
+                .tvshowByTitle(query)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "id/{id}")
     public Results searchById(@PathVariable Integer id) {
         return tvShowDAO
-                .tvshowById(id, new Results())
+                .tvshowById(id)
                 .setReturnMessage();
     }
 
@@ -95,7 +95,7 @@ public class TvController {
                 status.setSeason(request.getSeason());
             }
             tvShowSummary = tvShowParser.getItem(request.getEncounterId());
-            results = tvShowDAO.addTvShow(tvShowSummary, results);
+            results = tvShowDAO.addTvShow(tvShowSummary);
             return statusDAO.addStatus(status, results);
         }
     }
@@ -103,13 +103,12 @@ public class TvController {
     @GetMapping(value = "update/{id}")
     public Results updateTvShow(@PathVariable Integer id) {
         tvShowSummary = tvShowParser.getItem(id);
-        results = tvShowDAO.updateTvShow(tvShowSummary, new Results());
-        return results;
+        return tvShowDAO.updateTvShow(tvShowSummary);
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteTvShow(@PathVariable Integer id) {
-        results = tvShowDAO.deleteTvShow(id, new Results());
+        results = tvShowDAO.deleteTvShow(id);
         return initAllTables.cleanAll(results);
     }
 
@@ -117,35 +116,35 @@ public class TvController {
     @GetMapping(value = "personId")
     public Results searchByPerson(@PathVariable Integer personId) {
         return tvShowDAO
-                .tvshowByPersonId(personId, new Results())
+                .tvshowByPersonId(personId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "genreId")
     public Results searchByGenre(@PathVariable Integer genreId) {
         return tvShowDAO
-                .tvshowByGenreId(genreId, new Results())
+                .tvshowByGenreId(genreId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "langId")
     public Results searchByLanguage(@PathVariable Integer langId) {
         return tvShowDAO
-                .tvshowByLanguageId(langId, new Results())
+                .tvshowByLanguageId(langId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "countryId")
     public Results searchByCountry(@PathVariable Integer countryId) {
         return tvShowDAO
-                .tvshowByCountryId(countryId, new Results())
+                .tvshowByCountryId(countryId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "year")
     public Results searchByYear(@PathVariable Integer year) {
         return tvShowDAO
-                .tvshowByYear(year, new Results())
+                .tvshowByYear(year)
                 .setReturnMessage();
     }
 }

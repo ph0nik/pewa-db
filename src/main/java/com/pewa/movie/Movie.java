@@ -43,7 +43,7 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     private Set<Country> country;
     private Set<Genre> genres;
     private Set<Person> staff;
-    private PewaType type;
+    private PewaType type = PewaType.MOVIE;
     private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)

@@ -3,6 +3,7 @@ package com.pewa.common;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.util.CustomLocalDateDeserializer;
 import com.pewa.util.CustomLocalDateSerializer;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class SingleSearchResult implements Encounter, Comparable<SingleSearchResult> {
+public class SingleSearchResult extends MediaModel implements Encounter, Comparable<SingleSearchResult> {
     private String title, description, altTitle;
     private Integer idInt;
     private PewaType type;
@@ -114,5 +115,10 @@ public class SingleSearchResult implements Encounter, Comparable<SingleSearchRes
     @Override
     public int compareTo(SingleSearchResult o) {
         return singleSearchResultComparator.compare(this, o);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return title.isEmpty();
     }
 }

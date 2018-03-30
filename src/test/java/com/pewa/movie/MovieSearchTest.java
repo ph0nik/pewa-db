@@ -30,7 +30,7 @@ public class MovieSearchTest {
         Movie americanBuffalo = movieParser.getItem("tt0115530");
         System.out.println(americanBuffalo.toString());
         MovieDAO dbm = new MovieDAOImpl();
-        dbm.addMovie(americanBuffalo, results);
+        dbm.addMovie(americanBuffalo);
     }
 
     @Disabled

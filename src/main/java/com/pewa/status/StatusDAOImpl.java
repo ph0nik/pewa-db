@@ -1,5 +1,6 @@
 package com.pewa.status;
 
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.config.ConfigFactory;
@@ -137,13 +138,13 @@ public class StatusDAOImpl implements StatusDAO {
             Map<PewaType, Set<Integer>> encouterIdsGrouped = output.stream()
                     .collect(Collectors.groupingBy(Status::getElementType, Collectors.mapping(Status::getEncounterId, Collectors.toSet())));
             Set<Integer> encounterIdList;
-            List<Encounter> encountersOutput;
+            List<MediaModel> encountersOutput;
             log.info(results.getResultsFound());
 
             encounterIdList = encouterIdsGrouped.get(PewaType.TVSERIES);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("tv-mapper.byExternalIdTv"), encounterIdList);
-                encountersOutput.forEach(t -> t.setType(PewaType.TVSERIES));
+//                encountersOutput.forEach(t -> t.setType(PewaType.TVSERIES));
                 encountersOutput.forEach(results::setEncounters);
                 log.info("tv size: " + encountersOutput.size());
                 log.info("result tv: " + results.getResultsFound());
@@ -158,7 +159,7 @@ public class StatusDAOImpl implements StatusDAO {
             encounterIdList = encouterIdsGrouped.get(PewaType.ANIME);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("anime-mapper.byExternalIdAni"), encounterIdList);
-                encountersOutput.forEach(t -> t.setType(PewaType.ANIME));
+//                encountersOutput.forEach(t -> t.setType(PewaType.ANIME));
                 encountersOutput.forEach(results::setEncounters);
                 log.info("anime size: " + encountersOutput.size());
                 log.info("result anime: " + results.getResultsFound());
@@ -166,7 +167,7 @@ public class StatusDAOImpl implements StatusDAO {
             encounterIdList = encouterIdsGrouped.get(PewaType.MANGA);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("manga-mapper.byExternalIdMan"), encounterIdList);
-                encountersOutput.forEach(t -> t.setType(PewaType.MANGA));
+//                encountersOutput.forEach(t -> t.setType(PewaType.MANGA));
                 encountersOutput.forEach(results::setEncounters);
                 log.info("manga size: " + encountersOutput.size());
                 log.info("result manga: " + results.getResultsFound());
@@ -174,7 +175,7 @@ public class StatusDAOImpl implements StatusDAO {
             encounterIdList = encouterIdsGrouped.get(PewaType.BOOK);
             if (encounterIdList != null) {
                 encountersOutput = session.selectList(ConfigFactory.get("book-mapper.byExternalIdBook"), encounterIdList);
-                encountersOutput.forEach(t -> t.setType(PewaType.BOOK));
+//                encountersOutput.forEach(t -> t.setType(PewaType.BOOK));
                 encountersOutput.forEach(results::setEncounters);
                 log.info("bok size: " + encountersOutput.size());
                 log.info("result book: " + results.getResultsFound());
@@ -201,7 +202,7 @@ public class StatusDAOImpl implements StatusDAO {
             Map<PewaType, Set<Integer>> encouterIdsGrouped = output.stream()
                     .collect(Collectors.groupingBy(Status::getElementType, Collectors.mapping(Status::getEncounterId, Collectors.toSet())));
             Set<Integer> encounterIdList;
-            List<Encounter> encountersOutput;
+            List<MediaModel> encountersOutput;
 
             encounterIdList = encouterIdsGrouped.get(PewaType.TVSERIES);
             if (encounterIdList != null) {

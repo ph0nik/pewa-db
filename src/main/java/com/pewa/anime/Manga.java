@@ -2,6 +2,7 @@ package com.pewa.anime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.common.Encounter;
 import com.pewa.common.Genre;
@@ -18,11 +19,11 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Manga implements Comparable<Manga>, Serializable, Encounter {
+public class Manga extends MediaModel implements Comparable<Manga>, Serializable, Encounter {
     private Set<Genre> genres;
     private Set<Person> staff;
     private String titleRom, titleEng, description, poster, publishingStatus, intPoster, mangaType;
-    private PewaType type;
+    private PewaType type = PewaType.MANGA;
     private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
@@ -221,5 +222,10 @@ public class Manga implements Comparable<Manga>, Serializable, Encounter {
     @Override
     public int compareTo(Manga manga) {
         return this.titleRom.compareTo(manga.titleRom);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return titleRom.isEmpty();
     }
 }

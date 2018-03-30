@@ -1,6 +1,7 @@
 package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.pewa.MediaModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class Results {
 
     private String message;
     private Integer resultsFound;
-    private List<Encounter> encounters;
+    private List<MediaModel> encounters;
     private Integer rowsAffected;
 
     public Results() {
@@ -25,12 +26,11 @@ public class Results {
         this.rowsAffected = 0;
     }
 
-    public List<Encounter> getEncounters() {
+    public List<MediaModel> getEncounters() {
         return encounters;
     }
 
-    //przeniesiony konstruktor listy z konstruktora obiektu do funkcji poniżęj
-    public void setEncounters(Encounter encouter) {
+    public void setEncounters(MediaModel encouter) {
         this.encounters.add(encouter);
         this.resultsFound = this.encounters.size();
     }
@@ -77,4 +77,5 @@ public class Results {
                 ", rowsAffected=" + rowsAffected +
                 '}';
     }
+
 }

@@ -6,6 +6,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.google.gson.Gson;
 import com.pewa.PewaType;
+import com.pewa.common.Empty;
 import com.pewa.common.Results;
 import com.pewa.common.SingleSearchResult;
 import com.pewa.config.ConfigFactory;
@@ -57,7 +58,7 @@ public class TvShowSearch {
                 if (desc != null && !"".equals(desc)) {
                     singleSearchResult.setDescription(desc);
                 } else {
-                    singleSearchResult.setDescription("N/A");
+                    singleSearchResult.setDescription(Empty.NOT_AVAILABLE);
                 }
                 String rawDate = showSearch.getShow().getPremiered();
                 LocalDate date = (rawDate == null || rawDate.length() == 0)

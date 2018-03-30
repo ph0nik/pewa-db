@@ -69,7 +69,7 @@ public class MovieDAOImplTest {
     @Test
     public void searchMovieByQuery(){
         String req = "blade";
-        Results movie = movieDAO.moviesByTitle(req, results);
+        Results movie = movieDAO.moviesByTitle(req);
         System.out.println(movie);
     }
     @Disabled
@@ -79,14 +79,14 @@ public class MovieDAOImplTest {
         Integer request = 679;
         Movie americanBuffalo = movieParser.getItem(request);
 //        System.out.println(americanBuffalo.toString());
-        Results results = movieDAO.updMovie(americanBuffalo, new Results());
+        Results results = movieDAO.updateMovie(americanBuffalo);
         System.out.println(results);
     }
     @Disabled
     @Test
     public void getMovieById(){
         Integer request = 6;
-        Results sampleMovie = movieDAO.moviesById(request, results);
+        Results sampleMovie = movieDAO.moviesById(request);
         Movie movie = (Movie) sampleMovie.getEncounters().get(0);
 
         System.out.println(movie);
@@ -97,10 +97,10 @@ public class MovieDAOImplTest {
     @Test
     public void searchMovieByPerson() {
         Integer person = 4;
-        Results moviesByPerson = movieDAO.moviesByPersonId(person, results);
+        Results moviesByPerson = movieDAO.moviesByPersonId(person);
         System.out.println(results);
         person = 2;
-        moviesByPerson = movieDAO.moviesByPersonId(person, results);
+        moviesByPerson = movieDAO.moviesByPersonId(person);
         System.out.println(results);
 
 
@@ -109,7 +109,7 @@ public class MovieDAOImplTest {
     @Test
     public void searchMovieByGenre(){
         Integer genre = 3;
-        Results moviesByGenre = movieDAO.moviesByGenreId(genre, results);
+        Results moviesByGenre = movieDAO.moviesByGenreId(genre);
         System.out.println(results);
     }
 
@@ -119,7 +119,7 @@ public class MovieDAOImplTest {
         Request req = new Request();
         req.setDateInString(LocalDate.of(1999,1,1).toString());
         req.setDateOutString(LocalDate.of(2001,1,1).toString());
-        Results moviesByYear = movieDAO.moviesByYear(req, results);
+        Results moviesByYear = movieDAO.moviesByYear(req);
         System.out.println(results);
     }
 

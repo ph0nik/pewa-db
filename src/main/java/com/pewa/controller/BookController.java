@@ -63,13 +63,13 @@ public class BookController {
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
         return bookDAO
-                .getBook(query, new Results());
+                .getBook(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results getBookById(@PathVariable Integer id) {
         return bookDAO
-                .getBookById(id, new Results())
+                .getBookById(id)
                 .setReturnMessage();
     }
 
@@ -90,49 +90,48 @@ public class BookController {
             status.setEncounterDate(request.getEncounterDate());
             status.setMediaSource(request.getMediaSource());
             book = bookParser.getItem(request.getEncounterId());
-            results = bookDAO.addBook(book, new Results());
+            results = bookDAO.addBook(book);
             return statusDAO.addStatus(status, results);
         }
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteBook(@PathVariable Integer id) {
-        results = bookDAO.delBook(id, new Results());
+        results = bookDAO.delBook(id);
         return initAllTables.cleanAll(results);
     }
 
     @PostMapping(value = "update", consumes = json)
     public Results updateBook(@RequestBody Request request) {
         book = bookParser.getItem(request.getExternalId());
-        results = bookDAO.udpateBook(book, new Results());
-        return results;
+        return bookDAO.udpateBook(book);
     }
 
     @GetMapping(value = "person/{personId}")
     public Results searchByPerson(@PathVariable Integer personId) {
         return bookDAO
-                .booksByPerson(personId, new Results())
+                .booksByPerson(personId)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "genre/{genreId}")
     public Results searchByGenre(@PathVariable Integer genreId) {
         return bookDAO
-                .booksByGenre(genreId, new Results())
+                .booksByGenre(genreId)
                 .setReturnMessage();
     }
 
     @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
         return bookDAO
-                .booksByYear(dateSearch, new Results())
+                .booksByYear(dateSearch)
                 .setReturnMessage();
     }
 
     @GetMapping(value = "language/{language}")
     public Results searchByLanguage(@PathVariable String language) {
         return bookDAO
-                .booksByLanguage(language, new Results())
+                .booksByLanguage(language)
                 .setReturnMessage();
     }
 

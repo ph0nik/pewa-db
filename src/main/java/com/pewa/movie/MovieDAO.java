@@ -1,28 +1,27 @@
 package com.pewa.movie;
 
 import com.pewa.common.*;
-import com.pewa.movie.tmdb.Result;
 
 public interface MovieDAO {
 
-    Results addMovie(Movie movie, Results results);
+    Results addMovie(Movie movie);
 
-    Results updMovie(Movie movie, Results results);
+    Results updateMovie(Movie movie);
 
-    Results delMovie(Integer movieid, Results results);
+    Results deleteMovie(Integer movieid);
 
-    Results moviesByTitle(String query, Results results);
+    Results moviesByTitle(String query);
 
-    Results moviesById(Integer dbId, Results results);
+    Results moviesById(Integer dbId);
 
-    Results moviesByPersonId(Integer person, Results results);
+    Results moviesByPersonId(Integer person);
 
-    Results moviesByGenreId(Integer genre, Results results);
+    Results moviesByGenreId(Integer genre);
 
-    Results moviesByLanguageId(Integer lang, Results results);
+    Results moviesByLanguageId(Integer lang);
 
-    Results moviesByYear(Request date, Results results);
+    Results moviesByYear(Request date);
 
-    Results moviesByDate(String x, String y, Results results);
+    Results moviesByDate(String x, String y);
 
 }

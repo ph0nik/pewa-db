@@ -28,7 +28,7 @@ public class MangaDAOImplTest {
         MediaParse<Manga, Integer> mangaParser = new MangaParser();
         Manga test = mangaParser.getItem(30002);
         System.out.println(test);
-        mangaDAO.addManga(test, results);
+        mangaDAO.addManga(test);
 
     }
     @Disabled
@@ -37,7 +37,7 @@ public class MangaDAOImplTest {
         String yearStart = "1970-01-01";
         String yearEnd = "";
         request.setYear(1970);
-        Results out = mangaDAO.getMangaByYear(request, results);
+        Results out = mangaDAO.getMangaByYear(request);
         System.out.println("Search by date from " + yearStart + " to " + yearEnd +":");
         out.getEncounters().forEach(System.out::println);
     }
@@ -45,7 +45,7 @@ public class MangaDAOImplTest {
     @Test
     public void mangaSearchQuery() {
         String query = "berse";
-        Results out = mangaDAO.getMangaByTitle(query, results);
+        Results out = mangaDAO.getMangaByTitle(query);
         System.out.println("Search by title \"" + query + "\":");
         out.getEncounters().forEach(System.out::println);
     }
@@ -53,7 +53,7 @@ public class MangaDAOImplTest {
     @Test
     public void mangaById() {
         itemId = 30002;
-        Results out = mangaDAO.getMangaById(itemId, results);
+        Results out = mangaDAO.getMangaById(itemId);
         System.out.println("Search by anilist id " + request + ":");
         out.getEncounters().forEach(System.out::println);
     }
@@ -61,7 +61,7 @@ public class MangaDAOImplTest {
     @Test
     public void mangaByPerson() {
         itemId = 30;
-        Results out = mangaDAO.getMangaByPerson(itemId, results);
+        Results out = mangaDAO.getMangaByPerson(itemId);
         System.out.println("Search by person \"" + request + "\":");
         out.getEncounters().forEach(System.out::println);
     }
@@ -69,7 +69,7 @@ public class MangaDAOImplTest {
     @Test
     public void mangaByGenre() {
         itemId = 3;
-        Results out = mangaDAO.getMangaByGenre(itemId, results);
+        Results out = mangaDAO.getMangaByGenre(itemId);
         System.out.println("Search by genre \"" + request + "\":");
         out.getEncounters().forEach(System.out::println);
     }
