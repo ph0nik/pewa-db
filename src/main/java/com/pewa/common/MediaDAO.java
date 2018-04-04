@@ -2,14 +2,11 @@ package com.pewa.common;
 
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.book.BookDAO;
 import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
-import com.pewa.movie.tmdb.Result;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class MediaDAO {
@@ -51,6 +48,8 @@ public abstract class MediaDAO {
         return results.setReturnMessage(returnMessage);
     }
 
+    // Deletes element from database based on given element id
+    // multiple scripts are passed if operation needs to be performed on multiple tables
     protected Results delete(Integer id) {
         results = new Results();
         rowsAffected = 0;
@@ -68,6 +67,24 @@ public abstract class MediaDAO {
         return results.setReturnMessage(returnMessage);
     }
 
+    // deletes entries without connections to other tables
+    // adds number of deleted rows to exsisting results object
+    protected Results delete(Results results) {
+        rowsAffected = results.getRowsAffected();
+        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            for (String mapper : getMapperList()) {
+                rowsAffected += session.delete(ConfigFactory.get(mapper));
+            }
+            session.commit();
+            results.setRowsAffected(rowsAffected);
+//            returnMessage = (rowsAffected != 0)
+//                    ? getType() + DELETE_SUCCESS + getInfoField()
+//                    : getType() + NOTHING_FOUND + getInfoField();
+        }
+        return results;
+    }
+
+    // updates element in database, based on model object
     protected Results update(MediaModel media) {
         results = new Results();
         rowsAffected = 0;

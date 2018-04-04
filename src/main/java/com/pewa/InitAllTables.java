@@ -1,5 +1,6 @@
 package com.pewa;
 
+import com.pewa.common.MediaDAO;
 import com.pewa.common.Results;
 import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
@@ -11,12 +12,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
 @Component
-public class InitAllTables {
+public class InitAllTables extends MediaDAO {
 
     private static final Logger log = LogManager.getLogger(InitAllTables.class);
     private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
@@ -30,6 +32,12 @@ public class InitAllTables {
     private final String cleanCountry = "Deleting Country objects with no relation...";
     private final String cleanGenre = "Deleting Genre objects with no relation...";
     private final String cleanStatus = "Deleting Status objects with no relation...";
+    private List<String> mapperList = new ArrayList<>();
+    private String infoField = "";
+
+    public InitAllTables(PewaType type) {
+        super(type);
+    }
 
 
     public void initTables() {
@@ -51,24 +59,31 @@ public class InitAllTables {
     }
 
     public Results cleanAll(Results results) {
-        rowsAffected = results.getRowsAffected();
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
-            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.personCleanUp"));
-            log.debug(cleanPerson);
-            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.genreCleanUp"));
-            log.debug(cleanGenre);
-            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.countryCleanUp"));
-            log.debug(cleanCountry);
-            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.languageCleanUp"));
-            log.debug(cleanLanguage);
-            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.statusCleanUp"));
-            log.debug(cleanStatus);
-            session.commit();
-        }
-        results.setRowsAffected(rowsAffected);
-        if (rowsAffected != 0) results.setReturnMessage(cleanupSuccess);
-        else results.setReturnMessage(cleanupFail);
-        return results;
+        mapperList = Arrays.asList("init-sql-tables.personCleanUp"
+                ,"init-sql-tables.genreCleanUp"
+                ,"init-sql-tables.countryCleanUp"
+                ,"init-sql-tables.languageCleanUp"
+                ,"init-sql-tables.statusCleanUp"
+        );
+        return super.delete(results);
+//        rowsAffected = results.getRowsAffected();
+//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
+//            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.personCleanUp"));
+//            log.debug(cleanPerson);
+//            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.genreCleanUp"));
+//            log.debug(cleanGenre);
+//            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.countryCleanUp"));
+//            log.debug(cleanCountry);
+//            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.languageCleanUp"));
+//            log.debug(cleanLanguage);
+//            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.statusCleanUp"));
+//            log.debug(cleanStatus);
+//            session.commit();
+//        }
+//        results.setRowsAffected(rowsAffected);
+//        if (rowsAffected != 0) results.setReturnMessage(cleanupSuccess);
+//        else results.setReturnMessage(cleanupFail);
+//        return results;
     }
 
     public void checkForUnconnectedFiles() {
@@ -79,5 +94,13 @@ public class InitAllTables {
     }
 
 
+    @Override
+    public List<String> getMapperList() {
+        return mapperList;
+    }
 
+    @Override
+    public String getInfoField() {
+        return infoField;
+    }
 }

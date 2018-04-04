@@ -4,19 +4,9 @@ import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
-import com.pewa.config.SpringConfiguration;
-import com.pewa.movie.tmdb.Result;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

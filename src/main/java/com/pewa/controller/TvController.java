@@ -96,7 +96,7 @@ public class TvController {
             }
             tvShowSummary = tvShowParser.getItem(request.getEncounterId());
             results = tvShowDAO.addTvShow(tvShowSummary);
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(status);
         }
     }
 

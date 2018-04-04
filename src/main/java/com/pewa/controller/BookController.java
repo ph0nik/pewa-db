@@ -91,7 +91,7 @@ public class BookController {
             status.setMediaSource(request.getMediaSource());
             book = bookParser.getItem(request.getEncounterId());
             results = bookDAO.addBook(book);
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(status);
         }
     }
 

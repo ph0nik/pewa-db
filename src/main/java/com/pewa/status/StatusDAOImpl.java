@@ -1,10 +1,12 @@
 package com.pewa.status;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
+import com.pewa.request.StatusRequest;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
  * Created by phonik on 2017-05-30.
  */
 @Component
-public class StatusDAOImpl implements StatusDAO {
+public class StatusDAOImpl extends MediaDAO implements StatusDAO {
 
     private static final Logger log = LogManager.getLogger(StatusDAO.class);
     private final String formatterString = "uuuu-MM-dd";
@@ -32,10 +34,19 @@ public class StatusDAOImpl implements StatusDAO {
     private final String statusInsertSucces = "[OK] Status inserted : ";
     private final String statusFailedInfo = "[WARNING] No status found : ";
     private final String duplicateEntryError = "[ERROR] Duplicate entry";
+    private final String missingParameters = "Missing parameters: ";
     private List<Status> output;
     private Integer rowsAffected;
     private String statusBridge, statusBridgeUpdate;
+    private List<String> mapperList = new ArrayList<>();
+    private String infoField = "";
+    private InitAllTables tablesManagement;
 
+
+    public StatusDAOImpl() {
+        super(PewaType.STATUS);
+        tablesManagement = new InitAllTables(PewaType.STATUS);
+    }
 
     @Override
     public Status setProperStatus(Request request, PewaType pewaType) {
@@ -45,8 +56,8 @@ public class StatusDAOImpl implements StatusDAO {
         return status;
     }
 
-    private void setMapperName(Status status) {
-        switch (status.getElementType()) {
+    private void setMapperName(PewaType statusType) {
+        switch (statusType) {
             case MOVIE:
                 statusBridge = ConfigFactory.get("status-mapper.insertStatusMovieBridge");
                 break;
@@ -69,66 +80,92 @@ public class StatusDAOImpl implements StatusDAO {
         }
     }
 
+    //TODO check why is rollback implementet within this method
+    //
     @Override
-    public Results addStatus(Status status, Results results) {
-        rowsAffected = results.getRowsAffected();
-        setMapperName(status);
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.insert(ConfigFactory.get("status-mapper.insertStatus"), status);
-            int n = session.insert(statusBridge, status);
-            if (n == 0) {
-                session.rollback();
-            } else {
-                rowsAffected += n;
-                session.commit();
-            }
-            results.setRowsAffected(rowsAffected);
-            if (rowsAffected != 0 && n != 0)
-                results.setReturnMessage(statusInsertSucces + status.getElementType() + " | " + status);
-            else results.setReturnMessage(statusFailedInfo + status.getElementType() + " | " + status);
+    public Results addStatus(Status status) {
+        if (!status.isEmpty()) {
+            setMapperName(status.getElementType());
+            mapperList = Arrays.asList("status-mapper.insertStatus", statusBridge);
+            return super.add(status);
+        } else {
+            Results results = new Results();
+            return results.setReturnMessage(missingParameters + status.getMissingParameters().toString());
         }
-        return results;
+
+
+//        rowsAffected = results.getRowsAffected();
+//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+//            rowsAffected += session.insert(ConfigFactory.get("status-mapper.insertStatus"), status);
+//            int n = session.insert(statusBridge, status);
+//            if (n == 0) {
+//                session.rollback();
+//            } else {
+//                rowsAffected += n;
+//                session.commit();
+//            }
+//            results.setRowsAffected(rowsAffected);
+//            if (rowsAffected != 0 && n != 0)
+//                results.setReturnMessage(statusInsertSucces + status.getElementType() + " | " + status);
+//            else results.setReturnMessage(statusFailedInfo + status.getElementType() + " | " + status);
+//        }
+//        return results;
     }
 
     @Override
-    public Results updateStatus(Status status, Results results) {
-        rowsAffected = 0;
-        setMapperName(status);
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.update(ConfigFactory.get("status-mapper.updateStatus"), status);
+    public Results updateStatus(Status status) {
+        if (!status.isEmpty()) {
+            setMapperName(status.getElementType());
+            mapperList = Arrays.asList("status-mapper.updateStatus");
             if (status.getElementType() == PewaType.TVSERIES) {
-                rowsAffected += session.update(statusBridgeUpdate, status);
+                mapperList.add(statusBridgeUpdate);
             }
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-            if (rowsAffected != 0) results.setReturnMessage(statusUpdateSucces + status);
-            else results.setReturnMessage(statusFailedInfo + status);
-        } catch (PersistenceException ex) {
-            /*final Throwable cause = ex.getCause();
-            if (cause instanceof MySQLIntegrityConstraintViolationException) {
-                log.debug(ex);
-            }*/
-            String error = ex.getCause().getMessage();
-            if (error.contains("Duplicate entry")) {
-                results.setReturnMessage(duplicateEntryError);
-            } else {
-                log.debug(ex.getMessage());
-            }
+            return super.update(status);
+        } else {
+            Results results = new Results();
+            return results.setReturnMessage(missingParameters + status.getMissingParameters().toString());
         }
-        return results;
+//        rowsAffected = 0;
+//        setMapperName(status.getElementType());
+//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+//            rowsAffected += session.update(ConfigFactory.get("status-mapper.updateStatus"), status);
+//            if (status.getElementType() == PewaType.TVSERIES) {
+//                rowsAffected += session.update(statusBridgeUpdate, status);
+//            }
+//            session.commit();
+//            results.setRowsAffected(rowsAffected);
+//            if (rowsAffected != 0) results.setReturnMessage(statusUpdateSucces + status);
+//            else results.setReturnMessage(statusFailedInfo + status);
+//        } catch (PersistenceException ex) {
+//            /*final Throwable cause = ex.getCause();
+//            if (cause instanceof MySQLIntegrityConstraintViolationException) {
+//                log.debug(ex);
+//            }*/
+//            String error = ex.getCause().getMessage();
+//            if (error.contains("Duplicate entry")) {
+//                results.setReturnMessage(duplicateEntryError);
+//            } else {
+//                log.debug(ex.getMessage());
+//            }
+//        }
+//        return results;
     }
 
+    // Deletes status with given id, deletes all related entries with no connections left
     @Override
-    public Results deleteStatus(Integer statusId, Results results) {
-        rowsAffected = 0;
-        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-            rowsAffected += session.delete(ConfigFactory.get("status-mapper.deleteStatus"), statusId);
-            session.commit();
-            results.setRowsAffected(rowsAffected);
-            if (rowsAffected != 0) results.setReturnMessage(statusDeleteSucces + statusId);
-            else results.setReturnMessage(statusFailedInfo + statusId);
-        }
-        return results;
+    public Results deleteStatus(Integer statusId) {
+        mapperList = Arrays.asList("status-mapper.deleteStatus");
+        Results delete = super.delete(statusId);
+        return tablesManagement.cleanAll(delete);
+//        rowsAffected = 0;
+//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+//            rowsAffected += session.delete(ConfigFactory.get("status-mapper.deleteStatus"), statusId);
+//            session.commit();
+//            results.setRowsAffected(rowsAffected);
+//            if (rowsAffected != 0) results.setReturnMessage(statusDeleteSucces + statusId);
+//            else results.setReturnMessage(statusFailedInfo + statusId);
+//        }
+//        return results;
     }
 
     @Override
@@ -231,5 +268,16 @@ public class StatusDAOImpl implements StatusDAO {
             }
         }
         return results;
+    }
+
+
+    @Override
+    public List<String> getMapperList() {
+        return null;
+    }
+
+    @Override
+    public String getInfoField() {
+        return null;
     }
 }

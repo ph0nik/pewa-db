@@ -140,7 +140,7 @@ public class MovieDAOImplTest {
         status.setMediaSource(MediaSource.COMPUTER);
         status.setEncounterRating(10);
         status.setEncounterId(110092106);
-        statusDAO.addStatus(status, results);
+        statusDAO.addStatus(status);
     }
 
     @Disabled

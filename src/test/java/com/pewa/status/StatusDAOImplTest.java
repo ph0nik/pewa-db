@@ -6,11 +6,14 @@ import com.pewa.MediaSource;
 import com.pewa.PewaType;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,17 +24,46 @@ class StatusDAOImplTest {
 
     private StatusDAO statusDAO;
     private Results results;
-
+    private Status status;
 
     @BeforeEach
     public void init() {
         statusDAO = new StatusDAOImpl();
         results = new Results();
+        status = new Status();
     }
 
     @Disabled
     @Test
-    public void insertStatus() {
+    public void checkForEmptyStatusSingleField() {
+        status.setElementType(PewaType.ANIME);
+        status.setEncounterId(1);
+        status.setEncounterRating(8);
+        status.setComment("comment");
+        status.setEncounterDate(null);
+        status.setMediaSource(MediaSource.EBOOK);
+        status.setSeason(2);
+        status.setStatusId(1);
+        status.setAddedDate(LocalDateTime.now());
+        assertEquals(status.isEmpty(), true);
+        assertEquals(status.getMissingParameters().contains("encounterDate"), true);
+    }
+
+    @Disabled
+    @Test
+    public void checkForEmptyStatusMultipleFields() {
+        status.setElementType(PewaType.MOVIE);
+        status.setEncounterId(1);
+        status.setEncounterRating(null);
+        status.setComment("comment");
+        status.setEncounterDate(null);
+        status.setMediaSource(null);
+        status.setSeason(2);
+        status.setAddedDate(LocalDateTime.now());
+        assertEquals(status.isEmpty(), true);
+        assertEquals(status.getMissingParameters().contains("encounterRating"), true);
+        assertEquals(status.getMissingParameters().contains("encounterDate"), true);
+        assertEquals(status.getMissingParameters().contains("mediaSource"), true);
     }
 
     @Disabled
@@ -45,7 +77,7 @@ class StatusDAOImplTest {
         status.setEncounterRating(8);
         status.setComment("termit update");
         status.setElementType(PewaType.MOVIE);
-        Results results = statusDAO.updateStatus(status, new Results());
+        Results results = statusDAO.updateStatus(status);
         System.out.println(results);
     }
 
@@ -54,7 +86,7 @@ class StatusDAOImplTest {
     public void nullStatus() {
         Request request = new Request();
         Status status = new Status();
-        System.out.println(status.checkRequiredParameters(PewaType.ANIME));
+//        System.out.println(status.checkRequiredParameters());
         PewaType type = PewaType.TVSERIES;
         request.setEncounterType(PewaType.TVSERIES);
         assertEquals(PewaType.TVSERIES, request.getEncounterType());
@@ -71,9 +103,9 @@ class StatusDAOImplTest {
         request1.setEncounterType(PewaType.ANIME);
         assertNotNull(request1.getStatus().getElementType());
 
-        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
+//        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
         request1.getStatus().setEncounterRating(4);
-        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
+//        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
     }
 
     @Disabled

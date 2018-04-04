@@ -52,13 +52,23 @@ public class GlobalSearch {
         book = new BookDAOImpl();
     }
 
-    public Results itemsInternalByTitle(String search, Results results) {
+    public Results itemsInternalByTitle(String search) {
         Results combinedResults = new Results();
-        anime.getAnimeByTitle(search).getEncounters().forEach(combinedResults::setEncounters);
-        manga.getMangaByTitle(search).getEncounters().forEach(combinedResults::setEncounters);
-        movie.moviesByTitle(search).getEncounters().forEach(combinedResults::setEncounters);
-        book.getBook(search).getEncounters().forEach(combinedResults::setEncounters);
-        tvshow.tvshowByTitle(search).getEncounters().forEach(combinedResults::setEncounters);
+        anime.getAnimeByTitle(search)
+                .getEncounters()
+                .forEach(combinedResults::setEncounters);
+        manga.getMangaByTitle(search)
+                .getEncounters()
+                .forEach(combinedResults::setEncounters);
+        movie.moviesByTitle(search)
+                .getEncounters()
+                .forEach(combinedResults::setEncounters);
+        book.getBook(search)
+                .getEncounters()
+                .forEach(combinedResults::setEncounters);
+        tvshow.tvshowByTitle(search)
+                .getEncounters()
+                .forEach(combinedResults::setEncounters);
 //        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
 //            String query = new StringBuilder("%")
 //                    .append(search)

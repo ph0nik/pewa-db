@@ -1,7 +1,7 @@
 package com.pewa;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by phonik on 2017-10-31.

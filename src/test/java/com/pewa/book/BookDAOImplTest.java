@@ -62,7 +62,7 @@ public class BookDAOImplTest {
         status.setMediaSource(MediaSource.EBOOK);
         status.setEncounterRating(7);
         status.setEncounterId(ksiazka.getExternalBookId());
-        Results rs  = statusDAO.addStatus(status, results);
+        Results rs  = statusDAO.addStatus(status);
         System.out.println(rs);
     }
 

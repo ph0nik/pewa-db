@@ -89,7 +89,7 @@ public class AnimeController {
             status.setMediaSource(request.getMediaSource());
             anime = animeParse.getItem(request.getEncounterId());
             results = animeDAO.addAnime(anime);
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(status);
         }
     }
 

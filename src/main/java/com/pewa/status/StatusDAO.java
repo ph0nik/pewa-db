@@ -3,6 +3,7 @@ package com.pewa.status;
 import com.pewa.PewaType;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.request.StatusRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -13,14 +14,19 @@ public interface StatusDAO {
 
     Status setProperStatus(Request request, PewaType pewaType);
 
-    Results addStatus(Status status, Results results);
+    // adds status info to database
+    Results addStatus(Status status);
 
-    Results updateStatus(Status status, Results results);
+    // updates existing status
+    Results updateStatus(Status status);
 
-    Results deleteStatus(Integer statusId, Results results);
+    // deletes status based on given id
+    Results deleteStatus(Integer statusId);
 
+    // return list of given length that contains latest statuses
     Results getStatusByNumber(Integer numberOfStatuses, Results results);
 
+    // returns list of statuses based on dates range
     Results getStatusByDateRange(Request request, Results results);
 
 

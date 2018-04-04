@@ -91,7 +91,7 @@ public class MovieController {
             status.setMediaSource(request.getMediaSource());
             movie = movieParse.getItem(request.getEncounterId());
             results = movieDao.addMovie(movie);
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(status);
         }
 
     }

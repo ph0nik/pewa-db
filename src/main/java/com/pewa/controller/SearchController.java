@@ -26,7 +26,7 @@ public class SearchController {
     @GetMapping(value = "internal/{query}")
     public Results searchDb(@PathVariable String query) {
         return globalSearch
-                .itemsInternalByTitle(query, new Results())
+                .itemsInternalByTitle(query)
                 .setReturnMessage();
     }
 }

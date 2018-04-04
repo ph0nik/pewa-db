@@ -48,7 +48,7 @@ public class MovieSearchTest {
     public void searchAll() {
         GlobalSearch globalSearch = new GlobalSearch();
         String query = "alien";
-        Results results = globalSearch.itemsInternalByTitle(query, new Results());
+        Results results = globalSearch.itemsInternalByTitle(query);
         System.out.println(results);
     }
 

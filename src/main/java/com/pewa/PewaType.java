@@ -1,7 +1,7 @@
 package com.pewa;
 
 public enum PewaType {
-    MOVIE(0), TVSERIES(1), BOOK(2), MUSIC(3), ANIME(4), MANGA(5);
+    MOVIE(0), TVSERIES(1), BOOK(2), MUSIC(3), ANIME(4), MANGA(5), STATUS(6);
 
     private final Integer pewaTypeValue;
     private PewaType pewaTypeName;

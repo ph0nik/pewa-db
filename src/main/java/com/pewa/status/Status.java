@@ -1,8 +1,10 @@
 package com.pewa.status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.pewa.MediaModel;
 import com.pewa.MediaSource;
 import com.pewa.PewaType;
 import com.pewa.util.CustomLocalDateDeserializer;
@@ -22,7 +24,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
-public class Status implements Comparable<Status>, Serializable {
+public class Status extends MediaModel implements Comparable<Status>, Serializable {
 
     private PewaType elementType;
     private MediaSource mediaSource;
@@ -35,6 +37,8 @@ public class Status implements Comparable<Status>, Serializable {
     private Integer encounterId, statusId, encounterRating;
     private Integer season;
     private String comment;
+    @JsonIgnore
+    private List<String> missingParameters = new ArrayList<>();
 
     static final long serialVersionUID = 1L;
 
@@ -157,10 +161,10 @@ public class Status implements Comparable<Status>, Serializable {
         return result;
     }
 
-    public List<String> checkRequiredParameters(PewaType pewaType) {
-        List<String> missingParameters = new ArrayList<>();
+    public void checkRequiredParameters() {
+//        List<String> missingParameters = new ArrayList<>();
         try {
-            if (pewaType.equals(PewaType.TVSERIES)) {
+            if (this.elementType.equals(PewaType.TVSERIES)) {
                 if (this.season == null)
                     missingParameters.add(this.getClass().getDeclaredField("season").getName());
             } else {
@@ -176,9 +180,12 @@ public class Status implements Comparable<Status>, Serializable {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        return missingParameters;
+//        return missingParameters;
     }
 
+    public List<String> getMissingParameters() {
+        return missingParameters;
+    }
 
     private static Comparator<String> nullSafeStringComparator = Comparator.nullsFirst(String::compareTo);
     private static Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsFirst(Integer::compareTo);
@@ -195,4 +202,10 @@ public class Status implements Comparable<Status>, Serializable {
         return statusComparator.compare(this, status);
     }
 
+    @Override
+    public boolean isEmpty() {
+        checkRequiredParameters();
+        if (missingParameters.isEmpty()) return false;
+        else return true;
+    }
 }

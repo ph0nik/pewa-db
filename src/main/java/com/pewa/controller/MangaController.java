@@ -84,7 +84,7 @@ public class MangaController {
             status.setMediaSource(request.getMediaSource());
             manga = mangaParse.getItem(request.getEncounterId());
             results = mangaDAO.addManga(manga);
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(status);
         }
     }
 

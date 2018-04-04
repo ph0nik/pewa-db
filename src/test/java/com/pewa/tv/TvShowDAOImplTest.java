@@ -72,7 +72,7 @@ public class TvShowDAOImplTest {
         String comment = "dobry pierwszy sezon";
         tvStatus.setComment(comment);
         System.out.println(tvStatus);
-        Results statusAdded = statusDAO.addStatus(tvStatus, this.results);
+        Results statusAdded = statusDAO.addStatus(tvStatus);
     }
 
     @Disabled

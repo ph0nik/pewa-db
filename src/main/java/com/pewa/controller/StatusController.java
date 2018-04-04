@@ -40,57 +40,69 @@ public class StatusController {
         return statusDAO.getStatusByDateRange(request, new Results()).setReturnMessage();
     }
 
+    // TODO make more independent status dao method
     @PostMapping(value = "/add", consumes = json)
-    public Results addStatus(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results addStatus(@RequestBody Status request) {
+//        results = new Results();
+//        status = new Status();
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
-            if (request.getElementType() == PewaType.TVSERIES) {
-                status.setSeason(request.getSeason());
-            }
-            return statusDAO.addStatus(status, results);
+            return statusDAO.addStatus(request);
         }
+//        if (request == null) {
+//            return results.setReturnMessage(emptyStatus);
+//        } else if (!request.checkRequiredParameters().isEmpty()) {
+//            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
+//            return results.setReturnMessage(returnMessage);
+//        } else {
+//            status.setElementType(request.getElementType());
+//            status.setEncounterId(request.getEncounterId());
+//            status.setComment(request.getComment());
+//            status.setEncounterRating(request.getEncounterRating());
+//            status.setEncounterDate(request.getEncounterDate());
+//            status.setMediaSource(request.getMediaSource());
+//            if (request.getElementType() == PewaType.TVSERIES) {
+//                status.setSeason(request.getSeason());
+//            }
+//            return statusDAO.addStatus(status, results);
+//        }
     }
 
     @PostMapping(value = "/update", consumes = json)
-    public Results updateStatus(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results updateStatus(@RequestBody Status request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
-            status.setStatusId(request.getStatusId());
-            if (request.getElementType() == PewaType.TVSERIES) {
-                status.setSeason(request.getSeason());
-            }
-            return statusDAO.updateStatus(status, results);
+            return statusDAO.updateStatus(request);
         }
+//        results = new Results();
+//        status = new Status();
+//        if (request == null) {
+//            return results.setReturnMessage(emptyStatus);
+//        } else if (!request.checkRequiredParameters().isEmpty()) {
+//            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
+//            return results.setReturnMessage(returnMessage);
+//        } else {
+//            status.setElementType(request.getElementType());
+//            status.setEncounterId(request.getEncounterId());
+//            status.setComment(request.getComment());
+//            status.setEncounterRating(request.getEncounterRating());
+//            status.setEncounterDate(request.getEncounterDate());
+//            status.setMediaSource(request.getMediaSource());
+//            status.setStatusId(request.getStatusId());
+//            if (request.getElementType() == PewaType.TVSERIES) {
+//                status.setSeason(request.getSeason());
+//            }
+//            return statusDAO.updateStatus(status, results);
+//        }
     }
 
     @GetMapping(value = "/delete/{statusId}")
     public Results deleteStatus(@PathVariable Integer statusId) {
-        results = statusDAO.deleteStatus(statusId, new Results());
-        return initAllTables.cleanAll(this.results);
+        return statusDAO.deleteStatus(statusId);
+//        results = statusDAO.deleteStatus(statusId);
+//        return initAllTables.cleanAll(this.results);
     }
 
 }
