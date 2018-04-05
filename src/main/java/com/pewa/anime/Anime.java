@@ -25,7 +25,7 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
 //    private final static PewaType type = PewaType.ANIME;
 
     private String titleRom, titleEng, description, poster, intPoster, airingStatus, animeType;
-    private PewaType type = PewaType.ANIME;
+    private PewaType type;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -42,6 +42,7 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
     static final long serialVersionUID = 1L;
 
     public Anime() {
+        this.type = PewaType.ANIME;
         this.genres = new TreeSet<>();
         this.staff = new TreeSet<>();
         this.status = new TreeSet<>();
@@ -103,9 +104,13 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
         this.titleEng = titleEnd;
     }
 
-
     public PewaType getType() {
         return this.type;
+    }
+
+    @Override
+    public void setType(PewaType type) {
+        this.type = type;
     }
 
     public Set<Status> getStatus() {
@@ -119,11 +124,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
     public void setStatus(Status status) {
         this.status.add(status);
     }
-
-    public void setType(PewaType type) {
-        this.type = type;
-    }
-
 
     public LocalDate getStartDate() {
         return startDate;

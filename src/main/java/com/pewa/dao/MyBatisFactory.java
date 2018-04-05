@@ -23,7 +23,8 @@ public abstract class MyBatisFactory implements SqlSession {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        factoryUser = new SqlSessionFactoryBuilder().build(reader);
+        // second builder argument refers to enviroment id within mybatis xml config
+        factoryUser = new SqlSessionFactoryBuilder().build(reader, "development");
     }
 
     public static SqlSessionFactory connectionUser() {

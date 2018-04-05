@@ -41,9 +41,6 @@ public class TvController {
     @Qualifier(value = "tvShowParser")
     private MediaParse<TvShowSummary, Integer> tvShowParser;
 
-    @Autowired
-    private InitAllTables initAllTables;
-
     private final PewaType tvType = PewaType.TVSERIES;
     private final String json = MediaType.APPLICATION_JSON_VALUE;
     private final String missingParameters = "Missing parameters: ";
@@ -63,40 +60,25 @@ public class TvController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return tvShowDAO
-                .tvshowByTitle(query)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByTitle(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results searchById(@PathVariable Integer id) {
-        return tvShowDAO
-                .tvshowById(id)
-                .setReturnMessage();
+        return tvShowDAO.tvshowById(id);
     }
 
     @PostMapping(value = "add", consumes = json)
-    public Results addTvShow(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results addTvShow(@RequestBody Status request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
-            if (request.getElementType() == PewaType.TVSERIES) {
-                status.setSeason(request.getSeason());
-            }
             tvShowSummary = tvShowParser.getItem(request.getEncounterId());
-            results = tvShowDAO.addTvShow(tvShowSummary);
-            return statusDAO.addStatus(status);
+            Results addTvResults = tvShowDAO.addTvShow(tvShowSummary);
+            Results addStatusResults = statusDAO.addStatus(request);
+            addTvResults.setRowsAffected(addTvResults.getRowsAffected() + addStatusResults.getRowsAffected());
+            addTvResults.setReturnMessage(addTvResults.getMessage() + "; " + addStatusResults.getMessage());
+            return addTvResults;
         }
     }
 
@@ -108,43 +90,32 @@ public class TvController {
 
     @GetMapping(value = "delete/{id}")
     public Results deleteTvShow(@PathVariable Integer id) {
-        results = tvShowDAO.deleteTvShow(id);
-        return initAllTables.cleanAll(results);
+        return tvShowDAO.deleteTvShow(id);
     }
 
 
     @GetMapping(value = "personId")
     public Results searchByPerson(@PathVariable Integer personId) {
-        return tvShowDAO
-                .tvshowByPersonId(personId)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByPersonId(personId);
     }
 
     @GetMapping(value = "genreId")
     public Results searchByGenre(@PathVariable Integer genreId) {
-        return tvShowDAO
-                .tvshowByGenreId(genreId)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByGenreId(genreId);
     }
 
     @GetMapping(value = "langId")
     public Results searchByLanguage(@PathVariable Integer langId) {
-        return tvShowDAO
-                .tvshowByLanguageId(langId)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByLanguageId(langId);
     }
 
     @GetMapping(value = "countryId")
     public Results searchByCountry(@PathVariable Integer countryId) {
-        return tvShowDAO
-                .tvshowByCountryId(countryId)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByCountryId(countryId);
     }
 
     @GetMapping(value = "year")
     public Results searchByYear(@PathVariable Integer year) {
-        return tvShowDAO
-                .tvshowByYear(year)
-                .setReturnMessage();
+        return tvShowDAO.tvshowByYear(year);
     }
 }

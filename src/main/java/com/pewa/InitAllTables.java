@@ -1,6 +1,6 @@
 package com.pewa;
 
-import com.pewa.common.MediaDAO;
+import com.pewa.common.AbstractMediaDAO;
 import com.pewa.common.Results;
 import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
@@ -17,21 +17,21 @@ import java.util.Arrays;
 import java.util.List;
 
 
-@Component
-public class InitAllTables extends MediaDAO {
+//@Component
+public class InitAllTables extends AbstractMediaDAO {
 
     private static final Logger log = LogManager.getLogger(InitAllTables.class);
     private static final String imgPath = ConfigFactory.get("dbCache.imgPath");
-    private StringBuilder logMessage;
-    private Integer rowsAffected;
-    private Results results = new Results();
-    private final String cleanupSuccess = "Cleanup complete [OK]";
-    private final String cleanupFail = "Nothing found";
-    private final String cleanPerson = "Deleting Person objects with no relation...";
-    private final String cleanLanguage = "Deleting Language objects with no relation...";
-    private final String cleanCountry = "Deleting Country objects with no relation...";
-    private final String cleanGenre = "Deleting Genre objects with no relation...";
-    private final String cleanStatus = "Deleting Status objects with no relation...";
+//    private StringBuilder logMessage;
+//    private Integer rowsAffected;
+//    private Results results = new Results();
+//    private final String cleanupSuccess = "Cleanup complete [OK]";
+//    private final String cleanupFail = "Nothing found";
+//    private final String cleanPerson = "Deleting Person objects with no relation...";
+//    private final String cleanLanguage = "Deleting Language objects with no relation...";
+//    private final String cleanCountry = "Deleting Country objects with no relation...";
+//    private final String cleanGenre = "Deleting Genre objects with no relation...";
+//    private final String cleanStatus = "Deleting Status objects with no relation...";
     private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
 
@@ -65,7 +65,7 @@ public class InitAllTables extends MediaDAO {
                 ,"init-sql-tables.languageCleanUp"
                 ,"init-sql-tables.statusCleanUp"
         );
-        return super.delete(results);
+        return delete(results);
 //        rowsAffected = results.getRowsAffected();
 //        try (SqlSession session = MyBatisFactory.connectionUser().openSession(false)) {
 //            rowsAffected += session.delete(ConfigFactory.get("init-sql-tables.personCleanUp"));

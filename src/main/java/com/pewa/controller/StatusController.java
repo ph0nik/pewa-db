@@ -23,9 +23,6 @@ public class StatusController {
     @Autowired
     StatusDAO statusDAO;
 
-    @Autowired
-    private InitAllTables initAllTables;
-
     Results results;
     Status status;
 
@@ -42,67 +39,26 @@ public class StatusController {
 
     // TODO make more independent status dao method
     @PostMapping(value = "/add", consumes = json)
-    public Results addStatus(@RequestBody Status request) {
-//        results = new Results();
-//        status = new Status();
+    public Results addStatus(@RequestBody StatusRequest request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
         } else {
-            return statusDAO.addStatus(request);
+            return statusDAO.addStatus(request.extractStatus());
         }
-//        if (request == null) {
-//            return results.setReturnMessage(emptyStatus);
-//        } else if (!request.checkRequiredParameters().isEmpty()) {
-//            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-//            return results.setReturnMessage(returnMessage);
-//        } else {
-//            status.setElementType(request.getElementType());
-//            status.setEncounterId(request.getEncounterId());
-//            status.setComment(request.getComment());
-//            status.setEncounterRating(request.getEncounterRating());
-//            status.setEncounterDate(request.getEncounterDate());
-//            status.setMediaSource(request.getMediaSource());
-//            if (request.getElementType() == PewaType.TVSERIES) {
-//                status.setSeason(request.getSeason());
-//            }
-//            return statusDAO.addStatus(status, results);
-//        }
     }
 
     @PostMapping(value = "/update", consumes = json)
-    public Results updateStatus(@RequestBody Status request) {
+    public Results updateStatus(@RequestBody StatusRequest request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
         } else {
-            return statusDAO.updateStatus(request);
+            return statusDAO.updateStatus(request.extractStatus());
         }
-//        results = new Results();
-//        status = new Status();
-//        if (request == null) {
-//            return results.setReturnMessage(emptyStatus);
-//        } else if (!request.checkRequiredParameters().isEmpty()) {
-//            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-//            return results.setReturnMessage(returnMessage);
-//        } else {
-//            status.setElementType(request.getElementType());
-//            status.setEncounterId(request.getEncounterId());
-//            status.setComment(request.getComment());
-//            status.setEncounterRating(request.getEncounterRating());
-//            status.setEncounterDate(request.getEncounterDate());
-//            status.setMediaSource(request.getMediaSource());
-//            status.setStatusId(request.getStatusId());
-//            if (request.getElementType() == PewaType.TVSERIES) {
-//                status.setSeason(request.getSeason());
-//            }
-//            return statusDAO.updateStatus(status, results);
-//        }
     }
 
     @GetMapping(value = "/delete/{statusId}")
     public Results deleteStatus(@PathVariable Integer statusId) {
         return statusDAO.deleteStatus(statusId);
-//        results = statusDAO.deleteStatus(statusId);
-//        return initAllTables.cleanAll(this.results);
     }
 
 }

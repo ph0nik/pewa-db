@@ -94,7 +94,7 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
             SingleSearchResult ssr = new SingleSearchResult();
             ssr.setIdInt(sr.getId());
             ssr.setTitle(sr.getOriginalTitle());
-            ssr.setAltTitle(sr.getTitle());
+            ssr.setEngTitle(sr.getTitle());
 //            if (sr.getPosterPath() != null) ssr.setPoster(sr.getPosterPath());
             if (sr.getReleaseDate().length() == 0)
                 ssr.setDate(LocalDate.now());

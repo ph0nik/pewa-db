@@ -1,23 +1,17 @@
 package com.pewa.controller;
 
-import com.pewa.InitAllTables;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.book.Book;
 import com.pewa.book.BookDAO;
 import com.pewa.book.BookSearch;
 import com.pewa.common.*;
-import com.pewa.movie.tmdb.Result;
-import com.pewa.request.StatusRequest;
 import com.pewa.status.Status;
 import com.pewa.status.StatusDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 /**
  * Created by phonik on 2017-05-28.
@@ -40,9 +34,6 @@ public class BookController {
     @Qualifier(value = "bookParser")
     MediaParse<Book, Integer> bookParser;
 
-    @Autowired
-    private InitAllTables initAllTables;
-
     private Results results;
     private Request request;
     private Status status;
@@ -62,43 +53,31 @@ public class BookController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return bookDAO
-                .getBook(query);
+        return bookDAO.getBook(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results getBookById(@PathVariable Integer id) {
-        return bookDAO
-                .getBookById(id)
-                .setReturnMessage();
+        return bookDAO.getBookById(id);
     }
 
     @PostMapping(value = "add", consumes = json)
-    public Results addBook(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results addBook(@RequestBody Status request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
             book = bookParser.getItem(request.getEncounterId());
-            results = bookDAO.addBook(book);
-            return statusDAO.addStatus(status);
+            Results addBookResults = bookDAO.addBook(book);
+            Results addStatusResults = statusDAO.addStatus(request);
+            addBookResults.setRowsAffected(addBookResults.getRowsAffected() + addStatusResults.getRowsAffected());
+            addBookResults.setReturnMessage(addBookResults.getMessage() + "; " + addStatusResults.getMessage());
+            return addBookResults;
         }
     }
 
     @GetMapping(value = "delete/{id}")
     public Results deleteBook(@PathVariable Integer id) {
-        results = bookDAO.delBook(id);
-        return initAllTables.cleanAll(results);
+        return bookDAO.deleteBook(id);
     }
 
     @PostMapping(value = "update", consumes = json)
@@ -109,30 +88,22 @@ public class BookController {
 
     @GetMapping(value = "person/{personId}")
     public Results searchByPerson(@PathVariable Integer personId) {
-        return bookDAO
-                .booksByPerson(personId)
-                .setReturnMessage();
+        return bookDAO.booksByPerson(personId);
     }
 
     @GetMapping(value = "genre/{genreId}")
     public Results searchByGenre(@PathVariable Integer genreId) {
-        return bookDAO
-                .booksByGenre(genreId)
-                .setReturnMessage();
+        return bookDAO.booksByGenre(genreId);
     }
 
     @PostMapping(value = "date", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
-        return bookDAO
-                .booksByYear(dateSearch)
-                .setReturnMessage();
+        return bookDAO.booksByYear(dateSearch);
     }
 
     @GetMapping(value = "language/{language}")
     public Results searchByLanguage(@PathVariable String language) {
-        return bookDAO
-                .booksByLanguage(language)
-                .setReturnMessage();
+        return bookDAO.booksByLanguage(language);
     }
 
 }

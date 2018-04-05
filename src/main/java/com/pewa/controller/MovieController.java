@@ -34,9 +34,6 @@ public class MovieController {
     private StatusDAO statusDAO;
 
     @Autowired
-    private InitAllTables initAllTables;
-
-    @Autowired
     @Qualifier(value = "movieParserTmdb")
     private MediaParse<Movie, Integer> movieParse;
 
@@ -60,40 +57,27 @@ public class MovieController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return movieDao
-                .moviesByTitle(query)
-                .setReturnMessage();
+        return movieDao.moviesByTitle(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results searchById(@PathVariable Integer id) {
-        return movieDao
-                .moviesById(id)
-                .setReturnMessage();
+        return movieDao.moviesById(id);
     }
 
 
     @PostMapping(value = "add", consumes = json)
     public Results addMovie(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
             movie = movieParse.getItem(request.getEncounterId());
-            results = movieDao.addMovie(movie);
-            return statusDAO.addStatus(status);
+            Results addMovieResults = movieDao.addMovie(movie);
+            Results addStatusResults = statusDAO.addStatus(request.extractStatus());
+            addMovieResults.setRowsAffected(addMovieResults.getRowsAffected() + addStatusResults.getRowsAffected());
+            addMovieResults.setReturnMessage(addMovieResults.getMessage() + "; " + addStatusResults.getMessage());
+            return addMovieResults;
         }
-
     }
 
     @GetMapping(value = "update/{id}")
@@ -104,74 +88,27 @@ public class MovieController {
 
     @GetMapping(value = "delete/{id}")
     public Results deleteMovie(@PathVariable Integer id) {
-        results = movieDao.deleteMovie(id);
-        return initAllTables.cleanAll(results);
+        return movieDao.deleteMovie(id);
     }
-
-//    @PostMapping(value = "addstatus", consumes = json)
-//    public Results addStatus(@RequestBody Request request) {
-//        System.out.println(request);
-//        results = new Results();
-//        if (request.getStatus() == null) {
-//            return results.setReturnMessage(emptyStatus);
-//        } else if (!request.getStatus().checkRequiredParameters(movieType).isEmpty()) {
-//            String returnMessage = missingParameters + request.getStatus().checkRequiredParameters(movieType).toString();
-//            return results.setReturnMessage(returnMessage);
-//        } else {
-//            request.getStatus().setElementType(movieType);
-//            return statusDAO.addStatus(request.getStatus(), results);
-//        }
-//    }
-
-//    @PostMapping(value = "updatestatus", consumes = json)
-//    public Results updateStatus(@RequestBody Request request) {
-//        System.out.println(request);
-//        results = new Results();
-//        if (request.getStatus() == null) {
-//            return results.setReturnMessage(emptyStatus);
-//        } else if (!request.getStatus().checkRequiredParameters(movieType).isEmpty()) {
-//            String returnMessage = missingParameters + request.getStatus().checkRequiredParameters(movieType).toString();
-//            return results.setReturnMessage(returnMessage);
-//        } else {
-//
-//            request.getStatus().setElementType(movieType);
-//            return statusDAO.updateStatus(request.getStatus(), results);
-//        }
-//    }
-
-
-//    @GetMapping(value = "delstatus/{statusId}")
-//    public Results deleteStatus(@PathVariable Integer statusId) {
-//        statusDAO.deleteStatus(statusId, new Results());
-//        return initAllTables.cleanAll(results);
-//    }
 
     @GetMapping(value = "personId")
     public Results searchByPerson(@PathVariable Integer personId) {
-        return movieDao
-                .moviesByPersonId(personId)
-                .setReturnMessage();
+        return movieDao.moviesByPersonId(personId);
     }
 
     @GetMapping(value = "genreId")
     public Results searchByGenre(@PathVariable Integer genreId) {
-        return movieDao
-                .moviesByGenreId(genreId)
-                .setReturnMessage();
+        return movieDao.moviesByGenreId(genreId);
     }
 
     @GetMapping(value = "langId")
     public Results searchByLanguage(@PathVariable Integer langId) {
-        return movieDao
-                .moviesByLanguageId(langId)
-                .setReturnMessage();
+        return movieDao.moviesByLanguageId(langId);
     }
 
     @PostMapping(value = "year", consumes = json)
     public Results searchByYear(@RequestBody Request dateSearch) {
-        return movieDao
-                .moviesByYear(dateSearch)
-                .setReturnMessage();
+        return movieDao.moviesByYear(dateSearch);
     }
 
 }

@@ -123,7 +123,7 @@ public class AnimeMangaSearch {
                 singleSearchResult.setType(searchType);
             }
             singleSearchResult.setTitle(titleRom);
-            singleSearchResult.setAltTitle(titleEng);
+            singleSearchResult.setEngTitle(titleEng);
             singleSearchResult.setDescription(addInfo);
             singleSearchResult.setIdInt(id);
             singleSearchResult.setDate(zdt);
@@ -188,9 +188,9 @@ public class AnimeMangaSearch {
             ssr.setIdInt(r.getId());
             ssr.setTitle(r.getTitle().getRomaji());
             if (r.getTitle().getEnglish() == null || "".equals(r.getTitle().getEnglish())) {
-                ssr.setAltTitle(r.getTitle().getRomaji());
+                ssr.setEngTitle(r.getTitle().getRomaji());
             } else {
-                ssr.setAltTitle(r.getTitle().getEnglish());
+                ssr.setEngTitle(r.getTitle().getEnglish());
             }
             String format = r.getFormat();
             String desc = "[" + format + "] " + r.getDescription();

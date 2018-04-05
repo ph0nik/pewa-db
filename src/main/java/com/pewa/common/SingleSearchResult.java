@@ -13,19 +13,26 @@ import java.util.Comparator;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SingleSearchResult extends MediaModel implements Encounter, Comparable<SingleSearchResult> {
-    private String title, description, altTitle;
+    // original title
+    private String title;
+    // element description
+    private String description;
+    // english title
+    private String engTitle;
+    // external id
     private Integer idInt;
+    // internal object type
     private PewaType type;
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate date;
 
-    public String getAltTitle() {
-        return altTitle;
+    public String getEngTitle() {
+        return engTitle;
     }
 
-    public void setAltTitle(String altTitle) {
-        this.altTitle = altTitle;
+    public void setEngTitle(String engTitle) {
+        this.engTitle = engTitle;
     }
 
     public LocalDate getDate() {
@@ -73,7 +80,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
         return "SingleSearchResult{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", altTitle='" + altTitle + '\'' +
+                ", engTitle='" + engTitle + '\'' +
                 ", idInt=" + idInt +
                 ", type=" + type +
                 ", date=" + date +
@@ -89,7 +96,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
 
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (altTitle != null ? !altTitle.equals(that.altTitle) : that.altTitle != null) return false;
+        if (engTitle != null ? !engTitle.equals(that.engTitle) : that.engTitle != null) return false;
         if (idInt != null ? !idInt.equals(that.idInt) : that.idInt != null) return false;
         if (type != that.type) return false;
         return date != null ? date.equals(that.date) : that.date == null;
@@ -99,7 +106,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
     public int hashCode() {
         int result = title != null ? title.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (altTitle != null ? altTitle.hashCode() : 0);
+        result = 31 * result + (engTitle != null ? engTitle.hashCode() : 0);
         result = 31 * result + (idInt != null ? idInt.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);

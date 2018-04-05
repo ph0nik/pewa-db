@@ -1,7 +1,8 @@
 package com.pewa.book;
 
+import com.pewa.InitAllTables;
 import com.pewa.PewaType;
-import com.pewa.common.MediaDAO;
+import com.pewa.common.AbstractMediaDAO;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class BookDAOImpl extends MediaDAO implements BookDAO {
+public class BookDAOImpl extends AbstractMediaDAO implements BookDAO {
 
     public static final Logger log = LogManager.getLogger(BookDAOImpl.class);
     private List<String> mapperList = new ArrayList<>();
@@ -21,6 +22,7 @@ public class BookDAOImpl extends MediaDAO implements BookDAO {
 
     public BookDAOImpl() {
         super(PewaType.BOOK);
+        tableManagement = new InitAllTables(PewaType.BOOK);
     }
 
     public List<String> getMapperList() {
@@ -41,49 +43,51 @@ public class BookDAOImpl extends MediaDAO implements BookDAO {
                 "book-mapper.insertGenreBridgeBoo",
                 "book-mapper.insertForm"
         );
-        return super.add(book);
+        return add(book);
     }
 
-    public Results delBook(Integer bookid) {
+    // deletes book object from database
+    public Results deleteBook(Integer bookid) {
         mapperList = Arrays.asList("book-mapper.deleteBook");
-        return super.delete(bookid);
+        Results delete = delete(bookid);
+        return getTablesManagement().cleanAll(delete);
     }
 
     public Results udpateBook(Book book) {
         infoField = book.getOriginalTitle();
         mapperList = Arrays.asList("book-mapper.updateBook");
-        return super.update(book);
+        return update(book);
     }
 
     public Results getBook(String request) {
         mapperList = Arrays.asList("book-mapper.byTitle");
-        return super.search(request);
+        return search(request);
     }
 
     public Results getBookById(Integer bookId) {
         mapperList = Arrays.asList("book-mapper.ById");
-        return super.get(bookId);
+        return get(bookId);
     }
 
     public Results booksByPerson(Integer personId) {
         mapperList = Arrays.asList("book-mapper.byPerson");
-        return super.get(personId);
+        return get(personId);
     }
 
     public Results booksByGenre(Integer genreId)  {
         mapperList = Arrays.asList("book-mapper.byGenre");
-        return super.get(genreId);
+        return get(genreId);
     }
 
     public Results booksByYear(Request date) {
         Integer year = date.getYear();
         mapperList = Arrays.asList("book-mapper.byYear");
-        return super.get(year);
+        return get(year);
     }
 
     public Results booksByLanguage(String language) {
         mapperList = Arrays.asList("book-mapper.byLanguage");
-        return super.language(language);
+        return language(language);
     }
 
 

@@ -18,7 +18,7 @@ public interface BookDAO {
 
     Results addBook(Book book);
 
-    Results delBook(Integer book);
+    Results deleteBook(Integer book);
 
     Results udpateBook(Book book);
 

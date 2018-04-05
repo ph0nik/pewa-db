@@ -34,7 +34,11 @@ public class Status extends MediaModel implements Comparable<Status>, Serializab
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate encounterDate;
-    private Integer encounterId, statusId, encounterRating;
+    // encounterId filed is used only to pair Status object with MediaModel object
+    // it's an external id
+    private Integer encounterId;
+    private Integer statusId;
+    private Integer encounterRating;
     private Integer season;
     private String comment;
     @JsonIgnore
@@ -202,10 +206,10 @@ public class Status extends MediaModel implements Comparable<Status>, Serializab
         return statusComparator.compare(this, status);
     }
 
+    @JsonIgnore
     @Override
     public boolean isEmpty() {
         checkRequiredParameters();
-        if (missingParameters.isEmpty()) return false;
-        else return true;
+        return !missingParameters.isEmpty();
     }
 }

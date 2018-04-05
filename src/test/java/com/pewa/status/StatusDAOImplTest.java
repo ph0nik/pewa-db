@@ -6,6 +6,7 @@ import com.pewa.MediaSource;
 import com.pewa.PewaType;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
+import com.pewa.request.StatusRequest;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,8 +47,14 @@ class StatusDAOImplTest {
         status.setSeason(2);
         status.setStatusId(1);
         status.setAddedDate(LocalDateTime.now());
-        assertEquals(status.isEmpty(), true);
-        assertEquals(status.getMissingParameters().contains("encounterDate"), true);
+        boolean empty = status.isEmpty();
+        assertEquals(empty, true);
+        System.out.println("Status is empty: " + empty);
+        List<String> encounterDate = status.getMissingParameters();
+        assertEquals(encounterDate.contains("encounterDate"), true);
+        System.out.print("Absent parameters: ");
+        encounterDate.forEach(System.out::print);
+
     }
 
     @Disabled
@@ -69,44 +77,21 @@ class StatusDAOImplTest {
     @Disabled
     @Test
     public void updateStatus() {
-        Status status = new Status();
-        status.setMediaSource(MediaSource.CINEMA);
-        status.setEncounterDate(LocalDate.parse("2001-11-16"));
-        status.setEncounterId(218);
-        status.setStatusId(1);
-        status.setEncounterRating(8);
-        status.setComment("termit update");
-        status.setElementType(PewaType.MOVIE);
+//        Status status = new Status();
+        StatusRequest sreq = new StatusRequest();
+        sreq.setMediaSource(MediaSource.COMPUTER);
+        sreq.setEncounterDate(LocalDate.parse("2018-04-05"));
+        sreq.setEncounterId(null);
+        sreq.setStatusId(null);
+        sreq.setEncounterRating(6);
+        sreq.setComment("aktualizacja w module testów2");
+        sreq.setElementType(PewaType.MOVIE);
+        Status status = sreq.extractStatus();
+        System.out.println(status);
         Results results = statusDAO.updateStatus(status);
         System.out.println(results);
     }
 
-    @Disabled
-    @Test
-    public void nullStatus() {
-        Request request = new Request();
-        Status status = new Status();
-//        System.out.println(status.checkRequiredParameters());
-        PewaType type = PewaType.TVSERIES;
-        request.setEncounterType(PewaType.TVSERIES);
-        assertEquals(PewaType.TVSERIES, request.getEncounterType());
-        request.setStatus(status);
-        assertNotNull(request.getStatus().getElementType());
-        assertEquals(PewaType.TVSERIES, request.getStatus().getElementType());
-
-
-        Request request1 = new Request();
-        assertNull(request1.getStatus());
-        Status status1 = new Status();
-        request1.setStatus(status1);
-        assertNull(request1.getStatus().getElementType());
-        request1.setEncounterType(PewaType.ANIME);
-        assertNotNull(request1.getStatus().getElementType());
-
-//        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
-        request1.getStatus().setEncounterRating(4);
-//        System.out.println(request1.getStatus().checkRequiredParameters(PewaType.ANIME));
-    }
 
     @Disabled
     @Test
@@ -114,6 +99,14 @@ class StatusDAOImplTest {
         Integer numberOfStatuses = 10;
         Results statusByNumber = statusDAO.getStatusByNumber(numberOfStatuses, results);
 
+    }
+
+    @Disabled
+    @Test
+    public void getLatestStatutes() {
+//        Results statusByNumber = statusDAO.getStatusByNumber(30, new Results());
+        Results statusByNumber = statusDAO.getStatusByNumber(30, new Results()).setReturnMessage();;
+        System.out.println(statusByNumber);
     }
 
 }

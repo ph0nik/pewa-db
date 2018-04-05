@@ -53,8 +53,10 @@ public class MovieDAOImplTest {
     @Test
     public void addMovie() {
         MediaParse<Movie, Integer> movieParser = new MovieParserTmdb();
-        Movie movie = movieParser.getItem(268477);
+        Movie movie = movieParser.getItem(399035);
         System.out.println(movie.toString());
+        Results results = movieDAO.addMovie(movie);
+        System.out.println(results);
 //        movieDAO.addMovie(movie, results);
 //        Status status = new Status();
 //        status.setElementType(PewaType.MOVIE);
@@ -64,7 +66,16 @@ public class MovieDAOImplTest {
 //        status.setEncounterRating(9);
 //        status.setEncounterId(movie.getImdbID());
 //        statusDAO.addStatus(status, results);
+
     }
+
+    @Disabled
+    @Test
+    public void deleteMovieFromDb() {
+        movieDAO.deleteMovie(96);
+    }
+
+
     @Disabled
     @Test
     public void searchMovieByQuery(){

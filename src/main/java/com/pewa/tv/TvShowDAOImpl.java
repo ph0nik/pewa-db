@@ -1,15 +1,10 @@
 package com.pewa.tv;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.common.Encounter;
-import com.pewa.common.MediaDAO;
-import com.pewa.common.PewaSelect;
+import com.pewa.common.AbstractMediaDAO;
 import com.pewa.common.Results;
-import com.pewa.config.ConfigFactory;
-import com.pewa.dao.MyBatisFactory;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -22,7 +17,7 @@ import java.util.List;
  * Created by phonik on 2017-03-31.
  */
 @Component
-public class TvShowDAOImpl extends MediaDAO implements TvShowDAO {
+public class TvShowDAOImpl extends AbstractMediaDAO implements TvShowDAO {
     private List<TvShowEpisode> output = new ArrayList<>();
     private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
@@ -40,6 +35,7 @@ public class TvShowDAOImpl extends MediaDAO implements TvShowDAO {
 
     public TvShowDAOImpl() {
         super(PewaType.TVSERIES);
+        tableManagement = new InitAllTables(PewaType.BOOK);
     }
 
     @Override

@@ -39,9 +39,6 @@ public class MangaController {
     @Autowired
     private StatusDAO statusDAO;
 
-    @Autowired
-    private InitAllTables initAllTables;
-
     private Results results;
     private PewaType mangaType = PewaType.MANGA;
     private Manga manga;
@@ -54,37 +51,25 @@ public class MangaController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return mangaDAO
-                .getMangaByTitle(query)
-                .setReturnMessage();
+        return mangaDAO.getMangaByTitle(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results getManga(@PathVariable Integer id) {
-        return mangaDAO
-                .getMangaById(id)
-                .setReturnMessage();
+        return mangaDAO.getMangaById(id);
     }
 
     @PostMapping(value = "add", consumes = json)
-    public Results addAnime(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results addAnime(@RequestBody Status request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
             manga = mangaParse.getItem(request.getEncounterId());
-            results = mangaDAO.addManga(manga);
-            return statusDAO.addStatus(status);
+            Results addMangaResults = mangaDAO.addManga(manga);
+            Results addStatusResults = statusDAO.addStatus(request);
+            addMangaResults.setRowsAffected(addMangaResults.getRowsAffected() + addStatusResults.getRowsAffected());
+            addMangaResults.setReturnMessage(addMangaResults.getMessage() + "; " + addStatusResults.getMessage());
+            return addMangaResults;
         }
     }
 
@@ -96,8 +81,7 @@ public class MangaController {
 
     @GetMapping(value = "delete/{id}")
     public Results deleteAnime(@PathVariable Integer id) {
-        results = mangaDAO.deleteManga(id);
-        return initAllTables.cleanAll(results);
+        return mangaDAO.deleteManga(id);
     }
 
 

@@ -1,5 +1,6 @@
 package com.pewa.common;
 
+import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.anime.Anime;
 import com.pewa.status.Status;
@@ -7,17 +8,27 @@ import com.pewa.status.Status;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.TreeSet;
 
+//TODO work on abstract super class for SingleSearchResult and EncounterElement objects
 /**
  * Created by phonik on 2017-12-14.
  */
-public class EncounterElement implements Comparable<EncounterElement>, Serializable, Encounter{
-//    <!-- id, title, year, type, status -> id, encDate, addDate, rating -->
+public class EncounterElement extends MediaModel implements Comparable<EncounterElement>, Serializable, Encounter{
+    // Internal db id
     private Integer id;
+    // original title and english title
     private String title, engTitle;
+    // year that production ended
     private Integer year;
+    // internal object type
     private PewaType type;
+    // collection of status objects
     private Set<Status> status;
+
+    public EncounterElement() {
+        this.status = new TreeSet<>();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -113,5 +124,10 @@ public class EncounterElement implements Comparable<EncounterElement>, Serializa
     @Override
     public int compareTo(EncounterElement o) {
         return 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

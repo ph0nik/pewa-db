@@ -1,5 +1,6 @@
 package com.pewa.common;
 
+import com.pewa.InitAllTables;
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
 import com.pewa.config.ConfigFactory;
@@ -9,22 +10,27 @@ import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
-public abstract class MediaDAO {
+public abstract class AbstractMediaDAO {
 
-    private static final String ADD_SUCCESS = "item added  : ";
-    private static final String UPDATE_SUCCESS = "item updated : ";
-    private static final String DELETE_SUCCESS = "item deleted : ";
-    private static final String SEARCH_SUCCESS = "element(s) found";
-    private static final String NOTHING_FOUND = "no item with this ID found : ";
-    private static final String DUPLICATE_ITEM = "item already in database : ";
+    private static final String ADD_SUCCESS = " item added  : ";
+    private static final String UPDATE_SUCCESS = " item updated : ";
+    private static final String DELETE_SUCCESS = " item deleted : ";
+    private static final String SEARCH_SUCCESS = " element(s) found";
+    private static final String NOTHING_FOUND = " no item with this ID found : ";
+    private static final String DUPLICATE_ITEM = " item already in database : ";
     private int rowsAffected;
     private List<MediaModel> output;
     private String returnMessage = "";
     private PewaType type;
     private Results results;
+    protected InitAllTables tableManagement;
 
-    protected MediaDAO(PewaType type) {
+    protected AbstractMediaDAO(PewaType type) {
         this.type = type;
+    }
+
+    protected InitAllTables getTablesManagement() {
+        return this.tableManagement;
     }
 
     private String getType() {
@@ -36,6 +42,7 @@ public abstract class MediaDAO {
         results = new Results();
         rowsAffected = 0;
         try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
+            System.out.println(getMapperList());
             for (String mapper : getMapperList()) {
                 rowsAffected += session.insert(ConfigFactory.get(mapper), media);
             }

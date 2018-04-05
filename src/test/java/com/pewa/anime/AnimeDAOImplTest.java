@@ -41,7 +41,7 @@ public class AnimeDAOImplTest {
     @Disabled
     @Test
     public void searchAnime() {
-        Results out = animeDAO.getAnimeByTitle("ghost");
+        Results out = animeDAO.getAnimeByTitle("serk");
         System.out.println(out);
     }
     @Disabled
@@ -54,8 +54,8 @@ public class AnimeDAOImplTest {
     @Disabled
     @Test
     public void animeByYear() {
-        request.setYear(1995);
-        Results out = animeDAO.getAnimeByYear(request);
+//        request.setYear(1995);
+        Results out = animeDAO.getAnimeByYear(1995);
         System.out.println(out);
         out.getEncounters().forEach(System.out::println);
 

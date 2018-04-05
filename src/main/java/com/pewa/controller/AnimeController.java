@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -34,9 +35,6 @@ public class AnimeController {
 
     @Autowired
     private AnimeDAO animeDAO;
-
-    @Autowired
-    private InitAllTables initAllTables;
 
     @Autowired
     @Qualifier(value = "statusDAOImpl")
@@ -59,37 +57,25 @@ public class AnimeController {
 
     @GetMapping(value = "searchdb/{query}")
     public Results searchDb(@PathVariable String query) {
-        return animeDAO
-                .getAnimeByTitle(query)
-                .setReturnMessage();
+        return animeDAO.getAnimeByTitle(query);
     }
 
     @GetMapping(value = "id/{id}")
     public Results getAnime(@PathVariable Integer id) {
-        return animeDAO
-                .getAnimeById(id)
-                .setReturnMessage();
+        return animeDAO.getAnimeById(id);
     }
 
     @PostMapping(value = "add", consumes = json)
-    public Results addAnime(@RequestBody StatusRequest request) {
-        results = new Results();
-        status = new Status();
+    public Results addAnime(@RequestBody Status request) {
         if (request == null) {
             return results.setReturnMessage(emptyStatus);
-        } else if (!request.checkRequiredParameters().isEmpty()) {
-            String returnMessage = missingParameters + request.checkRequiredParameters().toString();
-            return results.setReturnMessage(returnMessage);
         } else {
-            status.setElementType(request.getElementType());
-            status.setEncounterId(request.getEncounterId());
-            status.setComment(request.getComment());
-            status.setEncounterRating(request.getEncounterRating());
-            status.setEncounterDate(request.getEncounterDate());
-            status.setMediaSource(request.getMediaSource());
             anime = animeParse.getItem(request.getEncounterId());
-            results = animeDAO.addAnime(anime);
-            return statusDAO.addStatus(status);
+            Results addAnimeResults = animeDAO.addAnime(anime);
+            Results addStatusResults = statusDAO.addStatus(request);
+            addAnimeResults.setRowsAffected(addAnimeResults.getRowsAffected() + addStatusResults.getRowsAffected());
+            addAnimeResults.setReturnMessage(addAnimeResults.getMessage() + "; " + addStatusResults.getMessage());
+            return addAnimeResults;
         }
     }
 
@@ -101,29 +87,22 @@ public class AnimeController {
 
     @GetMapping(value = "delete/{id}")
     public Results deleteAnime(@PathVariable Integer id) {
-        results = animeDAO.deleteAnime(id);
-        return initAllTables.cleanAll(results);
+        return animeDAO.deleteAnime(id);
     }
 
     @GetMapping(value = "person/{personId}")
     public Results searchByPerson(@PathVariable Integer personId) {
-        return animeDAO
-                .getAnimeByPersonId(personId)
-                .setReturnMessage();
+        return animeDAO.getAnimeByPersonId(personId);
     }
 
     @GetMapping(value = "genre/{genreId}")
     public Results searchByGenre(@PathVariable Integer genreId) {
-        return animeDAO
-                .getAnimeByGenreId(genreId)
-                .setReturnMessage();
+        return animeDAO.getAnimeByGenreId(genreId);
     }
 
-    @PostMapping(value = "date", consumes = json)
-    public Results searchByYear(@RequestBody Request dateSearch) {
-        return animeDAO
-                .getAnimeByYear(dateSearch)
-                .setReturnMessage();
+    @GetMapping(value = "date/{year}", consumes = json)
+    public Results searchByYear(@PathVariable Integer year) {
+        return animeDAO.getAnimeByYear(year);
     }
 
 

@@ -48,7 +48,7 @@ import java.util.List;
     * Return List of Elements of Anime type based on queriees of String type.
     * Inputs are converted internally into LocalDate objects.
     * */
-    Results getAnimeByYear(Request date);
+    Results getAnimeByYear(Integer year);
 
 
 }

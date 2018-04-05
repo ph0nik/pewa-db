@@ -6,14 +6,11 @@ import com.pewa.PewaType;
 import com.pewa.common.*;
 import com.pewa.config.ConfigFactory;
 import com.pewa.dao.MyBatisFactory;
-import com.pewa.request.StatusRequest;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
-import org.apache.ibatis.exceptions.PersistenceException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,27 +22,19 @@ import java.util.stream.Collectors;
  * Created by phonik on 2017-05-30.
  */
 @Component
-public class StatusDAOImpl extends MediaDAO implements StatusDAO {
+public class StatusDAOImpl extends AbstractMediaDAO implements StatusDAO {
 
     private static final Logger log = LogManager.getLogger(StatusDAO.class);
     private final String formatterString = "uuuu-MM-dd";
-    private final String statusDeleteSucces = "[OK] Status deleted : ";
-    private final String statusUpdateSucces = "[OK] Status updated : ";
-    private final String statusInsertSucces = "[OK] Status inserted : ";
-    private final String statusFailedInfo = "[WARNING] No status found : ";
-    private final String duplicateEntryError = "[ERROR] Duplicate entry";
     private final String missingParameters = "Missing parameters: ";
     private List<Status> output;
-    private Integer rowsAffected;
     private String statusBridge, statusBridgeUpdate;
     private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
-    private InitAllTables tablesManagement;
-
 
     public StatusDAOImpl() {
         super(PewaType.STATUS);
-        tablesManagement = new InitAllTables(PewaType.STATUS);
+        tableManagement = new InitAllTables(PewaType.BOOK);
     }
 
     @Override
@@ -59,23 +48,23 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
     private void setMapperName(PewaType statusType) {
         switch (statusType) {
             case MOVIE:
-                statusBridge = ConfigFactory.get("status-mapper.insertStatusMovieBridge");
+                statusBridge = "status-mapper.insertStatusMovieBridge";
                 break;
             case TVSERIES:
-                statusBridge = ConfigFactory.get("status-mapper.insertStatusTvBridge");
-                statusBridgeUpdate = ConfigFactory.get("status-mapper.updateStatusTvBridge");
+                statusBridge = "status-mapper.insertStatusTvBridge";
+                statusBridgeUpdate = "status-mapper.updateStatusTvBridge";
                 break;
             case BOOK:
-                statusBridge = ConfigFactory.get("status-mapper.insertStatusBookBridge");
+                statusBridge = "status-mapper.insertStatusBookBridge";
                 break;
             case MUSIC:
                 statusBridge = "";
                 break;
             case ANIME:
-                statusBridge = ConfigFactory.get("status-mapper.insertStatusAnimeBridge");
+                statusBridge = "status-mapper.insertStatusAnimeBridge";
                 break;
             case MANGA:
-                statusBridge = ConfigFactory.get("status-mapper.insertStatusMangaBridge");
+                statusBridge = "status-mapper.insertStatusMangaBridge";
                 break;
         }
     }
@@ -87,7 +76,7 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
         if (!status.isEmpty()) {
             setMapperName(status.getElementType());
             mapperList = Arrays.asList("status-mapper.insertStatus", statusBridge);
-            return super.add(status);
+            return add(status);
         } else {
             Results results = new Results();
             return results.setReturnMessage(missingParameters + status.getMissingParameters().toString());
@@ -112,6 +101,7 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
 //        return results;
     }
 
+    // TODO while updating retunrs 0 rows changed and no updates to db
     @Override
     public Results updateStatus(Status status) {
         if (!status.isEmpty()) {
@@ -120,7 +110,7 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
             if (status.getElementType() == PewaType.TVSERIES) {
                 mapperList.add(statusBridgeUpdate);
             }
-            return super.update(status);
+            return update(status);
         } else {
             Results results = new Results();
             return results.setReturnMessage(missingParameters + status.getMissingParameters().toString());
@@ -155,8 +145,8 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
     @Override
     public Results deleteStatus(Integer statusId) {
         mapperList = Arrays.asList("status-mapper.deleteStatus");
-        Results delete = super.delete(statusId);
-        return tablesManagement.cleanAll(delete);
+        Results delete = delete(statusId);
+        return getTablesManagement().cleanAll(delete);
 //        rowsAffected = 0;
 //        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
 //            rowsAffected += session.delete(ConfigFactory.get("status-mapper.deleteStatus"), statusId);
@@ -273,11 +263,11 @@ public class StatusDAOImpl extends MediaDAO implements StatusDAO {
 
     @Override
     public List<String> getMapperList() {
-        return null;
+        return mapperList;
     }
 
     @Override
     public String getInfoField() {
-        return null;
+        return infoField;
     }
 }

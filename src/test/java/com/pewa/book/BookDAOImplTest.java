@@ -3,8 +3,6 @@ package com.pewa.book;
 import com.pewa.MediaParse;
 import com.pewa.MediaSource;
 import com.pewa.PewaType;
-import com.pewa.common.Genre;
-import com.pewa.common.Person;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
 import com.pewa.status.Status;
@@ -70,7 +68,7 @@ public class BookDAOImplTest {
     @Test
     public void deleteFromDb() {
         Integer id  = 3;
-        Results results = nowaKsiazka.delBook(3);
+        Results results = nowaKsiazka.deleteBook(3);
         System.out.println(results.getMessage());
     }
 

@@ -1,17 +1,12 @@
 package com.pewa.movie;
 
+import com.pewa.InitAllTables;
 import com.pewa.PewaType;
 import com.pewa.common.*;
-import com.pewa.config.ConfigFactory;
-import com.pewa.dao.MyBatisFactory;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /*
@@ -22,7 +17,7 @@ import java.util.*;
 *
 * */
 @Component/*(value = "movieDao")*/
-public class MovieDAOImpl extends MediaDAO implements MovieDAO {
+public class MovieDAOImpl extends AbstractMediaDAO implements MovieDAO {
 
     private static final Logger log = LogManager.getLogger(MovieDAO.class);
 
@@ -34,6 +29,7 @@ public class MovieDAOImpl extends MediaDAO implements MovieDAO {
 
     public MovieDAOImpl() {
         super(PewaType.MOVIE);
+        tableManagement = new InitAllTables(PewaType.BOOK);
     }
 
     /**
@@ -54,57 +50,58 @@ public class MovieDAOImpl extends MediaDAO implements MovieDAO {
                 "movie-mapper.insertLanguage",
                 "movie-mapper.insertLangMovieBridge"
         );
-        return super.add(movieinfo);
+        return add(movieinfo);
     }
 
     @Override
     public Results updateMovie(Movie movie) {
         infoField = movie.getTitle();
         mapperList = Arrays.asList("movie-mapper.updateMovie");
-        return super.update(movie);
+        return update(movie);
     }
 
     @Override
     public Results deleteMovie(Integer movieid) {
         mapperList = Arrays.asList("movie-mapper.deleteMovie");
-        return super.delete(movieid);
+        Results delete = delete(movieid);
+        return getTablesManagement().cleanAll(delete);
     }
 
     @Override
     public Results moviesByTitle(String search) {
         mapperList = Arrays.asList("movie-mapper.byTitleMovie");
-        return super.search(search);
+        return search(search);
     }
 
     @Override
     public Results moviesById(Integer dbId) {
         mapperList = Arrays.asList("movie-mapper.byIdMovie");
-        return super.get(dbId);
+        return get(dbId);
     }
 
     @Override
     public Results moviesByPersonId(Integer person) {
         mapperList = Arrays.asList("movie-mapper.byPersonMovie");
-        return super.get(person);
+        return get(person);
     }
 
     @Override
     public Results moviesByGenreId(Integer genre) {
         mapperList = Arrays.asList("movie-mapper.byGenreMovie");
-        return super.get(genre);
+        return get(genre);
     }
 
     @Override
     public Results moviesByLanguageId(Integer lang) {
         mapperList = Arrays.asList("movie-mapper.byLanguageMovie");
-        return super.get(lang);
+        return get(lang);
     }
 
     @Override
     public Results moviesByYear(Request date) {
         Integer year = date.getYear();
         mapperList = Arrays.asList("movie-mapper.byYearMovie");
-        return super.get(year);
+        return get(year);
     }
 
     @Override
