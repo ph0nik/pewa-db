@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.pewa.common.Empty.NOT_AVAILABLE;
+
 /**
  * Created by phonik on 2017-10-18.
  */
@@ -54,8 +56,7 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
             }
 
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            return movieitem;
+            log.error(e.getMessage());
         }
         return movieitem;
     }
@@ -89,11 +90,11 @@ public class MovieParserTmdb implements MediaParse<Movie, Integer> {
             }
             movieitem.setLanguage(new Language(languageNameByCode));
         });
-        if (movieitem.getLanguage().isEmpty()) movieitem.setLanguage(new Language("N/A"));
+        if (movieitem.getLanguage().isEmpty()) movieitem.setLanguage(new Language(NOT_AVAILABLE));
         tmdbItem.getProductionCountries().forEach(c -> movieitem.setCountry(new Country(c.getName())));
-        if (movieitem.getCountry().isEmpty()) movieitem.setCountry(new Country("N/A"));
+        if (movieitem.getCountry().isEmpty()) movieitem.setCountry(new Country(NOT_AVAILABLE));
         tmdbItem.getGenres().forEach(g -> movieitem.setGenres(new Genre(g.getName())));
-        if (movieitem.getGenres().isEmpty()) movieitem.setGenres(new Genre("N/A"));
+        if (movieitem.getGenres().isEmpty()) movieitem.setGenres(new Genre(NOT_AVAILABLE));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate releaseDate = LocalDate.parse(tmdbItem.getReleaseDate(), formatter);
         movieitem.setRelDate(releaseDate);

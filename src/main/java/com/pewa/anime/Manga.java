@@ -23,7 +23,6 @@ public class Manga extends MediaModel implements Comparable<Manga>, Serializable
     private Set<Genre> genres;
     private Set<Person> staff;
     private String titleRom, titleEng, description, poster, publishingStatus, intPoster, mangaType;
-    private PewaType type = PewaType.MANGA;
     private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
@@ -37,6 +36,8 @@ public class Manga extends MediaModel implements Comparable<Manga>, Serializable
     static final long serialVersionUID = 1L;
 
     public Manga() {
+        super();
+        setType(PewaType.MANGA);
         this.genres = new TreeSet<>();
         this.staff = new TreeSet<>();
         this.status = new TreeSet<>();
@@ -96,14 +97,6 @@ public class Manga extends MediaModel implements Comparable<Manga>, Serializable
 
     public void setTitleEng(String titleEng) {
         this.titleEng = titleEng;
-    }
-
-    public PewaType getType() {
-        return type;
-    }
-
-    public void setType(PewaType type) {
-        this.type = type;
     }
 
     public Set<Status> getStatus() {
@@ -205,7 +198,7 @@ public class Manga extends MediaModel implements Comparable<Manga>, Serializable
                 ", staff=" + staff +
                 ", titleRom='" + titleRom + '\'' +
                 ", titleEng='" + titleEng + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + getType() + '\'' +
                 ", description='" + description + '\'' +
                 ", poster='" + poster + '\'' +
                 ", publishingStatus='" + publishingStatus + '\'' +

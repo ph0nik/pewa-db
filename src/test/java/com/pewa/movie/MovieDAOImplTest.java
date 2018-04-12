@@ -1,5 +1,6 @@
 package com.pewa.movie;
 
+import com.pewa.MediaModel;
 import com.pewa.MediaParse;
 import com.pewa.MediaSource;
 import com.pewa.PewaType;
@@ -98,10 +99,10 @@ public class MovieDAOImplTest {
     public void getMovieById(){
         Integer request = 6;
         Results sampleMovie = movieDAO.moviesById(request);
-        Movie movie = (Movie) sampleMovie.getEncounters().get(0);
+        for (MediaModel m : sampleMovie) {
+            System.out.println(((Movie) m).getCountry());
+        }
 
-        System.out.println(movie);
-//        sampleMovie.getStaff().forEach(System.out::println);
     }
 
     @Disabled

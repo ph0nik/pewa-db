@@ -23,7 +23,6 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
 
     private String tvMazeUrl, title, showType, status, network,
             imdbLink, posterMed, posterOrg, intPosterMed, intPosterOrg, summary;
-    private PewaType type = PewaType.TVSERIES;
     private Integer id, tvMazeId, runtime, thetvdbLink, tvrageLink;
     private Country country;
     private Language language;
@@ -51,6 +50,9 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
     static final long serialVersionUID = 1L;
 
     TvShowSummary() {
+        super();
+        setType(PewaType.TVSERIES);
+        seasons = 0;
         this.episodes = new ArrayList<>();
         this.genres = new TreeSet<>();
         this.staff = new TreeSet<>();
@@ -141,7 +143,7 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
         return episodes;
     }
 
-    //TODO automatycznie ustawianie ilości sezonów
+    //TODO calculate number of seasons
     public void setEpisodes(TvShowEpisode episodes) {
         this.episodes.add(episodes);
         setSeasons();
@@ -175,19 +177,6 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public PewaType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(PewaType type) {
-        this.type = type;
-    }
-
-//    public void setType(String type) {
-//        this.type = type;
-//    }
 
     public Set<Genre> getGenres() {
         return genres;
@@ -307,7 +296,6 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
         if (intPosterMed != null ? !intPosterMed.equals(that.intPosterMed) : that.intPosterMed != null) return false;
         if (intPosterOrg != null ? !intPosterOrg.equals(that.intPosterOrg) : that.intPosterOrg != null) return false;
         if (summary != null ? !summary.equals(that.summary) : that.summary != null) return false;
-        if (type != that.type) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (tvMazeId != null ? !tvMazeId.equals(that.tvMazeId) : that.tvMazeId != null) return false;
         if (runtime != null ? !runtime.equals(that.runtime) : that.runtime != null) return false;
@@ -338,7 +326,6 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
         result = 31 * result + (intPosterMed != null ? intPosterMed.hashCode() : 0);
         result = 31 * result + (intPosterOrg != null ? intPosterOrg.hashCode() : 0);
         result = 31 * result + (summary != null ? summary.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (tvMazeId != null ? tvMazeId.hashCode() : 0);
         result = 31 * result + (runtime != null ? runtime.hashCode() : 0);
@@ -371,7 +358,7 @@ public class TvShowSummary extends MediaModel implements Comparable<TvShowSummar
                 ", intPosterMed='" + intPosterMed + '\'' +
                 ", intPosterOrg='" + intPosterOrg + '\'' +
                 ", summary='" + summary + '\'' +
-                ", type=" + type +
+                ", type=" + getType() +
                 ", id=" + id +
                 ", tvMazeId=" + tvMazeId +
                 ", runtime=" + runtime +

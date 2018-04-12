@@ -27,6 +27,11 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate date;
 
+    public SingleSearchResult() {
+        super();
+        setType(PewaType.STATUS);
+    }
+
     public String getEngTitle() {
         return engTitle;
     }

@@ -163,9 +163,10 @@ public class AnimeMangaSearch {
     }
 
     private String sendRequest(AnimeMangaQuery amq) throws IOException {
+        String userAgent = ConfigFactory.get("search.userAgent");
         String url = "https://graphql.anilist.co";
         Document response = Jsoup.connect(url)
-                .userAgent(ConfigFactory.get("search.userAgent"))
+                .userAgent(userAgent)
                 .data("query", amq.getQuery())
                 .data("variables", amq.getVariables())
                 .timeout(5 * 1000)

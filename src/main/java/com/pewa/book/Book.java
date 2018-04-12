@@ -21,11 +21,12 @@ public class Book extends MediaModel implements Comparable<Book>, Serializable, 
     private Set<Person> people;
     private Set<Genre> genre;
     private Set<Form> form;
-    private PewaType type = PewaType.BOOK;
     private String additionalInfo, originalTitle, polishTitle, originalLanguage, category;
     private Set<Status> status;
 
     public Book() {
+        super();
+        setType(PewaType.BOOK);
         this.people = new TreeSet<>();
         this.genre = new TreeSet<>();
         this.form = new TreeSet<>();
@@ -44,7 +45,7 @@ public class Book extends MediaModel implements Comparable<Book>, Serializable, 
                 ", people=" + people +
                 ", genre=" + genre +
                 ", form=" + form +
-                ", type=" + type +
+                ", type=" + getType() +
                 ", additionalInfo='" + additionalInfo + '\'' +
                 ", originalTitle='" + originalTitle + '\'' +
                 ", polishTitle='" + polishTitle + '\'' +
@@ -80,15 +81,6 @@ public class Book extends MediaModel implements Comparable<Book>, Serializable, 
         }
         this.form = form;
     }
-
-    public PewaType getType() {
-        return type;
-    }
-
-    public void setType(PewaType type) {
-        this.type = type;
-    }
-
 
     public Set<Person> getPeople() {
         return people;

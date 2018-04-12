@@ -43,7 +43,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     private Set<Country> country;
     private Set<Genre> genres;
     private Set<Person> staff;
-    private PewaType type = PewaType.MOVIE;
     private Set<Status> status;
 
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
@@ -52,6 +51,8 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
     private LocalDateTime dbDatetime;
 
     public Movie() {
+        super();
+        setType(PewaType.MOVIE);
         this.genres = new TreeSet<>();
         this.language = new TreeSet<>();
         this.country = new TreeSet<>();
@@ -132,14 +133,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
 
     public void setTitlePl(String titlePl) {
         this.titlePl = titlePl;
-    }
-
-    public PewaType getType() {
-        return type;
-    }
-
-    public void setType(PewaType type) {
-        this.type = type;
     }
 
     public LocalDate getRelDatePl() {
@@ -277,7 +270,7 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
                 ", country=" + country +
                 ", genres=" + genres +
                 ", staff=" + staff +
-                ", type=" + type +
+                ", type=" + getType() +
                 ", status=" + status +
                 ", dbDatetime=" + dbDatetime +
                 '}';
@@ -313,7 +306,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
         if (country != null ? !country.equals(movie.country) : movie.country != null) return false;
         if (genres != null ? !genres.equals(movie.genres) : movie.genres != null) return false;
         if (staff != null ? !staff.equals(movie.staff) : movie.staff != null) return false;
-        if (type != movie.type) return false;
         if (status != null ? !status.equals(movie.status) : movie.status != null) return false;
         return dbDatetime != null ? dbDatetime.equals(movie.dbDatetime) : movie.dbDatetime == null;
     }
@@ -339,7 +331,6 @@ public class Movie extends MediaModel implements Comparable<Movie>, Serializable
         result = 31 * result + (country != null ? country.hashCode() : 0);
         result = 31 * result + (genres != null ? genres.hashCode() : 0);
         result = 31 * result + (staff != null ? staff.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (dbDatetime != null ? dbDatetime.hashCode() : 0);
         return result;

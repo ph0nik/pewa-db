@@ -22,10 +22,7 @@ import java.util.TreeSet;
 
 public class Anime extends MediaModel implements Comparable<Anime>, Serializable, Encounter {
 
-//    private final static PewaType type = PewaType.ANIME;
-
     private String titleRom, titleEng, description, poster, intPoster, airingStatus, animeType;
-    private PewaType type;
 
     @JsonDeserialize(using = CustomLocalDateDeserializer.class)
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -42,7 +39,8 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
     static final long serialVersionUID = 1L;
 
     public Anime() {
-        this.type = PewaType.ANIME;
+        super();
+        setType(PewaType.ANIME);
         this.genres = new TreeSet<>();
         this.staff = new TreeSet<>();
         this.status = new TreeSet<>();
@@ -102,15 +100,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
 
     public void setTitleEng(String titleEnd) {
         this.titleEng = titleEnd;
-    }
-
-    public PewaType getType() {
-        return this.type;
-    }
-
-    @Override
-    public void setType(PewaType type) {
-        this.type = type;
     }
 
     public Set<Status> getStatus() {
@@ -210,7 +199,7 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
         return "Anime{" +
                 "titleRom='" + titleRom + '\'' +
                 ", titleEng='" + titleEng + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + super.getType() + '\'' +
                 ", description='" + description + '\'' +
                 ", poster='" + poster + '\'' +
                 ", airingStatus='" + airingStatus + '\'' +
@@ -235,7 +224,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
 
         if (titleRom != null ? !titleRom.equals(anime.titleRom) : anime.titleRom != null) return false;
         if (titleEng != null ? !titleEng.equals(anime.titleEng) : anime.titleEng != null) return false;
-        if (type != null ? !type.equals(anime.type) : anime.type != null) return false;
         if (description != null ? !description.equals(anime.description) : anime.description != null) return false;
         if (poster != null ? !poster.equals(anime.poster) : anime.poster != null) return false;
         if (intPoster != null ? !intPoster.equals(anime.intPoster) : anime.intPoster != null) return false;
@@ -255,7 +243,6 @@ public class Anime extends MediaModel implements Comparable<Anime>, Serializable
     public int hashCode() {
         int result = titleRom != null ? titleRom.hashCode() : 0;
         result = 31 * result + (titleEng != null ? titleEng.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (poster != null ? poster.hashCode() : 0);
         result = 31 * result + (intPoster != null ? intPoster.hashCode() : 0);

@@ -2,18 +2,20 @@ package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pewa.MediaModel;
+import com.pewa.anime.anilist.Media;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS , value = WebApplicationContext.SCOPE_REQUEST)
-public class Results {
+public class Results implements Iterable<MediaModel> {
 
     private String message;
     private Integer resultsFound;
@@ -78,4 +80,22 @@ public class Results {
                 '}';
     }
 
+    @Override
+    public Iterator<MediaModel> iterator() {
+        return new MediaModelIterator();
+    }
+
+    private class MediaModelIterator implements Iterator<MediaModel> {
+        private Iterator encountersIterator = encounters.iterator();
+
+        @Override
+        public boolean hasNext() {
+            return encountersIterator.hasNext();
+        }
+
+        @Override
+        public MediaModel next() {
+            return (MediaModel) encountersIterator.next();
+        }
+    }
 }

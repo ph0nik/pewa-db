@@ -21,6 +21,7 @@ public class TvShowParseToObjectTest {
             System.out.println(i + 1 +" [" + buffy.getEpisodes().get(i).getEpisode() + "] " + buffy.getEpisodes().get(i).getEpTitle() + buffy.getPremiered().getYear());
         }*/
 
+        System.out.println(buffy);
     }
     @Disabled
     @Test

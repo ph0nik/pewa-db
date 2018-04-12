@@ -19,15 +19,16 @@ import java.util.TreeSet;
 public class Main {
     public static void main(String[] args) {
 
-        String bo = "";
-    try {
-        bo = LanguageAlpha3Code.getByCodeIgnoreCase("jasda").getName();
-    } catch (NullPointerException ex) {
-        bo = "[" + ex.toString() + "] @ " + LanguageAlpha3Code.class;
-    }
 
-
-        System.out.println(bo);
+//        String bo = "";
+//    try {
+//        bo = LanguageAlpha3Code.getByCodeIgnoreCase("jasda").getName();
+//    } catch (NullPointerException ex) {
+//        bo = "[" + ex.toString() + "] @ " + LanguageAlpha3Code.class;
+//    }
+//
+//
+//        System.out.println(bo);
 
    /*     Logger logger = LogManager.getLogger(Main.class);
 
