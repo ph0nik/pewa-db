@@ -157,7 +157,7 @@ public class Episode {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Episode) == false) {
+        if (!(other instanceof Episode)) {
             return false;
         }
         Episode rhs = ((Episode) other);

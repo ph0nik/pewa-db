@@ -58,7 +58,7 @@ public class Network {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Network) == false) {
+        if (!(other instanceof Network)) {
             return false;
         }
         Network rhs = ((Network) other);

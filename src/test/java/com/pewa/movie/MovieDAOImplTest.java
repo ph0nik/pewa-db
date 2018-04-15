@@ -39,7 +39,7 @@ public class MovieDAOImplTest {
 
     @Disabled
     @Test
-    public void getMovieFromImdb() throws IOException {
+    public void getMovieFromImdb() {
         MovieParser movieParser = new MovieParser();
         //tt0095647
         Movie americanBuffalo = movieParser.getItem("tt0092106");
@@ -122,7 +122,7 @@ public class MovieDAOImplTest {
     public void searchMovieByGenre(){
         Integer genre = 3;
         Results moviesByGenre = movieDAO.moviesByGenreId(genre);
-        System.out.println(results);
+        moviesByGenre.forEach(System.out::println);
     }
 
     @Disabled

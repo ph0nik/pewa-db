@@ -36,7 +36,7 @@ public class Self {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Self) == false) {
+        if (!(other instanceof Self)) {
             return false;
         }
         Self rhs = ((Self) other);

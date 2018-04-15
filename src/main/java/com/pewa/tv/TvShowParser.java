@@ -55,7 +55,7 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
         }
         return tvShowSummaryItem;
     }
-    private TvShowParser parseSummary(Connection.Response cr) throws IOException, ParseException {
+    private void parseSummary(Connection.Response cr) throws IOException, ParseException {
         Gson gson = new Gson();
         String connectionResponseString = cr.parse().text();
         log.info(connectionResponseString); // logging json string response
@@ -118,7 +118,6 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
             tvShowSummaryItem.setEpisodes(episode);
         });
 
-        return this;
     }
 
 }

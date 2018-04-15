@@ -41,7 +41,7 @@ public class BookSearchTest {
         assertEquals(wynik.getEncounters().size(), emptyTreeSetSize);
     }
     @Disabled
-    // SingleSearchResult{url='book.aspx?id=335096', desc='Car Maksymilian: Widowisko ludowe na Rusi (Gołąbek Józef)'}
+    // ExternalMediaResult{url='book.aspx?id=335096', desc='Car Maksymilian: Widowisko ludowe na Rusi (Gołąbek Józef)'}
     @Test
     public void scrapeFoundItem() {
         MediaParse<Book, Integer> bookScraper = new BookParser();

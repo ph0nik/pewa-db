@@ -1,9 +1,9 @@
 package com.pewa.book;
 
 import com.pewa.PewaType;
-import com.pewa.common.Request;
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
+
 import com.pewa.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -37,9 +35,8 @@ public class BookSearch {
     }
 
     public Results bookSearchResultSet(String request, Results results) {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
-        String userInput = request;
-        String url = ConfigFactory.get("search.bookSearchUrlAlt").concat(userInput.replaceAll(" ", "+"));
+        Set<ExternalMediaResult> searchResultSet = new TreeSet<>();
+        String url = ConfigFactory.get("search.bookSearchUrlAlt").concat(request.replaceAll(" ", "+"));
         try {
             final Document searchResults = Jsoup.connect(url)
                     .userAgent(ConfigFactory.get("search.userAgent"))
@@ -50,7 +47,7 @@ public class BookSearch {
                     .getElementsByTag("li");
 
             for (Element x : titlePL) {
-                SingleSearchResult singleSearchResult = new SingleSearchResult();
+                ExternalMediaResult singleSearchResult = new ExternalMediaResult();
                 String author = x.select("a[href*=author]").stream().map(a -> a.text()).collect(Collectors.joining(", "));
 
                 String title = x.select("a[href*=book]").eq(0).text();

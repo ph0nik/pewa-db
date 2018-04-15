@@ -3,7 +3,7 @@ package com.pewa.movie;
 import com.google.gson.Gson;
 import com.pewa.PewaType;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.config.ConfigFactory;
 import com.pewa.movie.tmdb.Result;
 import com.pewa.movie.tmdb.TmdbSearchResult;
@@ -26,7 +26,7 @@ import java.util.TreeSet;
 public class MovieSearchTheMovieDatabase implements MovieSearch {
 
     private static final Logger log = LogManager.getLogger(MovieSearchTheMovieDatabase.class);
-    int totalPages;
+    private int totalPages;
 
 /**
 * Creates proper url addres for TheMovieDB api.
@@ -62,7 +62,7 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
     }
 
     public Results externalMovieSearch(String request, Results results) {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        Set<ExternalMediaResult> searchResultSet = new TreeSet<>();
         totalPages = 1;
         try {
             String url = buildUrl(request, totalPages);
@@ -85,13 +85,13 @@ public class MovieSearchTheMovieDatabase implements MovieSearch {
         return results;
     }
 
-    private Set<SingleSearchResult> createReturnSetFromSearch(String tmdbSearch) {
+    private Set<ExternalMediaResult> createReturnSetFromSearch(String tmdbSearch) {
         Gson gson = new Gson();
         TmdbSearchResult tmdbSearchResult = gson.fromJson(tmdbSearch, TmdbSearchResult.class);
         if (totalPages == 1) totalPages = tmdbSearchResult.getTotalPages();
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        Set<ExternalMediaResult> searchResultSet = new TreeSet<>();
         for (Result sr : tmdbSearchResult.getResults()) {
-            SingleSearchResult ssr = new SingleSearchResult();
+            ExternalMediaResult ssr = new ExternalMediaResult();
             ssr.setIdInt(sr.getId());
             ssr.setTitle(sr.getOriginalTitle());
             ssr.setEngTitle(sr.getTitle());

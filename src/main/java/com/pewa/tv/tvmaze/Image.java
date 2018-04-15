@@ -47,7 +47,7 @@ public class Image {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Image) == false) {
+        if (!(other instanceof Image)) {
             return false;
         }
         Image rhs = ((Image) other);

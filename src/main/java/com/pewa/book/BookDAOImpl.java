@@ -17,16 +17,11 @@ import java.util.List;
 public class BookDAOImpl extends AbstractMediaDAO implements BookDAO {
 
     public static final Logger log = LogManager.getLogger(BookDAOImpl.class);
-    private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
 
     public BookDAOImpl() {
         super(PewaType.BOOK);
         tableManagement = new InitAllTables(PewaType.BOOK);
-    }
-
-    public List<String> getMapperList() {
-        return mapperList;
     }
 
     public String getInfoField() {

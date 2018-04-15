@@ -1,7 +1,7 @@
 package com.pewa.music;
 
 import com.pewa.PewaType;
-import com.pewa.common.SingleSearchResult;
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.config.ConfigFactory;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -23,11 +23,11 @@ public class AlbumSearch {
     private static org.jsoup.nodes.Document.OutputSettings prettyPrintOff = new org.jsoup.nodes.Document.OutputSettings().prettyPrint(false);
 
 
-    public static Set<SingleSearchResult> searchMusicAlbum(String query) {
+    public static Set<ExternalMediaResult> searchMusicAlbum(String query) {
         String url = new StringBuilder(ConfigFactory.get("search.musicSearch"))
                                                     .append(query.replaceAll(" ", "+"))
                                                     .toString();
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        Set<ExternalMediaResult> searchResultSet = new TreeSet<>();
         SAXBuilder builder = new SAXBuilder();
         try {
             String musicBrainzDocument = Jsoup.connect(url)
@@ -44,7 +44,7 @@ public class AlbumSearch {
             List<Element> releases = rootNode.getChildren().get(0).getChildren();
 
             for (Element node : releases) {
-                SingleSearchResult singleSearchResult = new SingleSearchResult();
+                ExternalMediaResult singleSearchResult = new ExternalMediaResult();
                 String albumId = node.getAttributeValue("id");
                 String albumTitle = node.getChildText("title", namespace);
                 String albumDate = node.getChildText("date", namespace);

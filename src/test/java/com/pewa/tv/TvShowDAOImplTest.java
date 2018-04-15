@@ -3,9 +3,7 @@ package com.pewa.tv;
 import com.pewa.MediaParse;
 import com.pewa.MediaSource;
 import com.pewa.PewaType;
-import com.pewa.common.PewaSelect;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
 import com.pewa.status.Status;
 import com.pewa.status.StatusDAO;
 import com.pewa.status.StatusDAOImpl;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
 
 /**
  * Created by phonik on 2017-03-31.
@@ -77,7 +74,7 @@ public class TvShowDAOImplTest {
 
     @Disabled
     @Test
-    public void getTvShow() throws Exception {
+    public void getTvShow() {
         TvShowDAO tvShowDAO = new TvShowDAOImpl();
         String query = "buffy";
         Results tvShows = tvShowDAO.tvshowByTitle(query);
@@ -85,7 +82,7 @@ public class TvShowDAOImplTest {
     }
     @Disabled
     @Test
-    public void getTvShowById() throws Exception {
+    public void getTvShowById() {
         TvShowDAO tvShowDAO = new TvShowDAOImpl();
         Integer tvid = 5;
         Results tvShows = tvShowDAO.tvshowById(tvid);
@@ -93,7 +90,7 @@ public class TvShowDAOImplTest {
     }
     @Disabled
     @Test
-    public void getTvShowByPerson() throws Exception {
+    public void getTvShowByPerson() {
         // Person{id=679, name='David Greenwalt', job='executive producer'}
         int personId = 679;
         Results tvshows = tvShowDAO.tvshowByPersonId(personId);
@@ -101,7 +98,7 @@ public class TvShowDAOImplTest {
     }
     @Disabled
     @Test
-    public void getTvShowByGenre() throws Exception {
+    public void getTvShowByGenre() {
         // Genre{id=54, genre='Drama'}
         int genreId = 54;
         Results tvshows = tvShowDAO.tvshowByGenreId(genreId);
@@ -128,7 +125,7 @@ public class TvShowDAOImplTest {
 
     @Disabled
     @Test
-    public void getTvShowByYear() throws Exception {
+    public void getTvShowByYear() {
         int year = 1997;
         Results tvshow = tvShowDAO.tvshowByYear(year);
         System.out.println(tvshow);

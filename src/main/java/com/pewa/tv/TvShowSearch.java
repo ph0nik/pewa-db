@@ -7,10 +7,9 @@ import com.eclipsesource.json.JsonValue;
 import com.google.gson.Gson;
 import com.pewa.PewaType;
 import com.pewa.common.Empty;
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
 import com.pewa.config.ConfigFactory;
-import com.pewa.movie.tmdb.Result;
 import com.pewa.tv.tvmaze.search.ShowSearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,7 @@ public class TvShowSearch {
     private static final Logger log = LogManager.getLogger(TvShowSearch.class);
 
     public Results searchTv(String query, Results results) {
-        Set<SingleSearchResult> output = new TreeSet<>();
+        Set<ExternalMediaResult> output = new TreeSet<>();
         String searchUrl = ConfigFactory.get("search.tvMazeSearchUrl").replaceAll("<query>", query).replaceAll(" ", "+");
         log.info(searchUrl);
         try {
@@ -46,7 +45,7 @@ public class TvShowSearch {
 
             for (JsonValue result : parseResults) {
                 Gson gson = new Gson();
-                SingleSearchResult singleSearchResult = new SingleSearchResult();
+                ExternalMediaResult singleSearchResult = new ExternalMediaResult();
                 ShowSearch showSearch = gson.fromJson(result.toString(), ShowSearch.class);
 
                 JsonObject singleElement = result.asObject().get("show").asObject();

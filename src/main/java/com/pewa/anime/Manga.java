@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Manga extends MediaModel implements Comparable<Manga>, Serializable, Encounter {
+public class Manga extends MediaModel implements Comparable<Manga>, Serializable {
     private Set<Genre> genres;
     private Set<Person> staff;
     private String titleRom, titleEng, description, poster, publishingStatus, intPoster, mangaType;

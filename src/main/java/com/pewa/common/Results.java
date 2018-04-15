@@ -2,7 +2,6 @@ package com.pewa.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pewa.MediaModel;
-import com.pewa.anime.anilist.Media;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -43,9 +42,8 @@ public class Results implements Iterable<MediaModel> {
         }
     }
 
-    public Results setRowsAffected(Integer rows) {
+    public void setRowsAffected(Integer rows) {
         this.rowsAffected = rows;
-        return this;
     }
 
     public Integer getRowsAffected() {

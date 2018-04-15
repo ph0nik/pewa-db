@@ -80,7 +80,7 @@ public class Character {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Character) == false) {
+        if (!(other instanceof Character)) {
             return false;
         }
         Character rhs = ((Character) other);

@@ -47,7 +47,7 @@ public class Cast {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Cast) == false) {
+        if (!(other instanceof Cast)) {
             return false;
         }
         Cast rhs = ((Cast) other);

@@ -2,7 +2,6 @@ package com.pewa.common;
 
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.anime.Anime;
 import com.pewa.status.Status;
 
 import java.io.Serializable;
@@ -10,11 +9,11 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.TreeSet;
 
-//TODO work on abstract super class for SingleSearchResult and EncounterElement objects
+//TODO work on abstract super class for ExternalMediaResult and InternalMediaResult objects
 /**
  * Created by phonik on 2017-12-14.
  */
-public class EncounterElement extends MediaModel implements Comparable<EncounterElement>, Serializable, Encounter{
+public class InternalMediaResult extends MediaModel implements Comparable<InternalMediaResult>, Serializable {
     // Internal db id
     private Integer id;
     // original title and english title
@@ -26,7 +25,7 @@ public class EncounterElement extends MediaModel implements Comparable<Encounter
     // collection of status objects
     private Set<Status> status;
 
-    public EncounterElement() {
+    public InternalMediaResult() {
         this.status = new TreeSet<>();
     }
 
@@ -35,7 +34,7 @@ public class EncounterElement extends MediaModel implements Comparable<Encounter
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        EncounterElement that = (EncounterElement) o;
+        InternalMediaResult that = (InternalMediaResult) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
@@ -58,7 +57,7 @@ public class EncounterElement extends MediaModel implements Comparable<Encounter
 
     @Override
     public String toString() {
-        return "EncounterElement{" +
+        return "InternalMediaResult{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", titleEng='" + engTitle + '\'' +
@@ -122,7 +121,7 @@ public class EncounterElement extends MediaModel implements Comparable<Encounter
     }
 
     @Override
-    public int compareTo(EncounterElement o) {
+    public int compareTo(InternalMediaResult o) {
         return 0;
     }
 

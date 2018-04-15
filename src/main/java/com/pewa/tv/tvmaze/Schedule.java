@@ -48,7 +48,7 @@ public class Schedule {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Schedule) == false) {
+        if (!(other instanceof Schedule)) {
             return false;
         }
         Schedule rhs = ((Schedule) other);

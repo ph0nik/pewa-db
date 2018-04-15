@@ -257,7 +257,7 @@ public class TvMaze {
         if (other == this) {
             return true;
         }
-        if ((other instanceof TvMaze) == false) {
+        if (!(other instanceof TvMaze)) {
             return false;
         }
         TvMaze rhs = ((TvMaze) other);

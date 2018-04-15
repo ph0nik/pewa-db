@@ -22,7 +22,7 @@ import java.util.*;
 
 @Component
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Movie extends MediaModel implements Comparable<Movie>, Serializable, Encounter {
+public class Movie extends MediaModel implements Comparable<Movie>, Serializable {
 
     private String title, titlePl, intPoster, plot, engTitle;
     @JsonIgnore

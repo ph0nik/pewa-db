@@ -3,8 +3,7 @@ package com.pewa.movie;
 import com.pewa.MediaParse;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
-import com.pewa.movie.tmdb.Result;
+import com.pewa.common.ExternalMediaResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -30,16 +29,16 @@ class MovieSearchTheMovieDatabaseTest {
     @Test
     public void tryMapOfItemsMovie() {
         MovieSearchTheMovieDatabase searchMovie = new MovieSearchTheMovieDatabase();
-        String query = "it";
+        String query = "terminator";
         Results result = searchMovie.externalMovieSearch(query, new Results());
         assertNotNull(result);
-//        result.getEncounters().forEach(System.out::println);
+        result.forEach(System.out::println);
     }
 
     @Disabled
     @Test
     public void tryEmptyResultsCollection() {
-        Set<SingleSearchResult> searchResultSet = new TreeSet<>();
+        Set<ExternalMediaResult> searchResultSet = new TreeSet<>();
         Results results = new Results();
         searchResultSet.forEach(results::setEncounters);
         System.out.println(results);

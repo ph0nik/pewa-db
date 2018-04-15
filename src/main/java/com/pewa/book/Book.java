@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Component
-public class Book extends MediaModel implements Comparable<Book>, Serializable, Encounter {
+public class Book extends MediaModel implements Comparable<Book>, Serializable {
 
     private Integer id, votes, firstPubDate, plPubDate, externalBookId;
     private Double rating;

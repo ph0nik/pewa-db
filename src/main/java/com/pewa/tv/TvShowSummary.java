@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class TvShowSummary extends MediaModel implements Comparable<TvShowSummary>, Serializable, Encounter {
+public class TvShowSummary extends MediaModel implements Comparable<TvShowSummary>, Serializable {
 
     private String tvMazeUrl, title, showType, status, network,
             imdbLink, posterMed, posterOrg, intPosterMed, intPosterOrg, summary;

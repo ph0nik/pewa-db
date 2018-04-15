@@ -35,7 +35,7 @@ public class PewaSystemTray {
             try {
                 tray.add(trayIcon);
             } catch (AWTException e) {
-                System.out.println(e);
+                log.error(e.getMessage());
             }
         } else {
             log.error(trayError);

@@ -30,13 +30,14 @@ public class MangaParser implements MediaParse<Manga, Integer> {
     private static final Logger log = LogManager.getLogger(MangaParser.class);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final String nullDate = "10000101";
+    private Manga manga;
 
     /*
     * Method takes AniList model id and returns object of type Anime
     * */
     public Manga getItem(Integer aniListId) {
         AnimeAccessToken animeAccessToken = updateSession();
-        Manga manga = new Manga();
+        manga = new Manga();
         String url = new StringBuilder(ConfigFactory.get("search.aniListApiEndpoint"))
                 .append(ConfigFactory.get("item.aniListMangaItem"))
                 .append(aniListId)
@@ -59,7 +60,7 @@ public class MangaParser implements MediaParse<Manga, Integer> {
                         .toString();
                 log.error(errorMsg);
             } else {
-                manga = parseItemToObject(getSingleItem, manga);
+                parseItemToObject(getSingleItem, manga);
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
@@ -69,11 +70,11 @@ public class MangaParser implements MediaParse<Manga, Integer> {
         return manga;
     }
 
-    /*
+    /**
     * Method takes Connection.Response object and returns Manga type object.
     * It's called only when server response code is 200.
     * */
-    private Manga parseItemToObject(Connection.Response cr, Manga manga) throws IOException {
+    private void parseItemToObject(Connection.Response cr, Manga manga) throws IOException {
         JsonObject jsonManga = Json.parse(cr.parse().text()).asObject();
         manga.setIdAnilist(jsonManga.get("id").asInt());
         manga.setPoster(jsonManga.get("image_url_lge").asString());
@@ -116,10 +117,7 @@ public class MangaParser implements MediaParse<Manga, Integer> {
         manga.setTotalVolumes(jsonManga.getInt("total_volumes", 0));
         manga.setTotalChapters(jsonManga.getInt("total_chapters", 0));
         manga.setPublishingStatus(jsonManga.getString("publishing_status", ""));
-        return manga;
+//        return manga;
     }
 
-    public AnimeMangaQuery setQueryObject(int id) {
-        return null;
-    }
 }

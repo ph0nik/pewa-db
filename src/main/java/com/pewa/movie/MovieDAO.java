@@ -22,6 +22,4 @@ public interface MovieDAO {
 
     Results moviesByYear(Request date);
 
-    Results moviesByDate(String x, String y);
-
 }

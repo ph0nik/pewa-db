@@ -1,4 +1,5 @@
-import com.pewa.common.SingleSearchResult;
+
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.music.Album;
 import com.pewa.music.AlbumParseToObjectMB;
 import com.pewa.music.AlbumSearch;
@@ -13,7 +14,7 @@ public class AlbumSearchTest {
     @Disabled
     @Test
     public void xmlParserTest() {
-        Set<SingleSearchResult> wynik = AlbumSearch.searchMusicAlbum("and justice metallica");
+        Set<ExternalMediaResult> wynik = AlbumSearch.searchMusicAlbum("and justice metallica");
         wynik.forEach(System.out::println);
     }
 

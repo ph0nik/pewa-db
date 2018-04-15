@@ -59,7 +59,7 @@ public class Embedded {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Embedded) == false) {
+        if (!(other instanceof Embedded)) {
             return false;
         }
         Embedded rhs = ((Embedded) other);

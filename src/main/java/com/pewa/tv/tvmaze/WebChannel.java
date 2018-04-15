@@ -57,7 +57,7 @@ public class WebChannel {
         if (other == this) {
             return true;
         }
-        if ((other instanceof WebChannel) == false) {
+        if (!(other instanceof WebChannel)) {
             return false;
         }
         WebChannel rhs = ((WebChannel) other);

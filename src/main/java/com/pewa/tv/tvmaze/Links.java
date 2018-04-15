@@ -47,7 +47,7 @@ public class Links {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Links) == false) {
+        if (!(other instanceof Links)) {
             return false;
         }
         Links rhs = ((Links) other);

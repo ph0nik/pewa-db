@@ -6,7 +6,7 @@ public enum PewaType {
     private final Integer pewaTypeValue;
     private PewaType pewaTypeName;
 
-    private PewaType(Integer pewaTypeValue) {
+    PewaType(Integer pewaTypeValue) {
         this.pewaTypeValue = pewaTypeValue;
     }
 
@@ -15,7 +15,7 @@ public enum PewaType {
     }
 
     public PewaType getPewaTypeName() {
-        for (PewaType pt : this.values()) {
+        for (PewaType pt : PewaType.values()) {
             if (pt.equals(this))
                 return pt;
         }

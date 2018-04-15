@@ -47,7 +47,7 @@ public class Crew {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Crew) == false) {
+        if (!(other instanceof Crew)) {
             return false;
         }
         Crew rhs = ((Crew) other);

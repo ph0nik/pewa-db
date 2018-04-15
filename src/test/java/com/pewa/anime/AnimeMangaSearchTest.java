@@ -3,12 +3,9 @@ package com.pewa.anime;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 
 /**
@@ -48,7 +45,7 @@ public class AnimeMangaSearchTest {
     @Disabled
     @Test
     public void getSingleItemAnime() {
-        //SingleSearchResult{url='null', desc='Koukaku Kidoutai (Ghost in the Shell) Movie(eps.1) - 1995', idInt=43, poster='https://cdn.anilist.co/img/dir/anime/reg/43.jpg'}
+        //ExternalMediaResult{url='null', desc='Koukaku Kidoutai (Ghost in the Shell) Movie(eps.1) - 1995', idInt=43, poster='https://cdn.anilist.co/img/dir/anime/reg/43.jpg'}
         MediaParse<Anime, Integer> animeParseToObject = new AnimeParser();
         Anime anime = animeParseToObject.getItem(95821);
         //Anime test = getAnimeItem(43);

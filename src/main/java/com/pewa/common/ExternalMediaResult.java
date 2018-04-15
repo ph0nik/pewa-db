@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class SingleSearchResult extends MediaModel implements Encounter, Comparable<SingleSearchResult> {
+public class ExternalMediaResult extends MediaModel implements Comparable<ExternalMediaResult> {
     // original title
     private String title;
     // element description
@@ -27,7 +27,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate date;
 
-    public SingleSearchResult() {
+    public ExternalMediaResult() {
         super();
         setType(PewaType.STATUS);
     }
@@ -82,7 +82,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
 
     @Override
     public String toString() {
-        return "SingleSearchResult{" +
+        return "ExternalMediaResult{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", engTitle='" + engTitle + '\'' +
@@ -97,7 +97,7 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SingleSearchResult that = (SingleSearchResult) o;
+        ExternalMediaResult that = (ExternalMediaResult) o;
 
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
@@ -120,12 +120,12 @@ public class SingleSearchResult extends MediaModel implements Encounter, Compara
 
     private static Comparator<String> nullSafeStringComparator = Comparator.nullsFirst(String::compareTo);
     private static Comparator<Integer> nullSafeIntegerComparator = Comparator.nullsFirst(Integer::compareTo);
-    private static Comparator<SingleSearchResult> singleSearchResultComparator = Comparator.comparing(SingleSearchResult::getIdInt, nullSafeIntegerComparator)
-            .thenComparing(SingleSearchResult::getTitle, nullSafeStringComparator)
-            .thenComparing(SingleSearchResult::getDescription, nullSafeStringComparator);
+    private static Comparator<ExternalMediaResult> singleSearchResultComparator = Comparator.comparing(ExternalMediaResult::getIdInt, nullSafeIntegerComparator)
+            .thenComparing(ExternalMediaResult::getTitle, nullSafeStringComparator)
+            .thenComparing(ExternalMediaResult::getDescription, nullSafeStringComparator);
 
     @Override
-    public int compareTo(SingleSearchResult o) {
+    public int compareTo(ExternalMediaResult o) {
         return singleSearchResultComparator.compare(this, o);
     }
 

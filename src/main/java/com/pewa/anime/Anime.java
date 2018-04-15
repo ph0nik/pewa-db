@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Anime extends MediaModel implements Comparable<Anime>, Serializable, Encounter {
+public class Anime extends MediaModel implements Comparable<Anime>, Serializable {
 
     private String titleRom, titleEng, description, poster, intPoster, airingStatus, animeType;
 

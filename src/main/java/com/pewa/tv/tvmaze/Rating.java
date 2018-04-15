@@ -36,7 +36,7 @@ public class Rating {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Rating) == false) {
+        if (!(other instanceof Rating)) {
             return false;
         }
         Rating rhs = ((Rating) other);

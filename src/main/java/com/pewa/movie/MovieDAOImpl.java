@@ -20,11 +20,9 @@ import java.util.*;
 public class MovieDAOImpl extends AbstractMediaDAO implements MovieDAO {
 
     private static final Logger log = LogManager.getLogger(MovieDAO.class);
-
     private static final String formatterString = "uuuu-MM-dd";
 
-    private List<EncounterElement> output;
-    private List<String> mapperList = new ArrayList<>();
+//    private List<InternalMediaResult> output;
     private String infoField = "";
 
     public MovieDAOImpl() {
@@ -104,36 +102,6 @@ public class MovieDAOImpl extends AbstractMediaDAO implements MovieDAO {
         return get(year);
     }
 
-    @Override
-    public Results moviesByDate(String x, String y) {
-        return null;
-//        Results results = new Results();
-//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatterString);
-//            LocalDate start, end;
-//            start = (x.isEmpty()) ? LocalDate.now() : LocalDate.parse(x, formatter);
-//            end = (y.isEmpty()) ? LocalDate.now() : LocalDate.parse(y, formatter);
-//            Map<String, LocalDate> map = new HashMap<>();
-//            if (start.compareTo(end) >= 0) {
-//                map.put("start", end);
-//                map.put("end", start);
-//            } else {
-//                map.put("start", start);
-//                map.put("end", end);
-//            }
-//            output = session.selectList(ConfigFactory.get("movie-mapper.byYearMovie"), map);
-//            session.commit();
-//        }
-//        for (Encounter element : output) {
-//            results.setEncounters(element);
-//        }
-//        return results;
-    }
-
-    @Override
-    public List<String> getMapperList() {
-        return mapperList;
-    }
 
     @Override
     public String getInfoField() {

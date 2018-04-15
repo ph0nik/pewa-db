@@ -1,15 +1,10 @@
 package com.pewa.movie;
 
-import com.pewa.PewaType;
 import com.pewa.common.Request;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
-import com.pewa.movie.tmdb.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

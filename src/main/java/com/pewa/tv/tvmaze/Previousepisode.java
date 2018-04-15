@@ -36,7 +36,7 @@ public class Previousepisode {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Previousepisode) == false) {
+        if (!(other instanceof Previousepisode)) {
             return false;
         }
         Previousepisode rhs = ((Previousepisode) other);

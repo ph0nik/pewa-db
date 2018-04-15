@@ -1,7 +1,6 @@
 package com.pewa.tv;
 
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

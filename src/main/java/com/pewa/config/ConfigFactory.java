@@ -60,7 +60,6 @@ public class ConfigFactory extends INIConfiguration {
             configValue = config.getString(param);
         } catch (NoSuchElementException ex) {
             log.error(ex.getMessage());
-//            throw new EmptyMapperException("Empty mapper element");
         }
         return configValue;
     }

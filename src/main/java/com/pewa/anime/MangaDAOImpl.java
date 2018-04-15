@@ -16,7 +16,6 @@ import java.util.List;
 @Component
 public class MangaDAOImpl extends AbstractMediaDAO implements MangaDAO {
     private static final Logger log = LogManager.getLogger(MangaDAO.class);
-    private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
 
     public MangaDAOImpl() {
@@ -78,11 +77,6 @@ public class MangaDAOImpl extends AbstractMediaDAO implements MangaDAO {
         Integer year = date.getYear();
         mapperList = Arrays.asList("manga-mapper.byYearMovie");
         return get(year);
-    }
-
-    @Override
-    public List<String> getMapperList() {
-        return mapperList;
     }
 
     @Override

@@ -1,13 +1,8 @@
 package com.pewa.controller;
 
-import com.pewa.InitAllTables;
 import com.pewa.MediaParse;
 import com.pewa.PewaType;
-import com.pewa.common.Request;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
-import com.pewa.movie.Movie;
-import com.pewa.request.StatusRequest;
 import com.pewa.status.Status;
 import com.pewa.status.StatusDAO;
 import com.pewa.tv.TvShowDAO;
@@ -18,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 /**
  * Created by phonik on 2017-11-20.

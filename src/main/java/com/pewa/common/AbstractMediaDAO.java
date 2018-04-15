@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -34,8 +35,10 @@ public abstract class AbstractMediaDAO {
     private PewaType type;
     private Results results;
     protected InitAllTables tableManagement;
+    protected List<String> mapperList;
 
     protected AbstractMediaDAO(PewaType type) {
+        mapperList = new ArrayList<>();
         this.type = type;
     }
 
@@ -61,7 +64,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (rowsAffected != 0)
                         ? getType() + ADD_SUCCESS + getInfoField()
                         : getType() + DUPLICATE_ITEM + getInfoField();
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -87,7 +90,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (rowsAffected != 0)
                         ? getType() + DELETE_SUCCESS + getInfoField()
                         : getType() + NOTHING_FOUND + getInfoField();
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -111,7 +114,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (rowsAffected != 0)
                         ? getType() + DELETE_SUCCESS + getInfoField()
                         : getType() + NOTHING_FOUND + getInfoField();
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -135,7 +138,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (rowsAffected != 0)
                         ? getType() + UPDATE_SUCCESS + getInfoField()
                         : getType() + NOTHING_FOUND + getInfoField();
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -160,7 +163,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (output.isEmpty())
                         ? getType() + NOTHING_FOUND
                         : getType() + output.size() + SEARCH_SUCCESS;
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -181,7 +184,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (output.size() == 0)
                         ? getType() + NOTHING_FOUND + mediaId
                         : getType() + output.size() + SEARCH_SUCCESS;
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -201,7 +204,7 @@ public abstract class AbstractMediaDAO {
                 returnMessage = (output.size() == 0)
                         ? getType() + NOTHING_FOUND
                         : getType() + output.size() + SEARCH_SUCCESS;
-            } catch (IbatisException ex) {
+            } catch (PersistenceException ex) {
                 log.error(ex.getMessage());
                 returnMessage = INTERNAL_ERROR;
             }
@@ -211,7 +214,9 @@ public abstract class AbstractMediaDAO {
         return results.setReturnMessage(returnMessage);
     }
 
-    public abstract List<String> getMapperList();
+    public List<String> getMapperList() {
+        return mapperList;
+    }
 
     public abstract String getInfoField();
 

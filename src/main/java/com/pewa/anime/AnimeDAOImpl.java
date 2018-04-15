@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 public class AnimeDAOImpl extends AbstractMediaDAO implements AnimeDAO {
     private static final Logger log = LogManager.getLogger(AnimeDAO.class);
-    private List<String> mapperList = new ArrayList<>();
     private String infoField = "";
 
     public AnimeDAOImpl() {
@@ -79,22 +78,11 @@ public class AnimeDAOImpl extends AbstractMediaDAO implements AnimeDAO {
         return get(genreId);
     }
 
-    // TODO anime dates are specially formated so year alone cannot be compared with values in database
     @Override
     public Results getAnimeByYear(Integer year) {
-//        Integer year = date.getYear();
         mapperList = Arrays.asList("anime-mapper.byYearAni");
         return get(year);
-//        try (SqlSession session = MyBatisFactory.connectionUser().openSession(ExecutorType.SIMPLE, false)) {
-//            output = session.selectList(ConfigFactory.get("anime-mapper.byYearAni"), year);
-//            session.commit();
-//        }
-//        output.forEach(results::setEncounters);
-//        return results;
+
     }
 
-    @Override
-    public List<String> getMapperList() {
-        return mapperList;
-    }
 }

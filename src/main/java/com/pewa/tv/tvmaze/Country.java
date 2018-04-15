@@ -58,7 +58,7 @@ public class Country {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Country) == false) {
+        if (!(other instanceof Country)) {
             return false;
         }
         Country rhs = ((Country) other);

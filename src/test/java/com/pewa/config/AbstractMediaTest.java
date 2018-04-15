@@ -18,6 +18,12 @@ public class AbstractMediaTest extends AbstractMediaDAO {
     }
 
 
+    /**
+     *
+     * Methods sends query using non existen key mapper, ConfigFactory should return empty string
+     * and therefore it leads to SqlSession throwing exception
+     *
+    * */
     public Results getObject(String query) {
         mapperList = Arrays.asList("non-existent.key-mapper");
         return search(query);

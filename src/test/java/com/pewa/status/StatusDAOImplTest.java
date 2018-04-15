@@ -105,7 +105,7 @@ class StatusDAOImplTest {
     @Test
     public void getLatestStatutes() {
 //        Results statusByNumber = statusDAO.getStatusByNumber(30, new Results());
-        Results statusByNumber = statusDAO.getStatusByNumber(30, new Results()).setReturnMessage();;
+        Results statusByNumber = statusDAO.getStatusByNumber(30, new Results()).setReturnMessage();
         System.out.println(statusByNumber);
     }
 

@@ -58,7 +58,7 @@ public class Externals {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Externals) == false) {
+        if (!(other instanceof Externals)) {
             return false;
         }
         Externals rhs = ((Externals) other);

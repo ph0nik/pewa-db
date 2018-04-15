@@ -7,8 +7,8 @@ import com.eclipsesource.json.JsonValue;
 import com.google.gson.Gson;
 import com.pewa.PewaType;
 import com.pewa.anime.anilist.SearchData;
+import com.pewa.common.ExternalMediaResult;
 import com.pewa.common.Results;
-import com.pewa.common.SingleSearchResult;
 import com.pewa.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +54,7 @@ public class AnimeMangaSearch {
     }
 
     /**
-     * Performs search on external web-api and returns Set of SingleSearchResult objects based on query and searchType.
+     * Performs search on external web-api and returns Set of ExternalMediaResult objects based on query and searchType.
      *
      * @param query      an {@code String}
      * @param searchType an {@code PewaType}
@@ -64,7 +64,7 @@ public class AnimeMangaSearch {
     public Results aniListSearch(String query, PewaType searchType) {
         this.searchType = searchType;
         Results results = new Results();
-        Set<SingleSearchResult> output = new TreeSet<>();
+        Set<ExternalMediaResult> output = new TreeSet<>();
         AnimeAccessToken animeAccessToken = updateSession();
         String anime = new StringBuilder(ConfigFactory.get("search.aniListApiEndpoint"))
                 .append(ConfigFactory.get("search.aniListSearchAnime"))
@@ -89,10 +89,10 @@ public class AnimeMangaSearch {
     }
 
     @Deprecated
-    private Set<SingleSearchResult> aniListSearch(JsonArray resultsArray) {
-        Set<SingleSearchResult> output = new TreeSet<>();
+    private Set<ExternalMediaResult> aniListSearch(JsonArray resultsArray) {
+        Set<ExternalMediaResult> output = new TreeSet<>();
         for (JsonValue member : resultsArray) {
-            SingleSearchResult singleSearchResult = new SingleSearchResult();
+            ExternalMediaResult singleSearchResult = new ExternalMediaResult();
             JsonObject singleElement = member.asObject();
             String titleRom = singleElement.get("title_romaji").asString();
             String titleEng = singleElement.get("title_english").asString();
@@ -137,7 +137,7 @@ public class AnimeMangaSearch {
         AnimeMangaQuery animeMangaQuery;
         try {
             animeMangaQuery = setQueryObject(query, type);
-            Set<SingleSearchResult> singleSearchResults = parseSearchResult(sendRequest(animeMangaQuery));
+            Set<ExternalMediaResult> singleSearchResults = parseSearchResult(sendRequest(animeMangaQuery));
             singleSearchResults.forEach(results::setEncounters);
         } catch (IOException e) {
             e.printStackTrace();
@@ -175,12 +175,12 @@ public class AnimeMangaSearch {
         return response.text();
     }
 
-    private Set<SingleSearchResult> parseSearchResult(String object) {
-        Set<SingleSearchResult> output = new TreeSet<>();
+    private Set<ExternalMediaResult> parseSearchResult(String object) {
+        Set<ExternalMediaResult> output = new TreeSet<>();
         Gson gsonPrser = new Gson();
         SearchData searchData = gsonPrser.fromJson(object, SearchData.class);
         searchData.getData().getPage().getMedia().forEach(r -> {
-            SingleSearchResult ssr = new SingleSearchResult();
+            ExternalMediaResult ssr = new ExternalMediaResult();
             if ("anime".toUpperCase().equals(r.getType())) {
                 ssr.setType(PewaType.ANIME);
             } else {
