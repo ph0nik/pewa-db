@@ -1,43 +1,66 @@
 package com.pewa;
 
-import com.neovisionaries.i18n.LanguageAlpha3Code;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.webresources.StandardRoot;
+import org.apache.tomcat.util.scan.StandardJarScanner;
 
+import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class Main {
-    public static void main(String[] args) {
 
+    private static final int PORT = 8081;
 
-//        String bo = "";
-//    try {
-//        bo = LanguageAlpha3Code.getByCodeIgnoreCase("jasda").getName();
-//    } catch (NullPointerException ex) {
-//        bo = "[" + ex.toString() + "] @ " + LanguageAlpha3Code.class;
-//    }
-//
-//
-//        System.out.println(bo);
+    public static void main(String[] args) throws ServletException, LifecycleException {
 
-   /*     Logger logger = LogManager.getLogger(Main.class);
+        String appBase = ".";
+        String webappDirLocation = "src/main/webapp";
+        String webxmlDirLocation = "src/main/webapp/WEB-INF/web.xml";
 
-        Exception ex = new Exception();
-        IOException ioex = new IOException();
+        Tomcat tomcat = new Tomcat();
+        // set temp directory for tomcat server
+        String baseDir = createTempTomcatDir();
+        tomcat.setBaseDir(baseDir);
+        // set port
+        tomcat.setPort(PORT);
+        tomcat.getHost().setAppBase(baseDir);
+        tomcat.getHost().setDeployOnStartup(true);
+        tomcat.getHost().setAutoDeploy(true);
+        StandardContext context = (StandardContext) tomcat.addWebapp("", new File((webappDirLocation)).getAbsolutePath());
+        // settting web.xml file location
+        context.setDefaultContextXml(new File(webxmlDirLocation).getAbsolutePath());
+        // turning off scanning for jar files, it throws multiple exceptions
+        ((StandardJarScanner) context.getJarScanner()).setScanClassPath(false);
+//        StandardJarScanner asd = new StandardJarScanner();
+//        asd.setScanAllFiles(false);
+//        tomcat.addWebapp("", appBase);
 
-        logger.error(ioex.getMessage(),ioex);*/
+        tomcat.start();
+        tomcat.getServer().await();
 
-    
+    }
 
+    /**
+     * Creates temporary tomcat directory and returns absolute path
+    */
+    private static String createTempTomcatDir() {
+        try {
+            File tempDir = File.createTempFile("tomcat.","." + PORT);
+            tempDir.delete();
+            tempDir.mkdir();
+            tempDir.deleteOnExit();
+            return tempDir.getAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Unable to create temporary directory. java.io.tmpdir is set to "
+                            + System.getProperty("java.io.tmpdir"), e
+            );
+        }
     }
 }

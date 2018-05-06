@@ -253,6 +253,13 @@
             <artifactId>graphql-java</artifactId>
             <version>7.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.30</version>
+        </dependency>
+
 
     </dependencies>
 </project>
