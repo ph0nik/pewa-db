@@ -22,7 +22,7 @@ public class AlbumParseToObjectMB {
         System.out.println(url);
         SAXBuilder builder = new SAXBuilder();
         try {
-            String musicBrainzDocument = Jsoup.connect(url.toString())
+            String musicBrainzDocument = Jsoup.connect(url)
                     .userAgent(ConfigFactory.get("userAgentMB"))
                     .timeout(5 * 1000)
                     .ignoreContentType(true)

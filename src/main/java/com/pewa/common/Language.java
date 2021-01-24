@@ -57,8 +57,7 @@ public class Language implements Comparable<Language>, Serializable {
 
         Language language1 = (Language) o;
 
-        if (id != language1.id) return false;
-        return language != null ? language.equals(language1.language) : language1.language == null;
+        return id == language1.id && (language != null ? language.equals(language1.language) : language1.language == null);
     }
 
     @Override

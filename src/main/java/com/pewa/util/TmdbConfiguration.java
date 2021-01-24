@@ -31,7 +31,7 @@ public class TmdbConfiguration {
         date.setTime(localDate);
         Timer timer = new Timer();
         TimerTask tmdbTimerTask = new TmdbTimerTask();
-        Long timeInterval = Long.valueOf(1000 * 3600 * 24 * numberOfDays);
+        Long timeInterval = (long) (1000 * 3600 * 24 * numberOfDays);
         timer.schedule(tmdbTimerTask, date, timeInterval);
     }
 

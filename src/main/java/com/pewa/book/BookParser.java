@@ -150,7 +150,7 @@ public class BookParser implements MediaParse<Book, Integer> {
             }
             output = new TreeSet<>(Arrays.asList(out));
             output = output.stream()
-                    .map(x -> x.trim())
+                    .map(String::trim)
                     .collect(Collectors.toSet());
         } else {
             output.add(el);

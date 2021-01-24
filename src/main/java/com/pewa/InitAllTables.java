@@ -88,7 +88,7 @@ public class InitAllTables extends AbstractMediaDAO {
 
     public void checkForUnconnectedFiles() {
         File folder = new File(imgPath);
-        List<File> listOfFiles = Arrays.asList(folder.listFiles());
+        List<File> listOfFiles = Arrays.asList(folder.listFiles()); // <- might be null
 
         listOfFiles.forEach(System.out::println);
     }

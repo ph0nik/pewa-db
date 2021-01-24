@@ -48,7 +48,7 @@ public class BookSearch {
 
             for (Element x : titlePL) {
                 ExternalMediaResult singleSearchResult = new ExternalMediaResult();
-                String author = x.select("a[href*=author]").stream().map(a -> a.text()).collect(Collectors.joining(", "));
+                String author = x.select("a[href*=author]").stream().map(Element::text).collect(Collectors.joining(", "));
 
                 String title = x.select("a[href*=book]").eq(0).text();
                 String link = x.select("a[href*=book]").eq(0).attr("href");

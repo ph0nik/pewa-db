@@ -85,9 +85,7 @@ public class TvShowParser implements MediaParse<TvShowSummary, Integer> {
             String actor = "actor";
             tvShowSummaryItem.setStaff(new Person(ca.getPerson().getName(), "", actor));
         });
-        tvMaze.getGenres().forEach(g -> {
-            tvShowSummaryItem.setGenres(new Genre(g));
-        });
+        tvMaze.getGenres().forEach(g -> tvShowSummaryItem.setGenres(new Genre(g)));
         tvShowSummaryItem.setTvMazeUrl(tvMaze.getUrl());
         tvShowSummaryItem.setTvMazeId(tvMaze.getId());
         tvShowSummaryItem.setImdbLink(tvMaze.getExternals().getImdb());

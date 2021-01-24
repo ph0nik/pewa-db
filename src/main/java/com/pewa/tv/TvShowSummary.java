@@ -1,12 +1,14 @@
 package com.pewa.tv;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.pewa.MediaModel;
 import com.pewa.PewaType;
-import com.pewa.common.*;
+import com.pewa.common.Country;
+import com.pewa.common.Genre;
+import com.pewa.common.Language;
+import com.pewa.common.Person;
 import com.pewa.status.Status;
 import com.pewa.util.CustomLocalDateDeserializer;
 import com.pewa.util.CustomLocalDateSerializer;
